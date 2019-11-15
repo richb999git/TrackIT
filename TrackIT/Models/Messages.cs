@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace TrackIT.Models
+{
+    public class Messages
+    {
+        public int Id { get; set; }
+
+        public string Message { get; set; }
+
+        public DateTime TimeStamp { get; set; }
+
+        public virtual Cases Case { get; set; } // Navigation property. It also adds CaseId field automatically (FK)
+
+        public virtual ApplicationUser User { get; set; } // Navigation property. It also adds UserId field automatically (FK)
+
+        public bool IsEmployee { get; set; } // True = Employee message, False = Customer message
+    }
+}

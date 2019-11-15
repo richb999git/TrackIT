@@ -1,0 +1,26 @@
+<ul class="navbar-nav" *ngIf="isAuthenticated | async">
+    <li class="nav-item">
+        <a  class="nav-link text-dark" [routerLink]='["/authentication/profile"]' title="Manage">Hello {{ userName | async }}</a>
+    </li>
+    <li class="nav-item">
+        <a  class="nav-link text-dark" [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout">Logout</a>
+    </li>
+    <li *ngIf="(userRole | async)?.includes('admin')" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage App">
+            Admin
+        </a>
+        <div class="dropdown-menu">           
+            <a class="nav-link text-dark" [routerLink]='["/authentication/register"]'>Register Employee</a>            
+        </div>
+    </li>
+</ul>
+
+
+<ul class="navbar-nav" *ngIf="!(isAuthenticated | async)">
+    <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/register"]'>Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/login"]'>Login</a>
+    </li>
+</ul>
