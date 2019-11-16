@@ -10,10 +10,17 @@ import { UserManager } from 'oidc-client';
   providedIn: 'root'
 })
 export class AuthorizeGuard implements CanActivate {
+
     constructor(private authorize: AuthorizeService, private router: Router) {}
 
-    canActivate(_next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    canActivateOriginal(
+        _next: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+            return this.authorize.isAuthenticated()
+                .pipe(tap(isAuthenticated => this.handleAuthorization(isAuthenticated, state)));
+    }
 
+    canActivate(_next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
         return this.authorize.isAuthenticated()
             .pipe(tap(isAuthenticated => {
                 if (isAuthenticated) {
@@ -41,9 +48,9 @@ export class AuthorizeGuard implements CanActivate {
                     // not authenticated when not logged in (i.e. not logged in)
                     this.handleAuthorization(false, state);
                 }
-            }));
-      
+            }));     
     }
+
 
     private handleAuthorization(isAuthenticated: boolean, state: RouterStateSnapshot) {
         if (!isAuthenticated) {
@@ -55,4 +62,5 @@ export class AuthorizeGuard implements CanActivate {
         } else {
         }
     }
+
 }

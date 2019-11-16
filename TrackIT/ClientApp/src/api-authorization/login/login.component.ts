@@ -50,19 +50,24 @@ export class LoginComponent implements OnInit {
     const state: INavigationState = { returnUrl };
     const result = await this.authorizeService.signIn(state);
     this.message.next(undefined);
-    switch (result.status) {
-      case AuthenticationResultStatus.Redirect:
-        break;
-      case AuthenticationResultStatus.Success:
-        await this.navigateToReturnUrl(returnUrl);
-        break;
-      case AuthenticationResultStatus.Fail:
-        await this.router.navigate(ApplicationPaths.LoginFailedPathComponents, {
-          queryParams: { [QueryParameterNames.Message]: result.message }
-        });
-        break;
-      default:
-        throw new Error(`Invalid status result ${(result as any).status}.`);
+    if (result) {
+      switch (result.status) {
+        case AuthenticationResultStatus.Redirect:
+          break;
+        case AuthenticationResultStatus.Success:
+          await this.navigateToReturnUrl(returnUrl);
+          break;
+        case AuthenticationResultStatus.Fail:
+          await this.router.navigate(ApplicationPaths.LoginFailedPathComponents, {
+            queryParams: { [QueryParameterNames.Message]: result.message }
+          });
+          break;
+        default:
+          throw new Error(`Invalid status result ${(result as any).status}.`);
+      }
+    }
+    else {
+        throw new Error(`No result returned from authorizeService.SignIn.`);
     }
   }
 

@@ -35,10 +35,10 @@ namespace TrackIT.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customers>> GetCustomer(int id)
         {
-            if (User.IsInRole("Employee")) 
+            if (User.IsInRole("employee")) 
             {
                 // this is the preferred way - using claims
-                if (User.HasClaim(System.Security.Claims.ClaimTypes.Role, "Employee"))
+                if (User.HasClaim(System.Security.Claims.ClaimTypes.Role, "employee"))
                 {
                     //var a = true;
                 }

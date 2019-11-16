@@ -40,8 +40,8 @@ namespace TrackIT
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-                //.AddClaimsPrincipalFactory<MyCustomClaimsFactory>();
-                //.AddClaimsPrincipalFactory<MyCustomClaimsFactory<ApplicationUser, IdentityRole>>();
+            //.AddClaimsPrincipalFactory<MyCustomClaimsFactory>();
+            //.AddClaimsPrincipalFactory<MyCustomClaimsFactory<ApplicationUser, IdentityRole>>();
 
 
             // replace above with below (see https://github.com/aspnet/Identity/issues/1813) to get roles to work. (Otherwise new way is claims). This may cause other problems
@@ -70,10 +70,9 @@ namespace TrackIT
             //???
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireEmployeeRole", policy => policy.RequireRole("Employee"));  // this doesn't seem to work (even with .AddRoles<IdentityRole>() )
-                options.AddPolicy("RequireEmployeeRole2", policy => policy.RequireClaim(System.Security.Claims.ClaimTypes.Role, "Employee"));  // this works
+                options.AddPolicy("RequireEmployeeRole", policy => policy.RequireRole("employee"));  // this doesn't seem to work (even with .AddRoles<IdentityRole>() )
+                options.AddPolicy("RequireEmployeeRole2", policy => policy.RequireClaim(System.Security.Claims.ClaimTypes.Role, "employee"));  // this works
                 options.AddPolicy("RequireAdminRole", policy => policy.RequireClaim(System.Security.Claims.ClaimTypes.Role, "admin"));
-                options.AddPolicy("RequireUserRole", policy => policy.RequireClaim(System.Security.Claims.ClaimTypes.Role, "User"));
             });
 
            
@@ -168,9 +167,9 @@ namespace TrackIT
 
             var claims = new List<Claim>
             {
-                //new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                //new Claim("UserId", user.Id.ToString()),
-                //new Claim(ClaimTypes.Name, user.UserName ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim("UserId", user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName ?? ""),
                 new Claim("name", user.UserName ?? ""),  // change this to FirstName to show on navbar
                 //new Claim(ClaimTypes.GivenName, user.FirstName ?? ""),
                 //new Claim("FirstName", user.FirstName ?? ""),  // setup lowercase admin role and test that. Set up various routes so I can test more quickly

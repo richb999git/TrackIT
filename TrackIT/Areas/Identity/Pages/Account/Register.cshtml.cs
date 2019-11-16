@@ -116,8 +116,8 @@ namespace TrackIT.Areas.Identity.Pages.Account
                     if (User.IsInRole("admin") || User.HasClaim(ClaimTypes.Role, "admin"))
                     {
                         // Input.Employee is not used in database. It could be in a real app
-                        await _userManager.AddToRoleAsync(user, "Employee");
-                        await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Employee"));
+                        await _userManager.AddToRoleAsync(user, "employee");
+                        await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "employee"));
                         return LocalRedirect("/"); // send to page with employee details on?
                     }
                     else

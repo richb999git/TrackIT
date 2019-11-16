@@ -27,7 +27,7 @@ namespace TrackIT.Controllers
             _logger = logger;
         }
 
-        //[Authorize(Roles = "Employee")] //RequireEmployeeRole
+        //[Authorize(Roles = "employee")] //RequireEmployeeRole
         [Authorize(Policy = "RequireEmployeeRole2")]// commas don't seem to work
         //[Authorize(Policy = "RequireUserRole")]
         [HttpGet]
