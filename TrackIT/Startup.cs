@@ -36,12 +36,10 @@ namespace TrackIT
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            // add .AddRoles<IdentityRole>()? - not sure if it works yet
+            // add .AddRoles<IdentityRole>()? - not sure if it works yet - doesn't seem to but leave in
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            //.AddClaimsPrincipalFactory<MyCustomClaimsFactory>();
-            //.AddClaimsPrincipalFactory<MyCustomClaimsFactory<ApplicationUser, IdentityRole>>();
 
 
             // replace above with below (see https://github.com/aspnet/Identity/issues/1813) to get roles to work. (Otherwise new way is claims). This may cause other problems
@@ -52,39 +50,24 @@ namespace TrackIT
             //    .AddDefaultTokenProviders();
 
 
-
-
-
-
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<ProfileService>();  // added
-
-            //services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyCustomClaimsFactory<ApplicationUser, IdentityRole>>();
             
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
-
-            //???
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireEmployeeRole", policy => policy.RequireRole("employee"));  // this doesn't seem to work (even with .AddRoles<IdentityRole>() )
-                options.AddPolicy("RequireEmployeeRole2", policy => policy.RequireClaim(System.Security.Claims.ClaimTypes.Role, "employee"));  // this works
-                options.AddPolicy("RequireAdminRole", policy => policy.RequireClaim(System.Security.Claims.ClaimTypes.Role, "admin"));
+                options.AddPolicy("RequireEmployeeRoleClaim", policy => policy.RequireClaim(ClaimTypes.Role, "employee"));  // this works
+                options.AddPolicy("RequireManagerRoleClaim", policy => policy.RequireClaim(ClaimTypes.Role, "manager"));
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireClaim(ClaimTypes.Role, "admin"));
             });
-
-           
-
-
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-
-
-
-
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -117,12 +100,9 @@ namespace TrackIT
             }
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
-
-
 
             app.UseEndpoints(endpoints =>
             {
@@ -159,8 +139,6 @@ namespace TrackIT
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var user = await _userManager.GetUserAsync(context.Subject);
-            //_userManager.GetRolesAsync
-            //_userManager.GetClaimsAsync
             var userRoles = await _userManager.GetRolesAsync(user);  // not saving roles - can't figure out how yet
             var userClaims = await _userManager.GetClaimsAsync(user);
             // Identity4 is being used
@@ -170,11 +148,7 @@ namespace TrackIT
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim("UserId", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName ?? ""),
-                new Claim("name", user.UserName ?? ""),  // change this to FirstName to show on navbar
-                //new Claim(ClaimTypes.GivenName, user.FirstName ?? ""),
-                //new Claim("FirstName", user.FirstName ?? ""),  // setup lowercase admin role and test that. Set up various routes so I can test more quickly
-                //new Claim("userName", user.UserName) No . Somehow losing username
-                // how can this be different for each user? see above
+                new Claim("name", user.FirstName ?? "")  // change this to FirstName to show on navbar
             
             };
 
@@ -201,45 +175,29 @@ namespace TrackIT
         }
     }
 
-    //public class MyCustomClaimsFactory<TUser, TRole> : UserClaimsPrincipalFactory<TUser, TRole> where TUser: ApplicationUser where TRole : IdentityRole
+
     public class MyCustomClaimsFactory : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>
     {
         protected UserManager<ApplicationUser> _userManager;
-        //protected UserManager<TUser> _userManager;
 
-        //public MyCustomClaimsFactory(UserManager<TUser> userManager, RoleManager<TRole> rolemanager, IOptions<IdentityOptions> optionsAccessor) : base(userManager,rolemanager, optionsAccessor)
         public MyCustomClaimsFactory(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<IdentityOptions> optionsAccessor) : base(userManager, roleManager, optionsAccessor)
         {
             _userManager = userManager;
         }
 
-        //public async override Task<ClaimsPrincipal> CreateAsync(TUser user)
         protected async override Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
             var identity = await base.GenerateClaimsAsync(user);
-            //id.AddClaim(new Claim("my_claim1", "AdditionalClaim1"));
-            //id.AddClaim(new Claim("my_claim2", "AdditionalClaim2"));
-            //id.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
 
-            //var principal = await base.CreateAsync(user);
-            //((ClaimsIdentity)principal.Identity).AddClaims(new List<Claim> {
-            //    new Claim(ClaimTypes.GivenName, user.FirstName),
-            //    new Claim(ClaimTypes.Surname, user.LastName),
-            //});
-
-            identity.AddClaim(new Claim("new_thing", "new_thing!!"));
             identity.AddClaim(new Claim("FirstName", user.FirstName ?? ""));
 
             foreach (var role in userRoles)
-            {
-                //claims.Add(new Claim(ClaimTypes.Role, role));                
+            {           
                 identity.AddClaim(new Claim("role", role));
                 identity.AddClaim(new Claim(ClaimTypes.Role, role));
             }
 
-            //return principal;
-            //return new ClaimsPrincipal(id);
             return identity;
         }
     }

@@ -75,6 +75,8 @@ namespace TrackIT.Areas.Identity.Pages.Account
             //[Required]
             [Display(Name = "Customer")]
             public Customers Customer { get; set; } // Customer Id - pick name from list
+           
+            public bool IsManager { get; set; } // To set manager role if chosen
 
             [Required]
             [EmailAddress]
@@ -118,6 +120,11 @@ namespace TrackIT.Areas.Identity.Pages.Account
                         // Input.Employee is not used in database. It could be in a real app
                         await _userManager.AddToRoleAsync(user, "employee");
                         await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "employee"));
+                        if (Input.IsManager)
+                        {
+                            await _userManager.AddToRoleAsync(user, "manager");
+                            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "manager"));
+                        }
                         return LocalRedirect("/"); // send to page with employee details on?
                     }
                     else

@@ -25,3 +25,16 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## My comments
+
+As far as I know using the cli has problems because there are 2 module file: app.module.ts and app.server.module.ts.
+To make the cli command work you have to specify the app.module.ts as the module file like this:
+
+    ng generate component componentName --module=app.module   (or ng g c componentName --module=app.module)
+
+This is caused since the generation tried to add your component to a module, i.e. to add this line
+
+  import { MyComponent } from './Components/my-component/my-component.component';
+
+but it found 2 modules.

@@ -1,0 +1,39 @@
+<h1 id="tableLabel">Case</h1>
+
+<p *ngIf="!case"><em>Loading...case details</em></p>
+
+<div *ngIf="case">
+  <p>Case: {{ case.id }}</p>
+  <p>User: {{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</p>
+  <p>User email: {{ case.userInfo.email }}</p>
+  <p>Our Contact: xxxxxx</p>
+  <p>Software: {{ case.software.name }}</p>
+  <p>Type: {{ casesService.types[case.type-1] }}</p>
+  <p>Urgency: {{ casesService.urgencyLevels[case.urgencyLevel-1] }}</p>
+  <p>Deadline: {{ case.deadline }}</p>
+  <br />
+  <p>Subject: {{ case.title }}</p>
+  <p>Description: {{ case.description }}</p>
+  <p>Status: {{ casesService.statusNames[case.status-1] }}</p>
+  <p>Date Opened: {{ case.dateOpened }}</p>
+  <p>Date Assigned: {{ case.dateAssigned }}</p>
+  <p>Date Fix awaiting approval: {{ case.dateAwaitApproval }}</p>
+  <p>Date Fix approved: {{ case.dateApproved }}</p>
+  <p>Date Fix applied: {{ case.dateApplied }}</p>
+  <p>Date Completed: {{ case.deadline }}</p>
+  <p>Estimated time required: {{ case.estimatedTime }}</p>
+  <p>Hours spent: {{ case.timeSpentHours }}</p>
+  <p>{{ case.estimatedTime }}</p>
+  <br />
+  <p>Assigned to: xxxxxx</p><!--multiple people possible-->
+  <p>Assign staff (manager)</p>
+  <br />
+  <p>Change status form</p> <!--This would apply a date to the appropriate field-->
+  <p>Set deadline (manager)</p>
+  <p>Set estimated time (manager)</p>
+  <p>Update hours spent on case</p>
+  <br />
+  <p>Show messages</p>
+  <p>Enter a new message</p>
+  <p>Send message button</p>
+</div>

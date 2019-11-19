@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { tap, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-nav-menu',
@@ -8,7 +9,7 @@ import { tap, map } from 'rxjs/operators';
     styleUrls: ['./nav-menu.component.css'] 
 })
 export class NavMenuComponent {
-
+    public isAuthenticated: Observable<boolean>;
     public userRole: any;
 
     constructor(private authorize: AuthorizeService) {}
@@ -24,6 +25,7 @@ export class NavMenuComponent {
     }
 
     ngOnInit() {
+        this.isAuthenticated = this.authorize.isAuthenticated();
         this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
     }
 

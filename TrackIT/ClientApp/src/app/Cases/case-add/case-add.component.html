@@ -1,0 +1,80 @@
+<h2>Raise new case</h2>
+<p>Template form. Not reactive form</p>
+
+<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
+
+  <p *ngIf="errorMsg=='Server error'">{{ errorMsg }}</p>
+
+  <ul *ngIf="errorMsg!='Server error'">
+    <li *ngFor="let error of errorMsg.Type">
+      {{ error }}
+    </li>
+    <li *ngFor="let error of errorMsg.TypeDescription">
+      {{ error }}
+    </li>
+  </ul>
+
+</div>
+
+<form #caseForm="ngForm" (ngSubmit)="onSubmit(caseForm)">
+
+  <div class="form-group">
+    <label for="inputTitle">Title</label>
+    <input type="text" class="form-control" id="title"
+           [ngClass]="(title.invalid && (title.dirty || title.touched))?'text-danger is-invalid':''"
+           placeholder="Enter Title" name="title" minlength="2" required
+           [(ngModel)]="caseModel.title" #title="ngModel">
+    <small *ngIf="title.errors?.required && (title.dirty || title.touched)" class="text-danger">Title is required</small>
+    <small *ngIf="title.errors?.minlength" class="text-danger">Title must be at least 2 characters long.</small>
+  </div>
+
+  <div class="form-group">
+    <label for="inputDescription">Description</label>
+    <textarea type="text" class="form-control" id="description" rows="3"
+              [ngClass]="(description.invalid && (description.dirty || description.touched))?'text-danger is-invalid':''"
+              name="description" placeholder="Enter Description" minlength="3" required
+              [(ngModel)]="caseModel.description" #description="ngModel">
+  </textarea>
+    <small *ngIf="description.errors?.required && (description.dirty || description.touched)" class="text-danger">Description is required. </small>
+    <small *ngIf="description.errors?.minlength" class="text-danger">Description must be at least 3 characters long.</small>
+  </div>
+
+  <div class="container row">
+    <div class="form-group col-md-4">
+      <label for="inputState">Software</label>
+      <select name="softwareId" [(ngModel)]="caseModel.softwareId" (ngModelChange)="changeType($event)" class="form-control">
+        <option *ngFor="let softwareId of softwareIds" [ngValue]="softwareId.id"> {{softwareId.name}} </option>
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">Case Type</label>
+      <select name="type" [(ngModel)]="caseModel.type" (ngModelChange)="changeType($event)" class="form-control">
+        <option *ngFor="let type of types" [ngValue]="type.value"> {{type.title}} </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="container row">
+    <label class="form-check-label form-check-inline">Urgency:</label>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="urgencyLevel" id="urgencyLevel1" [value]="1" [(ngModel)]="caseModel.urgencyLevel" #urgencyLevel="ngModel">
+      <label class="form-check-label" for="inputUrgencyLevel1">Critical</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="urgencyLevel" id="urgencyLevel2" [value]="2" [(ngModel)]="caseModel.urgencyLevel" #urgencyLevel="ngModel">
+      <label class="form-check-label" for="inputUrgencyLevel2">High</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="urgencyLevel" id="urgencyLevel3" [value]="3" [(ngModel)]="caseModel.urgencyLevel" #urgencyLevel="ngModel">
+      <label class="form-check-label" for="inputUrgencyLevel3">Medium</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="urgencyLevel" id="urgencyLevel4" [value]="4" [(ngModel)]="caseModel.urgencyLevel" #urgencyLevel="ngModel">
+      <label class="form-check-label" for="inputUrgencyLevel4">Low</label>
+    </div>
+  </div>
+  <br />
+
+  <button [disabled]="!caseForm.valid" type="submit" class="btn btn-primary col-md-12">Submit</button>
+
+</form>

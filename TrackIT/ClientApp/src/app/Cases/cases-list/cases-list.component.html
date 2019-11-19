@@ -1,0 +1,34 @@
+<h1 id="tableLabel">Your Cases</h1>
+
+<button class="nav-link text-dark" [routerLink]="['/case-add']">Raise Case</button>
+<br />
+
+<p *ngIf="!cases"><em>Loading...</em></p>
+
+
+<table *ngIf="cases" class='table table-striped' aria-labelledby="tableLabel">
+  <thead>
+    <tr>
+      <th>Case</th>
+      <th>Software</th>
+      <th>Subject</th>
+      <th>Status</th>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Urgency</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let case of cases">
+      <td><button (click)="editCase(case.id)">{{ case.id }}</button></td>
+      <td>{{ case.software.name }}</td>
+      <td>{{ case.title }}</td>
+      <td>{{ casesService.statusNames[case.status-1] }}</td>
+      <td>{{ casesService.types[case.type-1] }}</td>
+      <td>{{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</td>
+      <td>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</td>
+      <!--<td><button class="" [routerLink]="['/case-display/' + case.id]">EDIT2</button></td>-->
+    </tr>
+  </tbody>
+</table>

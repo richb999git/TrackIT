@@ -33,20 +33,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20191103152228_Initial.cs" />
-    <Compile Remove="Data\Migrations\20191103152228_Initial.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191103153015_Initial.cs" />
-    <Compile Remove="Data\Migrations\20191103153015_Initial.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191103155938_Initial.cs" />
-    <Compile Remove="Data\Migrations\20191103155938_Initial.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191103162203_Initial.cs" />
-    <Compile Remove="Data\Migrations\20191103162203_Initial.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191103164132_Initial.cs" />
-    <Compile Remove="Data\Migrations\20191103164132_Initial.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191103165549_Initial.cs" />
-    <Compile Remove="Data\Migrations\20191103165549_Initial.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191103170334_Initial.cs" />
-    <Compile Remove="Data\Migrations\20191103170334_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103152228_Initial.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103152228_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103153015_Initial.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103153015_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103155938_Initial.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103155938_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103162203_Initial.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103162203_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103164132_Initial.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103164132_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103165549_Initial.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103165549_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103170334_Initial.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191103170334_Initial.Designer.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191116214149_add nullable fields in cases table.cs" />
+    <Compile Remove="Data\Old Migrations to Delete\20191116214149_add nullable fields in cases table.Designer.cs" />
+    <Compile Remove="Migrations\20191118203042_AddUserId.cs" />
+    <Compile Remove="Migrations\20191118203042_AddUserId.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientApp\src\app\CasesSupport\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

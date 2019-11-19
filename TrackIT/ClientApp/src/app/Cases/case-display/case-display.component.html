@@ -1,0 +1,18 @@
+<h1 id="tableLabel">Case</h1>
+
+<p *ngIf="!case"><em>Loading...case details</em></p>
+
+<div *ngIf="case">
+    <p>Case: {{ case.id }}</p>
+    <p>{{ case.software.name }}</p>
+    <p>{{ casesService.types[case.type-1] }}</p>
+    <p>{{ case.title }}</p>
+    <p>{{ case.description }}</p>
+    <p>{{ casesService.statusNames[case.status-1] }}</p>
+    <p>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</p>
+    <p>Contact: xxxxxx</p>
+    <br />
+    <p>Show messages</p>
+    <p>Update button</p>
+    <p>Upload file button</p>
+</div>

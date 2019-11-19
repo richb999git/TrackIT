@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrackIT.Data;
 
-namespace TrackIT.Data.Migrations
+namespace TrackIT.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191118204853_AddUserId")]
+    partial class AddUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,10 +181,12 @@ namespace TrackIT.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -219,10 +223,12 @@ namespace TrackIT.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -315,37 +321,37 @@ namespace TrackIT.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateApplied")
+                    b.Property<DateTime?>("DateApplied")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateApproved")
+                    b.Property<DateTime?>("DateApproved")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateAssigned")
+                    b.Property<DateTime?>("DateAssigned")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateAwaitApproval")
+                    b.Property<DateTime?>("DateAwaitApproval")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateCompleted")
+                    b.Property<DateTime?>("DateCompleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateOpened")
+                    b.Property<DateTime?>("DateOpened")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Deadline")
+                    b.Property<DateTime?>("Deadline")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("EstimatedTimeHours")
+                    b.Property<float?>("EstimatedTimeHours")
                         .HasColumnType("real");
 
                     b.Property<string>("FilesUploaded")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SoftwareId")
+                    b.Property<int>("SoftwareId")
                         .HasColumnType("int");
 
                     b.Property<string>("StaffAssigned")
@@ -354,7 +360,7 @@ namespace TrackIT.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<float>("TimeSpentHours")
+                    b.Property<float?>("TimeSpentHours")
                         .HasColumnType("real");
 
                     b.Property<string>("Title")
@@ -519,7 +525,9 @@ namespace TrackIT.Data.Migrations
                 {
                     b.HasOne("TrackIT.Models.Software", "Software")
                         .WithMany()
-                        .HasForeignKey("SoftwareId");
+                        .HasForeignKey("SoftwareId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TrackIT.Models.ApplicationUser", "User")
                         .WithMany()
