@@ -146,7 +146,7 @@ namespace TrackIT
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim("UserId", user.Id.ToString()),
+                new Claim("userId", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName ?? ""),
                 new Claim("name", user.FirstName ?? "")  // change this to FirstName to show on navbar
             

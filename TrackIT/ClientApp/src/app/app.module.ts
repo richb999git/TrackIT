@@ -17,6 +17,7 @@ import { CaseDisplayComponent } from './Cases/case-display/case-display.componen
 import { CaseAddComponent } from './Cases/case-add/case-add.component';
 import { CasesListSupportComponent } from './CasesSupport/cases-list-support/cases-list-support.component';
 import { CaseDisplaySupportComponent } from './CasesSupport/case-display-support/case-display-support.component';
+import { CaseAssignStaffComponent } from './CasesSupport/case-assign-staff/case-assign-staff.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { CaseDisplaySupportComponent } from './CasesSupport/case-display-support
     CaseDisplayComponent,
     CaseAddComponent,
     CasesListSupportComponent,
-    CaseDisplaySupportComponent
+    CaseDisplaySupportComponent,
+    CaseAssignStaffComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -41,7 +43,8 @@ import { CaseDisplaySupportComponent } from './CasesSupport/case-display-support
         { path: 'case-display/:id', component: CaseDisplayComponent , canActivate: [AuthorizeGuard] },
         { path: 'case-add', component: CaseAddComponent, canActivate: [AuthorizeGuard] },
         { path: 'cases-list-support', component: CasesListSupportComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "employee", "manager"] } },
-        { path: 'case-display-support/:id', component: CaseDisplaySupportComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "employee", "manager"] } }
+        { path: 'case-display-support/:id', component: CaseDisplaySupportComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "employee", "manager"] } },
+        { path: 'case-assign-staff/:caseId', component: CaseAssignStaffComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "manager"] } }
     ])
   ],
   providers: [

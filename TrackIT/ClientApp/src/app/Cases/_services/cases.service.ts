@@ -39,19 +39,35 @@ export class CasesService {
     }
 
     getCase(id) {
-        return this.http.get(this.baseUrl + 'api/Cases/' + id);
+        return this.http.get<ICases>(this.baseUrl + 'api/Cases/' + id);
     }
 
     addCase(model: any) {
         return this.http.post(this.baseUrl + 'api/Cases', model);
     }
 
+    updateCase(model: any) {
+        return this.http.put(this.baseUrl + 'api/Cases/' + model.id, model);
+    }
+
     getSoftwareTitles() {
-        return this.http.get<ISoftwares>(this.baseUrl + 'api/Softwares');
+        return this.http.get<ISoftwares[]>(this.baseUrl + 'api/Softwares');
+    }
+
+    getUsers(role: string) {
+        return this.http.get(this.baseUrl + 'api/Users/' + role);
+    }
+
+    getCaseMessages(caseId: string) {
+        return this.http.get<IMessages[]>(this.baseUrl + 'api/MessagesInCase/' + caseId);
+    }
+
+    addCaseMessage(model: any) {
+        return this.http.post(this.baseUrl + 'api/Messages', model);
     }
 }
 
-export interface ICases {
+export interface ICases { // should add more if needed
     id: number;
     title: string;
     description: string;
@@ -67,44 +83,11 @@ export interface ISoftwares {
     name: string;
 }
 
-
-/*
-        ***public int Id { get; set; }
-
-        public virtual Software Software { get; set; } // Navigation property. It also adds SoftwareId field automatically (FK)
-
-        public virtual ApplicationUser User { get; set; } // Navigation property. It also adds UserId field automatically (FK)
-
-        ***public string Title { get; set; }
-
-        ***public string Description { get; set; }
-
-        ***public int Status { get; set; }  // enum Status as an int
-
-        public DateTime DateOpened { get; set; }
-
-        public DateTime DateAssigned { get; set; }
-
-        public DateTime DateAwaitApproval { get; set; }
-
-        public DateTime DateApproved { get; set; }
-
-        public DateTime DateApplied { get; set; }
-
-        ***public DateTime DateCompleted { get; set; }
-
-        public DateTime Deadline { get; set; }
-
-        public float TimeSpentHours { get; set; }
-
-        public float EstimatedTimeHours { get; set; }
-
-        public string StaffAssigned { get; set; } // comma delimited string
-
-        public string FilesUploaded { get; set; } // comma delimited string of references to files stored in Cloudify
-
-        ***public int Type { get; set; } // enum Type as an int
-
-        public int UrgencyLevel { get; set; }
-
-*/
+export interface IMessages {
+    //id: number;  // auto so not needed
+    comment: string;
+    timeStamp: Date;
+    userId: string;
+    isEmployee: boolean;
+    caseId: number;
+}

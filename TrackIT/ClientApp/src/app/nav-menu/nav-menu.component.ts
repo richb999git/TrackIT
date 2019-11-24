@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Component({

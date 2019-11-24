@@ -10,12 +10,14 @@ namespace TrackIT.Models
     {
         public int Id { get; set; }
 
-        public string Message { get; set; }
+        public string Comment { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+        public DateTime? TimeStamp { get; set; }
 
+        public int CaseId { get; set; }
         public virtual Cases Case { get; set; } // Navigation property. It also adds CaseId field automatically (FK)
 
+        public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; } // Navigation property. It also adds UserId field automatically (FK)
 
         public bool IsEmployee { get; set; } // True = Employee message, False = Customer message

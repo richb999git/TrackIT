@@ -21,11 +21,31 @@ namespace TrackIT.Controllers
             _context = context;
         }
 
-        // GET: api/Messages
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Messages>>> GetMessages()
+        // need to either return all messages for a case not ALL messages
+        // GET: api/Messages/5
+        [Route("/api/MessagesInCase/{caseId}")]
+        [HttpGet("{caseId}")]
+        public async Task<ActionResult<IEnumerable<Messages>>> GetMessagesInCase(int caseId)
         {
-            return await _context.Messages.ToListAsync();
+            ActionResult<IEnumerable <Messages>> messages;
+
+            if (caseId == 0) // use 0 if you want all messages - could be huge though in real world app
+            {
+                messages = await _context.Messages.ToListAsync();               
+            }
+            else
+            {
+                messages = await _context.Messages
+                    .Where(m => m.Case.Id == caseId)
+                    .ToListAsync();
+            }    
+
+            if(messages == null)
+            {
+                return NotFound();
+            }
+
+            return messages;
         }
 
         // GET: api/Messages/5
@@ -78,8 +98,9 @@ namespace TrackIT.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Messages>> PostMessages(Messages messages)
+        public async Task<ActionResult<Messages>> PostMessages([Bind("Comment", "CaseId", "UserId", "IsEmployee", "TimeStamp")] Messages messages)
         {
+            messages.TimeStamp = DateTime.Now;
             _context.Messages.Add(messages);
             await _context.SaveChangesAsync();
 

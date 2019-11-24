@@ -1,18 +1,82 @@
 <h1 id="tableLabel">Case</h1>
-
+<br />
 <p *ngIf="!case"><em>Loading...case details</em></p>
 
 <div *ngIf="case">
-    <p>Case: {{ case.id }}</p>
-    <p>{{ case.software.name }}</p>
-    <p>{{ casesService.types[case.type-1] }}</p>
-    <p>{{ case.title }}</p>
-    <p>{{ case.description }}</p>
-    <p>{{ casesService.statusNames[case.status-1] }}</p>
-    <p>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</p>
-    <p>Contact: xxxxxx</p>
+
+  <a class="" [routerLink]="['/cases-list-support']">Back</a>
+  <br /><br />
+
+  <div>
+    <div class="row">
+      <div class="col">Case</div>
+      <div class="col">Status</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ case.id }}</b></div>
+      <div class="col"><b>{{ casesService.statusNames[case.status-1] }}</b></div>
+    </div>
     <br />
-    <p>Show messages</p>
-    <p>Update button</p>
-    <p>Upload file button</p>
+    <div class="row">
+      <div class="col">Software</div>
+      <div class="col">Date/Time Opened</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ case.software.name }}</b></div>
+      <div class="col"><b>{{ case.dateOpened | date: 'dd-MMM-yy HH:mm' }}</b></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">Type</div>
+      <div class="col">Created by</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ casesService.types[case.type-1] }}</b></div>
+      <div class="col"><b>{{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</b></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">Urgency</div>
+      <div class="col">Contact</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</b></div>
+      <div class="col"><b>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }} - {{ case.contactInfo.email }}</b></div>
+    </div>
+  </div>
+
+  <br />
+
+  <div>Subject</div>
+  <div><b>{{ case.title }}</b></div>
+  <br />
+  <div>Description</div>
+  <div><b>{{ case.description }}</b></div>
+  <br />
+
+  <button class="btn btn-primary">Upload file</button> <!--need to link up and do this-->
+  <br /><br />
+
+  <form #messageForm="ngForm" (ngSubmit)="onSubmitMessage(messageForm)">
+    <div class="form-group">
+      <label for="inputMessage">New message</label>
+      <textarea type="text" class="form-control" id="comment" rows="3"
+                [ngClass]="(comment.invalid && (comment.dirty || comment.touched))?'text-danger is-invalid':''"
+                name="comment" placeholder="Enter Message" minlength="2" required
+                [(ngModel)]="messageModel.comment" #comment="ngModel">
+        </textarea>
+      <small *ngIf="comment.errors?.required && (comment.dirty || comment.touched)" class="text-danger">Message is required. </small>
+      <small *ngIf="comment.errors?.minlength" class="text-danger">Message must be at least 2 characters long.</small>
+    </div>
+
+    <button [disabled]="!messageForm.valid" type="submit" class="btn btn-primary">Submit Message</button>
+  </form>
+
+  <br />
+  <div *ngIf="messages">
+    <div *ngFor="let message of messages">
+      <p>{{message.timeStamp | date: 'dd-MMM-yy HH:mm' }} : {{ message.comment }}</p> <!--need to restrict to say 30 chars and add a button (downward arrow) to show message in full-->
+    </div> <!-- write a pipe to convert isEmployee true into ">" and false into "<" -->
+  </div>
+
 </div>

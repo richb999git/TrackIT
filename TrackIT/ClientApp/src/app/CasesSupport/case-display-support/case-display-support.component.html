@@ -3,37 +3,243 @@
 <p *ngIf="!case"><em>Loading...case details</em></p>
 
 <div *ngIf="case">
-  <p>Case: {{ case.id }}</p>
-  <p>User: {{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</p>
-  <p>User email: {{ case.userInfo.email }}</p>
-  <p>Our Contact: xxxxxx</p>
-  <p>Software: {{ case.software.name }}</p>
-  <p>Type: {{ casesService.types[case.type-1] }}</p>
-  <p>Urgency: {{ casesService.urgencyLevels[case.urgencyLevel-1] }}</p>
-  <p>Deadline: {{ case.deadline }}</p>
+
   <br />
-  <p>Subject: {{ case.title }}</p>
-  <p>Description: {{ case.description }}</p>
-  <p>Status: {{ casesService.statusNames[case.status-1] }}</p>
-  <p>Date Opened: {{ case.dateOpened }}</p>
-  <p>Date Assigned: {{ case.dateAssigned }}</p>
-  <p>Date Fix awaiting approval: {{ case.dateAwaitApproval }}</p>
-  <p>Date Fix approved: {{ case.dateApproved }}</p>
-  <p>Date Fix applied: {{ case.dateApplied }}</p>
-  <p>Date Completed: {{ case.deadline }}</p>
-  <p>Estimated time required: {{ case.estimatedTime }}</p>
-  <p>Hours spent: {{ case.timeSpentHours }}</p>
-  <p>{{ case.estimatedTime }}</p>
+  <a class="" [routerLink]="['/cases-list-support']">Back</a>
+  <br /><br />
+  <hr />
+  <div>
+    <div class="row">
+      <div class="col">Case</div>
+      <div class="col">Status</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ case.id }}</b></div>
+      <div class="col"><b>{{ casesService.statusNames[case.status-1] }}</b></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">Software</div>
+      <div class="col">Date/Time Opened</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ case.software.name }}</b></div>
+      <div class="col"><b>{{ case.dateOpened | date: 'dd-MMM-yy HH:mm' }}</b></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">Type</div>
+      <div class="col">Created by</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ casesService.types[case.type-1] }}</b></div>
+      <div class="col"><b>{{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</b></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">Urgency</div>
+      <div class="col">Contact</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</b></div>
+      <div class="col"><b>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }} - {{ case.contactInfo.email }}</b></div>
+    </div>
+    <br />
+
+    <div class="row">
+      <div class="col">Date Case Assigned</div>
+      <div class="col">Date Fix awaiting approval</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ (case.dateAssigned | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
+      <div class="col"><b>{{ (case.dateAwaitApproval | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">Date fix approved</div>
+      <div class="col">Date Fix applied</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ (case.dateApproved | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
+      <div class="col"><b>{{ (case.dateApplied | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">Deadline</div>
+      <div class="col">Date Completed</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ (case.deadline | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
+      <div class="col"><b>{{ (case.dateCompleted | date: 'dd-MMM-yy HH:mm') || "Not completed" }}</b></div>
+    </div>
+    <br />
+
+    <div class="row">
+      <div *ngIf="isUserDeveloper || isUserContact" class="col mouseHover" (click)="showEstHoursForm()">Estimated hours required</div>
+      <div *ngIf="!isUserDeveloper && !isUserContact" class="col">Estimated hours required</div>
+      <div *ngIf="isUserDeveloper || isUserContact" class="col mouseHover" (click)="showHoursSpentForm()">Hours spent</div>
+      <div *ngIf="!isUserDeveloper && !isUserContact" class="col">Hours spent</div>
+    </div>
+    <div class="row">
+
+      <div *ngIf="!estHoursEntry" class="col"><b>{{ case.estimatedTimeHours || "Not set yet"}}</b></div>
+      <div *ngIf="estHoursEntry" class="col">
+        <form #estHoursForm="ngForm" (ngSubmit)="onSubmitEstHours(estHoursForm)" >
+          <div class="input-group col-9 col-sm-4">
+            <input type="number" class="form-control" id="estHours"
+                   name="estHours" placeholder="Hours" min="0" max="999" required
+                   [(ngModel)]="estHoursModel.estimatedTimeHours" #estimatedTimeHours="ngModel" />          
+            <div class="input-group-prepend">
+              <button [disabled]="!estHoursForm.valid" type="submit" class="btn btn-sm btn-primary">OK</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div *ngIf="!hoursSpentEntry" class="col"><b>{{ case.timeSpentHours || "None" }}</b></div>
+      <div *ngIf="hoursSpentEntry" class="col">
+        <form #hoursSpentForm="ngForm" (ngSubmit)="onSubmitHoursSpent(hoursSpentForm)" >
+          <div class="input-group col-9 col-sm-4">
+            <input type="number" class="form-control" id="hoursSpent"
+                   name="hoursSpent" placeholder="Hours" min="0" max="999" required
+                   [(ngModel)]="hoursSpentModel.timeSpentHours" #timeSpentHours="ngModel" />          
+            <div class="input-group-prepend">
+              <button [disabled]="!hoursSpentForm.valid" type="submit" class="btn btn-sm btn-primary">OK</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+
+
+
+
+
+
   <br />
-  <p>Assigned to: xxxxxx</p><!--multiple people possible-->
-  <p>Assign staff (manager)</p>
+  <hr />
+
+  <div>Subject</div>
+  <div><b>{{ case.title }}</b></div>
   <br />
+  <div>Description</div>
+  <div><b>{{ case.description }}</b></div>
+  <br />
+
+  <br />
+
+  <form #messageForm="ngForm" (ngSubmit)="onSubmitMessage(messageForm)">
+    <div class="form-group">
+      <label for="inputMessage">New message</label>
+      <textarea type="text" class="form-control" id="comment" rows="3"
+                [ngClass]="(comment.invalid && (comment.dirty || comment.touched))?'text-danger is-invalid':''"
+                name="comment" placeholder="Enter Message" minlength="2" required
+                [(ngModel)]="messageModel.comment" #comment="ngModel">
+        </textarea>
+      <!--<small *ngIf="comment.errors?.required && (comment.dirty || comment.touched)" class="text-danger">Message is required. </small>-->
+      <small *ngIf="comment.errors?.minlength" class="text-danger">Message must be at least 2 characters long.</small>
+    </div>
+
+    <button [disabled]="!messageForm.valid" type="submit" class="btn btn-primary">Submit Message</button>
+  </form>
+
+
+  <div *ngIf="messages">
+    <br />
+    <div *ngFor="let message of messages">
+      <p>{{message.timeStamp | date: 'dd-MMM-yy HH:mm' }} : {{ message.comment }}</p> <!--need to restrict to say 30 chars and add a button (downward arrow) to show message in full-->
+    </div> <!-- write a pipe to convert isEmployee true into ">" and false into "<" -->
+    <br />
+  </div>
+
+  <hr />
+
+
+  <div>Contact Assigned</div>
+  <div *ngIf="!case.contactId"><b>No contact</b></div>
+  <div *ngIf="!assignStaffFlag && case.contactId"><b>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }}</b></div>
+  <div *ngIf="assignStaffFlag && case.contactId" class="text-info"><i>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }} (Not submitted yet)</i></div>
+  <br />
+  <div>Developers Assigned</div>
+  <div *ngIf="assignedStaff.length==0 && !assignStaffFlag"><b>No developers</b></div>
+  <div *ngIf="assignedStaff.length==0 && assignStaffFlag" class="text-info">No developers</div>
+
+  <div>
+    <div *ngFor="let employee of assignedStaffNames">
+      <div *ngIf="!assignStaffFlag"><b>{{ employee }}</b></div>
+      <div *ngIf="assignStaffFlag" class="text-info"><i>{{ employee }} (Not submitted yet)</i></div>
+    </div>
+  </div>
+
+  <br />
+  <div *ngIf="(userRole | async)?.includes('manager') && !assignStaffFlag">
+    <button *ngIf="!case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-primary">Assign staff</button>
+    <button *ngIf="case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-primary">Adjust assigned staff</button>
+  </div>
+
+
+
+
+
+
+
+
+  <div *ngIf="assignStaffFlag">    
+    <p *ngIf="!users"><em>Loading...</em></p>
+    <div *ngIf="users">
+      <form #assignForm="ngForm" (ngSubmit)="submitAssignedStaff(assignForm)">
+        <button type="submit" class="btn btn-info">Submit staff</button>
+      </form>
+      <br />
+      <table class='table table-striped' aria-labelledby="tableLabel">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Assigned</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td *ngIf="user.userId == case.contactId">Contact</td>
+            <td *ngIf="user.userId != case.contactId"></td>
+            <td *ngIf="assignedStaff.includes(user.userId)">Assigned</td>
+            <td *ngIf="!assignedStaff.includes(user.userId)"></td>
+            <td *ngIf="!assignedStaff.includes(user.userId)"><button (click)="assignEmployee(user.userId)" class="btn btn-sm btn-outline-info">Assign</button></td>
+            <td *ngIf="assignedStaff.includes(user.userId)"><button (click)="assignEmployee(user.userId)" class="btn btn-sm btn-outline-info">Unassign</button></td>
+            <td><button (click)="assignContact(user.userId, user.firstName, user.lastName, user.email, user.userName)" class="btn btn-sm btn-outline-info">Set Contact</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <br />
+  <hr />
+
+  <br />
+  <p *ngIf="(userRole | async)?.includes('manager')">Set deadline (manager)</p>
+  <hr />
+
   <p>Change status form</p> <!--This would apply a date to the appropriate field-->
-  <p>Set deadline (manager)</p>
-  <p>Set estimated time (manager)</p>
-  <p>Update hours spent on case</p>
-  <br />
-  <p>Show messages</p>
-  <p>Enter a new message</p>
-  <p>Send message button</p>
+
+  <br /><br />
+  <p>(Bug/Feature - Send fix approval request) Date Fix awaiting approval: {{ case.dateAwaitApproval }}</p><!--update by any of assigned staff?-->
+  <p>(Bug/Feature - Send fix request approval - manager) Date Fix approved: {{ case.dateApproved }}</p><!--update by managers only-->
+  <p>(Bug/Feature - Apply fix button) Date Fix applied: {{ case.dateApplied }}</p> <!--update by any of assigned staff?-->
+  <p>(All - Click to consider complete) Date Completed: {{ case.dateCompleted }}</p> <!--update by contact only?-->
+  <p>(All - Click to consider reverse complete) Date Completed: {{ case.dateCompleted }}</p> <!--update by contact only? -->
+
+  <p>Deadline: {{ case.deadline }}</p> <!--update by any managers only-->
+
 </div>

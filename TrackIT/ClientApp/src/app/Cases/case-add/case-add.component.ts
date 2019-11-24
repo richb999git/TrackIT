@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CasesService } from '../_services/cases.service';
+import { CasesService, ISoftwares, ICases } from '../_services/cases.service';
 
 @Component({
   selector: 'app-case-add',
@@ -17,7 +17,7 @@ export class CaseAddComponent implements OnInit {
                     { title: "Issue", value: 3 },
                     { title: "Feature Request", value: 4 }];
 
-    public softwareIds;
+    public softwareIds: Array<ISoftwares>;
     
     constructor(private casesService: CasesService, private router: Router) { }
 

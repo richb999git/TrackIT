@@ -17,13 +17,28 @@ namespace TrackIT.Controllers
     public class CasesToReturn
     {
         public int Id { get; set; }
+        public int SoftwareId { get; set; }
         public Software Software { get; set; }
+        public string UserId { get; set; }
+        public UserInfo UserInfo { get; set; }     // particular to this view class - replacing applicationUser so we just get a subset excluding passwords 
+        public string ContactId { get; set; }
+        public UserInfo ContactInfo { get; set; }  // particular to this view class - replacing applicationUser so we just get a subset excluding passwords
         public string Title { get; set; }
         public string Description { get; set; }
         public int Status { get; set; }
-        public int Type { get; set; }
+        public DateTime? DateOpened { get; set; }
+        public DateTime? DateAssigned { get; set; }
+        public DateTime? DateAwaitApproval { get; set; }
+        public DateTime? DateApproved { get; set; }
+        public DateTime? DateApplied { get; set; }
+        public DateTime? DateCompleted { get; set; }
+        public DateTime? Deadline { get; set; }
+        public float? TimeSpentHours { get; set; }
+        public float? EstimatedTimeHours { get; set; }       
+        public string StaffAssigned { get; set; } // comma delimited string
+        public string FilesUploaded { get; set; } // comma delimited string of references to files stored in Cloudify
+        public int Type { get; set; } // enum Type as an int
         public int UrgencyLevel { get; set; }
-        public UserInfo UserInfo { get; set; }
     }
 
     public class UserInfo
@@ -49,6 +64,7 @@ namespace TrackIT.Controllers
             _userManager = userManager;
         }
 
+        
         // Get cases in user section of site
         // GET: api/Cases
         [HttpGet]
@@ -64,6 +80,7 @@ namespace TrackIT.Controllers
                     Description = c.Description,
                     Status = c.Status,
                     Type = c.Type,
+                    DateOpened = c.DateOpened,
                     UrgencyLevel = c.UrgencyLevel,
                     Software = c.Software,
                     UserInfo = new UserInfo
@@ -73,6 +90,14 @@ namespace TrackIT.Controllers
                         FirstName = c.User.FirstName,
                         LastName = c.User.LastName,
                         Email = c.User.Email
+                    },
+                    ContactInfo = new UserInfo
+                    {
+                        UserName = c.Contact.UserName,
+                        UserId = c.Contact.Id,
+                        FirstName = c.Contact.FirstName,
+                        LastName = c.Contact.LastName,
+                        Email = c.Contact.Email
                     }
                 })
                 .ToListAsync();
@@ -84,7 +109,7 @@ namespace TrackIT.Controllers
             return filteredCases;
         }
 
-        // Get cases in support section of site
+        // Get case list in support section of site
         [Authorize(Policy = "RequireEmployeeRoleClaim")]
         [Route("/api/CasesSupport")]
         // GET: api/CasesSupport
@@ -99,10 +124,23 @@ namespace TrackIT.Controllers
                     Id = c.Id,
                     Title = c.Title,
                     Description = c.Description,
+                    DateOpened = c.DateOpened,
+                    DateAssigned = c.DateAssigned,
+                    DateAwaitApproval = c.DateAwaitApproval,
+                    DateApproved = c.DateApproved,
+                    DateApplied = c.DateApplied,
+                    DateCompleted = c.DateCompleted,
+                    Deadline = c.DateCompleted,
+                    TimeSpentHours = c.TimeSpentHours,
+                    EstimatedTimeHours = c.EstimatedTimeHours,
+                    StaffAssigned = c.StaffAssigned,
+                    FilesUploaded = c.FilesUploaded,
                     Status = c.Status,
                     Type = c.Type,
                     UrgencyLevel = c.UrgencyLevel,
                     Software = c.Software,
+                    SoftwareId = c.SoftwareId,
+                    UserId = c.UserId,
                     UserInfo = new UserInfo
                     {
                         UserName = c.User.UserName,
@@ -110,6 +148,15 @@ namespace TrackIT.Controllers
                         FirstName = c.User.FirstName,
                         LastName = c.User.LastName,
                         Email = c.User.Email
+                    },
+                    ContactId = c.ContactId,
+                    ContactInfo = new UserInfo
+                    {
+                        UserName = c.Contact.UserName,
+                        UserId = c.Contact.Id,
+                        FirstName = c.Contact.FirstName,
+                        LastName = c.Contact.LastName,
+                        Email = c.Contact.Email
                     }
                 })
                 .ToListAsync();
@@ -126,7 +173,7 @@ namespace TrackIT.Controllers
             return filteredCases;
         }
 
-
+        // Used for User and Support - may need to change if I want to restrict User access
         // GET: api/Cases/5 
         [HttpGet("{id}")]
         public async Task<ActionResult<CasesToReturn>> GetCases(int id)
@@ -140,10 +187,23 @@ namespace TrackIT.Controllers
                     Id = c.Id,
                     Title = c.Title,
                     Description = c.Description,
+                    DateOpened = c.DateOpened,
+                    DateAssigned = c.DateAssigned,
+                    DateAwaitApproval = c.DateAwaitApproval,
+                    DateApproved = c.DateApproved,
+                    DateApplied = c.DateApplied,
+                    DateCompleted = c.DateCompleted,
+                    Deadline = c.DateCompleted,
+                    TimeSpentHours = c.TimeSpentHours,
+                    EstimatedTimeHours = c.EstimatedTimeHours,
+                    StaffAssigned = c.StaffAssigned,
+                    FilesUploaded = c.FilesUploaded,
                     Status = c.Status,
                     Type = c.Type,
                     UrgencyLevel = c.UrgencyLevel,
                     Software = c.Software,
+                    SoftwareId = c.SoftwareId,
+                    UserId = c.UserId,
                     UserInfo = new UserInfo
                     {
                         UserName = c.User.UserName,
@@ -151,6 +211,15 @@ namespace TrackIT.Controllers
                         FirstName = c.User.FirstName,
                         LastName = c.User.LastName,
                         Email = c.User.Email
+                    },
+                    ContactId = c.ContactId,
+                    ContactInfo = new UserInfo
+                    {
+                        UserName = c.Contact.UserName,
+                        UserId = c.Contact.Id,
+                        FirstName = c.Contact.FirstName,
+                        LastName = c.Contact.LastName,
+                        Email = c.Contact.Email
                     }
                 })
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -163,11 +232,12 @@ namespace TrackIT.Controllers
             return cases;
         }
 
+        // Just trying to update case with StaffAssigned at the moment. Will probably have to change for other updates or create a new method ********
         // PUT: api/Cases/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCases(int id, Cases cases)
+        public async Task<IActionResult> PutCases(int id, [Bind("StaffAssigned", "DateAssigned", "ContactId", "Status", "EstimatedTimeHours")] Cases cases)
         {
             if (id != cases.Id)
             {
