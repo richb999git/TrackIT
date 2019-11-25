@@ -1,7 +1,7 @@
 <h1 id="tableLabel">Your Cases</h1>
 
-<button class="nav-link text-dark" [routerLink]="['/case-add']">Raise Case</button>
-<br />
+<button class="btn btn-primary" [routerLink]="['/case-add']">Raise Case</button>
+<br /><br />
 
 <p *ngIf="!cases"><em>Loading...</em></p>
 
@@ -23,10 +23,10 @@
   </thead>
   <tbody>
     <tr *ngFor="let case of cases">
-      <td><button (click)="editCase(case.id)" class="btn btn-primary">{{ case.id }}</button></td>
-      <td>{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
+      <td><button (click)="editCase(case.id)" class="btn btn-outline-secondary">{{ case.id }}</button></td>
+      <td class="min-width110">{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
       <td>{{ case.software.name }}</td>
-      <td>{{ case.title }}</td>
+      <td class="min-width300 max-width300">{{ case.title }}</td>
       <td>{{ casesService.types[case.type-1] }}</td>
       <td>{{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</td>
       <td>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }}</td>

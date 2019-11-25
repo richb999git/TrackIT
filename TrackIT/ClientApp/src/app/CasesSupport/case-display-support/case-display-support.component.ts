@@ -21,15 +21,16 @@ export class CaseDisplaySupportComponent implements OnInit {
     public userRole: any;
     public messages: Array<IMessages>;
     public message: IMessages = { comment: "", userId: "", caseId: null, isEmployee: true, timeStamp: null }; // any = {};
-    private messageModel: MessageModel = { comment: "" };
+    private messageModel: IMessageModel = { comment: "" };
     public errorMsg;
     public isUserContact: boolean = false;
     public isUserDeveloper: boolean = false;
     public userId: any;
     public estHoursEntry: boolean = false;
     public hoursSpentEntry: boolean = false;
-    public estHoursModel: EstHoursModel = { estimatedTimeHours: 0 };
-    public hoursSpentModel: hoursSpentModel = { timeSpentHours: 0 };
+    public estHoursModel: IEstHoursModel = { estimatedTimeHours: 0 };
+    public hoursSpentModel: IHoursSpentModel = { timeSpentHours: 0 };
+    public deadlineModel: IDeadlineModel = { deadline: null };
 
     constructor(private casesService: CasesService, private _route: ActivatedRoute, private router: Router, private authorize: AuthorizeService) {
         this.id = _route.snapshot.paramMap.get("id");
@@ -42,9 +43,10 @@ export class CaseDisplaySupportComponent implements OnInit {
 
             this.casesService.getCase(this.id).subscribe(result => {
                 this.case = result;
+                console.log(result);
                 this.assignedStaff = this.case.staffAssigned ? this.case.staffAssigned.split(', ') : [];
                 this.populateAssignedStaffNames();
-
+                console.log(this.case.deadline);
                 this.authorize.getUser().pipe(map(u => u && u.userId)).subscribe(
                     userId => {
                         this.userId = userId;
@@ -165,7 +167,7 @@ export class CaseDisplaySupportComponent implements OnInit {
         this.hoursSpentEntry = false;
     }
 
-    updateCase(form) {
+    updateCase(form = null) {
         this.casesService.updateCase(this.case).subscribe(result => { // PUT and model?
         }, errors => {
             if (errors.status === 400) {
@@ -174,24 +176,91 @@ export class CaseDisplaySupportComponent implements OnInit {
                 this.errorMsg = "Server error";
             }
         });
-        form.reset(); // or form.resetForm();
+        if (form) form.reset(); // or form.resetForm();
+    }
+
+    onSubmitDeadline(setDeadlineForm) {
+        this.case.deadline = this.deadlineModel.deadline;
+        this.updateCase(setDeadlineForm);
+    }
+
+    onSubmitAwaitCust(awaitCustForm) {
+        // only effective in the message phase not if bug/feature starts to get implemented
+        if (this.case.status == 2) {
+            this.case.status = 3;
+            this.updateCase(awaitCustForm);
+        } else {
+            if (this.case.status == 3) {
+                this.case.status = 2;
+                this.updateCase(awaitCustForm);
+            }
+        }
+    }
+
+    onSubmitComplete(completeForm) {
+        if (this.case.status == 7) {
+            this.case.status = 2;
+            this.case.dateCompleted = null;
+            this.updateCase(completeForm);
+        } else {
+            if (this.case.status != 7) {
+                this.case.status = 7;
+                this.case.dateCompleted = new Date();
+                this.updateCase(completeForm);
+            }
+        }
+    }
+
+    onSubmitOnHold(onHoldForm) {
+        if (this.case.status == 4) {
+            this.case.status = 2;
+            this.updateCase(onHoldForm);
+        } else {
+            if (this.case.status <= 3) {
+                this.case.status = 4;
+                this.updateCase(onHoldForm);
+            }
+        }
+    }
+
+    submitFix() {
+        this.case.status = 5;
+        this.case.dateAwaitApproval = new Date();
+        this.updateCase();
+    }
+
+    submitFixApproval() {
+        this.case.status = 6;
+        this.case.dateApproved = new Date();
+        this.updateCase();
+    }
+
+    submitFixApplied() {
+        this.case.status = 7;
+        this.case.dateApplied = new Date();
+        this.case.dateCompleted = new Date();
+        this.updateCase();
     }
 }
 
-interface CaseAssignedModel {
+interface ICaseAssignedModel {
     id: number;
     staffAssigned: string;
 }
 
-interface MessageModel {
+interface IMessageModel {
     //id: number;
     comment: string;
 }
 
-interface EstHoursModel {
+interface IEstHoursModel {
     estimatedTimeHours: number;
 }
 
-interface hoursSpentModel {
+interface IHoursSpentModel {
     timeSpentHours: number;
+}
+
+interface IDeadlineModel {
+    deadline: Date;
 }

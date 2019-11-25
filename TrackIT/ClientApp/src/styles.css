@@ -14,3 +14,7 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.min-width110 { min-width:110px; }
+.min-width300 { min-width:300px; }
+.max-width300 { max-width:300px; }

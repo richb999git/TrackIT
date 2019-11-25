@@ -1,11 +1,6 @@
 <h1 id="tableLabel">Cases</h1>
 
-<!--<button class="nav-link text-dark" [routerLink]="['/case-add']">Raise Case</button>
-<br />-->
-
-
 <p *ngIf="!cases"><em>Loading...</em></p>
-
 
 <table *ngIf="cases" class='table table-striped' aria-labelledby="tableLabel">
   <thead>
@@ -24,17 +19,16 @@
   </thead>
   <tbody>
     <tr *ngFor="let case of cases">
-      <td><button (click)="editCase(case.id)" class="btn btn-primary">{{ case.id }}</button></td>
+      <td><button (click)="editCase(case.id)" class="btn btn-sm btn-outline-secondary">{{ case.id }}</button></td>
       <td>{{ case.software.name }}</td>
-      <td>{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
-      <td>{{ case.title }}</td>
+      <td class="min-width110">{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
+      <td class="min-width300 max-width300">{{ case.title }}</td>
       <td>{{ casesService.types[case.type-1] }}</td>
       <td>{{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</td>
       <td>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }}</td>
       <td>{{ casesService.statusNames[case.status-1] }}</td>
       <td>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</td>
-      <td>{{ case.deadline }}</td>
-      <!--<td><button class="" [routerLink]="['/case-display/' + case.id]">EDIT2</button></td>-->
+      <td>{{ case.deadline | date: 'dd-MMM-yy' }}</td>
     </tr>
   </tbody>
 </table>

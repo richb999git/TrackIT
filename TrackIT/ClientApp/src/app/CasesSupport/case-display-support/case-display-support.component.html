@@ -46,30 +46,53 @@
     </div>
     <br />
 
+    <!--Bug/Feature only-->
+    <div *ngIf="(case.type == 1 || case.type == 4)">
+      <div class="row">
+        <div class="col">Deadline Date</div>
+        <div class="col" *ngIf="(isUserDeveloper || isUserContact)">Date Fix awaiting approval</div>
+      </div>
+      <div class="row">
+        <div *ngIf="case.deadline || !(userRole | async)?.includes('manager')" class="col"><b>{{ (case.deadline | date: 'dd-MMM-yy') || "Not yet set" }}</b></div>
+        <div *ngIf="(userRole | async)?.includes('manager') && !case.deadline" class="col">
+          <form #setDeadlineForm="ngForm" (ngSubmit)="onSubmitDeadline(setDeadlineForm)">
+            <div class="input-group">
+              <input type="date" class="form-control" id="deadline"
+                     name="deadline" placeholder="Deadline" required
+                     [(ngModel)]="deadlineModel.deadline" #deadline="ngModel" />
+              <div class="input-group-prepend">
+                <button [disabled]="!setDeadlineForm.valid" type="submit" class="btn btn-sm btn-primary">OK</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div *ngIf="!case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col"><button (click)="submitFix()" class="btn btn-sm btn-outline-primary">Request Fix Approval</button></div>
+        <div *ngIf="case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col"><b>{{ (case.dateAwaitApproval | date: 'dd-MMM-yy HH:mm') }}</b></div>
+      </div>
+    </div>
+    <br />
+
+    <div *ngIf="(case.type == 1 || case.type == 4) && (isUserDeveloper || isUserContact)">
+      <div class="row">
+        <div class="col">Date fix approved</div>
+        <div class="col">Date Fix applied</div>
+      </div>
+      <div class="row">
+        <div *ngIf="(userRole | async)?.includes('manager') && case.dateAwaitApproval && !case.dateApproved" class="col"><button (click)="submitFixApproval()" class="btn btn-sm btn-outline-primary">Approve Fix</button></div>
+        <div *ngIf="case.dateApproved || !case.dateAwaitApproval" class="col"><b>{{ (case.dateApproved | date: 'dd-MMM-yy HH:mm') || "N/A" }}</b></div>
+        <div *ngIf="case.dateApproved && !case.dateApplied" class="col"><button (click)="submitFixApplied()" class="btn btn-sm btn-outline-primary">Applied Fix</button></div>
+        <div *ngIf="case.dateApplied || !case.dateApproved" class="col"><b>{{ (case.dateApplied | date: 'dd-MMM-yy HH:mm') || "N/A" }}</b></div>
+      </div>
+      <br />
+    </div>
+    <!--Bug/Feature only-->
+
     <div class="row">
       <div class="col">Date Case Assigned</div>
-      <div class="col">Date Fix awaiting approval</div>
-    </div>
-    <div class="row">
-      <div class="col"><b>{{ (case.dateAssigned | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
-      <div class="col"><b>{{ (case.dateAwaitApproval | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
-    </div>
-    <br />
-    <div class="row">
-      <div class="col">Date fix approved</div>
-      <div class="col">Date Fix applied</div>
-    </div>
-    <div class="row">
-      <div class="col"><b>{{ (case.dateApproved | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
-      <div class="col"><b>{{ (case.dateApplied | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
-    </div>
-    <br />
-    <div class="row">
-      <div class="col">Deadline</div>
       <div class="col">Date Completed</div>
     </div>
     <div class="row">
-      <div class="col"><b>{{ (case.deadline | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
+      <div class="col"><b>{{ (case.dateAssigned | date: 'dd-MMM-yy HH:mm') || "Not set yet" }}</b></div>
       <div class="col"><b>{{ (case.dateCompleted | date: 'dd-MMM-yy HH:mm') || "Not completed" }}</b></div>
     </div>
     <br />
@@ -84,11 +107,11 @@
 
       <div *ngIf="!estHoursEntry" class="col"><b>{{ case.estimatedTimeHours || "Not set yet"}}</b></div>
       <div *ngIf="estHoursEntry" class="col">
-        <form #estHoursForm="ngForm" (ngSubmit)="onSubmitEstHours(estHoursForm)" >
+        <form #estHoursForm="ngForm" (ngSubmit)="onSubmitEstHours(estHoursForm)">
           <div class="input-group col-9 col-sm-4">
             <input type="number" class="form-control" id="estHours"
                    name="estHours" placeholder="Hours" min="0" max="999" required
-                   [(ngModel)]="estHoursModel.estimatedTimeHours" #estimatedTimeHours="ngModel" />          
+                   [(ngModel)]="estHoursModel.estimatedTimeHours" #estimatedTimeHours="ngModel" />
             <div class="input-group-prepend">
               <button [disabled]="!estHoursForm.valid" type="submit" class="btn btn-sm btn-primary">OK</button>
             </div>
@@ -96,13 +119,13 @@
         </form>
       </div>
 
-      <div *ngIf="!hoursSpentEntry" class="col"><b>{{ case.timeSpentHours || "None" }}</b></div>
+      <div *ngIf="!hoursSpentEntry" class="col"><b>{{ case.timeSpentHours || "Not set yet" }}</b></div>
       <div *ngIf="hoursSpentEntry" class="col">
-        <form #hoursSpentForm="ngForm" (ngSubmit)="onSubmitHoursSpent(hoursSpentForm)" >
+        <form #hoursSpentForm="ngForm" (ngSubmit)="onSubmitHoursSpent(hoursSpentForm)">
           <div class="input-group col-9 col-sm-4">
             <input type="number" class="form-control" id="hoursSpent"
                    name="hoursSpent" placeholder="Hours" min="0" max="999" required
-                   [(ngModel)]="hoursSpentModel.timeSpentHours" #timeSpentHours="ngModel" />          
+                   [(ngModel)]="hoursSpentModel.timeSpentHours" #timeSpentHours="ngModel" />
             <div class="input-group-prepend">
               <button [disabled]="!hoursSpentForm.valid" type="submit" class="btn btn-sm btn-primary">OK</button>
             </div>
@@ -131,6 +154,31 @@
   <div>Description</div>
   <div><b>{{ case.description }}</b></div>
   <br />
+
+  <div class="row">
+    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type == 2 || case.type == 3)" class="col">
+      <form #completeForm="ngForm" (ngSubmit)="onSubmitComplete(completeForm)">
+        <button *ngIf="case.status != 7" type="submit" class="btn btn-primary">Consider Complete</button>
+        <button *ngIf="case.status == 7" type="submit" class="btn btn-primary">Re-Open Case</button>
+      </form>
+    </div>
+    <div *ngIf="isUserDeveloper || isUserContact" class="col">
+      <form #awaitCustForm="ngForm" (ngSubmit)="onSubmitAwaitCust(awaitCustForm)">
+        <button *ngIf="case.status == 2" type="submit" class="btn btn-primary">Set as Await Customer</button>
+        <button *ngIf="case.status == 3" type="submit" class="btn btn-primary">Set as Await Us</button>
+      </form>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type == 1 || case.type == 4)" class="col">
+      <form #onHoldForm="ngForm" (ngSubmit)="onSubmitOnHold(onHoldForm)">
+        <button *ngIf="case.status <= 3" type="submit" class="btn btn-primary">Put case on hold</button>
+        <button *ngIf="case.status == 4" type="submit" class="btn btn-primary">Release from hold</button>
+      </form>
+    </div>
+  </div>
+
 
   <br />
 
@@ -190,7 +238,7 @@
 
 
 
-  <div *ngIf="assignStaffFlag">    
+  <div *ngIf="assignStaffFlag">
     <p *ngIf="!users"><em>Loading...</em></p>
     <div *ngIf="users">
       <form #assignForm="ngForm" (ngSubmit)="submitAssignedStaff(assignForm)">
@@ -227,18 +275,10 @@
   <br />
   <hr />
 
-  <br />
-  <p *ngIf="(userRole | async)?.includes('manager')">Set deadline (manager)</p>
-  <hr />
 
-  <p>Change status form</p> <!--This would apply a date to the appropriate field-->
 
-  <br /><br />
-  <p>(Bug/Feature - Send fix approval request) Date Fix awaiting approval: {{ case.dateAwaitApproval }}</p><!--update by any of assigned staff?-->
-  <p>(Bug/Feature - Send fix request approval - manager) Date Fix approved: {{ case.dateApproved }}</p><!--update by managers only-->
-  <p>(Bug/Feature - Apply fix button) Date Fix applied: {{ case.dateApplied }}</p> <!--update by any of assigned staff?-->
-  <p>(All - Click to consider complete) Date Completed: {{ case.dateCompleted }}</p> <!--update by contact only?-->
-  <p>(All - Click to consider reverse complete) Date Completed: {{ case.dateCompleted }}</p> <!--update by contact only? -->
+
+
 
   <p>Deadline: {{ case.deadline }}</p> <!--update by any managers only-->
 

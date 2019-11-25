@@ -28,7 +28,7 @@
           </li>
 
           <li class="nav-item dropdown" *ngIf="(userRole | async)?.includes('employee')">
-            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage App">
+            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Support Cases
             </a>
             <div class="dropdown-menu">
@@ -37,7 +37,7 @@
           </li>
 
           <li class="nav-item dropdown" *ngIf="isAuthenticated | async">
-            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage App">
+            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage your cases">
               Your Cases
             </a>
             <div class="dropdown-menu">

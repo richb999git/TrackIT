@@ -130,7 +130,7 @@ namespace TrackIT.Controllers
                     DateApproved = c.DateApproved,
                     DateApplied = c.DateApplied,
                     DateCompleted = c.DateCompleted,
-                    Deadline = c.DateCompleted,
+                    Deadline = c.Deadline,
                     TimeSpentHours = c.TimeSpentHours,
                     EstimatedTimeHours = c.EstimatedTimeHours,
                     StaffAssigned = c.StaffAssigned,
@@ -193,7 +193,7 @@ namespace TrackIT.Controllers
                     DateApproved = c.DateApproved,
                     DateApplied = c.DateApplied,
                     DateCompleted = c.DateCompleted,
-                    Deadline = c.DateCompleted,
+                    Deadline = c.Deadline,
                     TimeSpentHours = c.TimeSpentHours,
                     EstimatedTimeHours = c.EstimatedTimeHours,
                     StaffAssigned = c.StaffAssigned,
@@ -237,7 +237,9 @@ namespace TrackIT.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCases(int id, [Bind("StaffAssigned", "DateAssigned", "ContactId", "Status", "EstimatedTimeHours")] Cases cases)
+        public async Task<IActionResult> PutCases(int id, 
+            [Bind("StaffAssigned", "DateAssigned", "ContactId", "Status", "EstimatedTimeHours", "TimeSpentHours",
+            "DateOpened", "DateAssigned", "Deadline", "DateAwaitApproval", "DateApproved", "DateApplied", "DateCompleted")] Cases cases)
         {
             if (id != cases.Id)
             {
@@ -270,7 +272,8 @@ namespace TrackIT.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Cases>> PostCases([Bind("UserId", "SoftwareId", "Type", nameof(Cases.Title), "Description", "Status", "UrgencyLevel", "DateOpened")] Cases cases)
+        public async Task<ActionResult<Cases>> PostCases(
+            [Bind("UserId", "SoftwareId", "Type", nameof(Cases.Title), "Description", "Status", "UrgencyLevel", "DateOpened")] Cases cases)
         {
             cases.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             cases.Status = 1;
