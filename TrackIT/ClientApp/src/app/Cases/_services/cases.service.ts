@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from 'oidc-client';
 
@@ -30,16 +30,18 @@ export class CasesService {
 
     constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
-    getCases() {
-        return this.http.get<ICases[]>(this.baseUrl + 'api/Cases');
+    getCases(caseFilter, softwareFilter, sort, sortAsc) {
+        return this.http.get<ICases[]>(this.baseUrl + 'api/CasesUser?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
+                                                    + '&sort=' + sort + '&sortAsc=' + sortAsc);
     }
 
-    getCasesSupport() {
-        return this.http.get(this.baseUrl + 'api/CasesSupport');
+    getCasesSupport(caseFilter, softwareFilter, typeFilter, sort, sortAsc) {
+        return this.http.get(this.baseUrl + 'api/CasesSupport?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
+                                          + '&typeFilter=' + typeFilter + '&sort=' + sort + '&sortAsc=' + sortAsc);
     }
 
     getCase(id) {
-        return this.http.get<ICases>(this.baseUrl + 'api/Cases/' + id);
+        return this.http.get<ICases>(this.baseUrl + 'api/Case/' + id);
     }
 
     addCase(model: any) {
@@ -54,6 +56,10 @@ export class CasesService {
         return this.http.get<ISoftwares[]>(this.baseUrl + 'api/Softwares');
     }
 
+    addSoftwareTitle(model) {
+        return this.http.post(this.baseUrl + 'api/Softwares', model);
+    }
+
     getUsers(role: string) {
         return this.http.get(this.baseUrl + 'api/Users/' + role);
     }
@@ -64,6 +70,11 @@ export class CasesService {
 
     addCaseMessage(model: any) {
         return this.http.post(this.baseUrl + 'api/Messages', model);
+    }
+
+    setSubPageBackground() {
+        //this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
+        //this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
     }
 }
 

@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import "jquery";    // added to get ability to use dropdown nav menu
-import "bootstrap"; // added to get ability to use dropdown nav menu
+//import "jquery";    // added to get ability to use dropdown nav menu
+//import "bootstrap"; // added to get ability to use dropdown nav menu
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
@@ -17,7 +17,9 @@ import { CaseDisplayComponent } from './Cases/case-display/case-display.componen
 import { CaseAddComponent } from './Cases/case-add/case-add.component';
 import { CasesListSupportComponent } from './CasesSupport/cases-list-support/cases-list-support.component';
 import { CaseDisplaySupportComponent } from './CasesSupport/case-display-support/case-display-support.component';
-import { CaseAssignStaffComponent } from './CasesSupport/case-assign-staff/case-assign-staff.component';
+import { FromToPipe } from '../pipes/from-to.pipe';
+import { AddSoftwareComponent } from './Admin/Software/add-software/add-software.component';
+import { ViewSoftwareComponent } from './Admin/Software/view-software/view-software.component';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { CaseAssignStaffComponent } from './CasesSupport/case-assign-staff/case-
     CaseAddComponent,
     CasesListSupportComponent,
     CaseDisplaySupportComponent,
-    CaseAssignStaffComponent
+    FromToPipe,
+    AddSoftwareComponent,
+    ViewSoftwareComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -44,7 +48,8 @@ import { CaseAssignStaffComponent } from './CasesSupport/case-assign-staff/case-
         { path: 'case-add', component: CaseAddComponent, canActivate: [AuthorizeGuard] },
         { path: 'cases-list-support', component: CasesListSupportComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "employee", "manager"] } },
         { path: 'case-display-support/:id', component: CaseDisplaySupportComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "employee", "manager"] } },
-        { path: 'case-assign-staff/:caseId', component: CaseAssignStaffComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "manager"] } }
+        { path: 'add-software', component: AddSoftwareComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'view-software', component: ViewSoftwareComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } }
     ])
   ],
   providers: [

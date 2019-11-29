@@ -1,0 +1,24 @@
+<h1 id="tableLabel">Software Titles</h1>
+<button class="btn btn-success" [routerLink]="['/add-software']">Add Software Title</button>
+<br />
+<br />
+<p *ngIf="!softwares"><em>Loading...</em></p>
+
+<div class="">
+  <table *ngIf="softwares" class='table table-striped' aria-labelledby="tableLabel">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let software of softwares">
+        <td>{{ software.name }}</td>
+        <td><button (click)="editSoftware(software.id)" class="btn btn-outline-success">Edit</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br />
+

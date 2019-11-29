@@ -1,0 +1,45 @@
+import { Component, OnInit, ElementRef  } from '@angular/core';
+import { Router } from '@angular/router';
+import { CasesService, ISoftwares } from '../../../Cases/_services/cases.service';
+
+@Component({
+  selector: 'app-add-software',
+  templateUrl: './add-software.component.html',
+  styleUrls: ['./add-software.component.css']
+})
+export class AddSoftwareComponent implements OnInit {
+
+    private softwareModel: SoftwareModel = { name: ""};
+    public errorMsg;
+
+    constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef) { }
+
+    ngAfterViewInit() {
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
+    }
+
+    ngOnInit() {
+    }
+
+    onSubmit(caseForm) {
+        console.log(caseForm);
+        console.log(this.softwareModel);
+        this.casesService.addSoftwareTitle(this.softwareModel).subscribe(result => {
+            console.log(result);
+            this.router.navigate(['/view-software']);
+        }, errors => {
+            if (errors.status === 400) {
+                this.errorMsg = errors.error.errors;
+            } else {
+                this.errorMsg = "Server error";
+            }
+        });
+    }
+
+}
+
+interface SoftwareModel {
+    //id: number;
+    name: string;
+}

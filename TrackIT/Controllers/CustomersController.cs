@@ -11,7 +11,7 @@ using TrackIT.Models;
 
 namespace TrackIT.Controllers
 {
-    
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase

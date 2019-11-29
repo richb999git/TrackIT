@@ -5,16 +5,84 @@ a {
   color: #0366d6;
 }
 
-code {
-  color: #e01a76;
-}
-
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
 
-.min-width110 { min-width:110px; }
-.min-width300 { min-width:300px; }
-.max-width300 { max-width:300px; }
+.main-container {
+  min-height: 80vh; 
+  overflow: hidden;
+  display: block;
+  position: relative;
+}
+
+.footerA {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  line-height: 60px;
+  position: sticky;
+}
+
+.min-widthDates { min-width:90px; }
+.max-widthSoftware {
+  max-width: 120px;
+  overflow-wrap:break-word;
+}
+
+.tableOverflow { /* make the table scrollable if screen too small */
+  display: block;
+  overflow-x: auto;
+  /*text-align: center;*/
+  margin: 0 auto;
+  font-size: 85%;
+}
+
+.tdWidth {
+  min-width: 200px;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
+/*Flips container then inner content back so scrollbar appears at the top*/
+.Container1 {
+}
+
+.Content1 {
+}
+
+.Flipped, .Flipped .Content1 {
+  transform: rotateX(180deg);
+  -ms-transform: rotateX(180deg); /* IE 9 */
+  -webkit-transform: rotateX(180deg); /* Safari and Chrome */
+}
+/*-----------------------------------------------------------------------*/
+
+.nav-link:hover {
+  background-color: #ededed;
+}
+.dropdown-item:hover {
+  background-color: #ededed;
+  color: black;
+}
+
+/*Need stop set image form home page command nothing form other pages - see ngAfterViewInit() input each component*/
+body {
+  background-repeat: repeat;
+  background-color: unset;
+}
+
+.home-pic {
+  border: solid;
+  border-width: thin;
+  box-shadow: 5px 10px 8px #888888;
+  width: 85%;
+  height: auto;
+}
+
+
+

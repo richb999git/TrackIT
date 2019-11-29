@@ -5,10 +5,10 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+@*<h1>@ViewData["Title"]</h1>*@
 
-<div class="row">
-    <div class="col-md-4">
+<div class="text-center login-background" style="width: 400px; background-color: #DDFFEF; padding: 10px; margin: 0 auto;">
+    <div class="text-center login-center-it" style="margin: 0 auto; width: 80%;">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             @if (User.IsInRole("admin") || User.HasClaim(ClaimTypes.Role, "admin"))
             {
@@ -68,10 +68,11 @@
                 </div>
             }
 
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-success col-md-12">REGISTER</button>
         </form>
+        <br />
     </div>
-    <div class="col-md-6 col-md-offset-2">
+    @*<div class="col-md-6 col-md-offset-2">
         <section>
             <h4>Use another service to register.</h4>
             <hr />
@@ -100,7 +101,7 @@
                 }
             }
         </section>
-    </div>
+    </div>*@
 </div>
 
 @section Scripts {

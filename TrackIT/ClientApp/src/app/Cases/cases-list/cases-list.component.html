@@ -1,38 +1,53 @@
-<h1 id="tableLabel">Your Cases</h1>
+<h1 id="tableLabel">Your Reported Cases</h1>
 
-<button class="btn btn-primary" [routerLink]="['/case-add']">Raise Case</button>
+<button class="btn btn-success" [routerLink]="['/case-add']">Raise Case</button>
 <br /><br />
+<div class="clearfix">
+  <div class="selectSize float-left">
+    <label for="chooseCaseFilter"></label>
+    <select id="chooseCaseFilter" name="chooseCaseFilter" [(ngModel)]="caseFilter" (ngModelChange)="chooseCaseFilter($event)" class="form-control">
+      <option value="1">Active Cases</option>
+      <option value="0">All Cases</option>
+    </select>
+  </div>
+  <div *ngIf="softwares" class="selectSize float-left">
+    <label for="chooseCaseFilter2"></label>
+    <select id="chooseCaseFilter2" name="chooseCaseFilter2" [(ngModel)]="softwareFilter" (ngModelChange)="chooseCaseFilter($event)" class="form-control">
+      <option *ngFor="let software of softwares" [value]="software.id">{{ software.name }}</option>
+    </select>
+  </div>
+</div>
 
 <p *ngIf="!cases"><em>Loading...</em></p>
 
-
-<table *ngIf="cases" class='table table-striped' aria-labelledby="tableLabel">
-  <thead>
-    <tr>
-      <th>Case</th>
-      <th>Date opened</th>
-      <th>Software</th>
-      <th>Subject</th>
-      <th>Type</th>
-      <th>Created by</th>
-      <th>Contact</th>
-      <th>Status</th>
-      <th>Urgency</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let case of cases">
-      <td><button (click)="editCase(case.id)" class="btn btn-outline-secondary">{{ case.id }}</button></td>
-      <td class="min-width110">{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
-      <td>{{ case.software.name }}</td>
-      <td class="min-width300 max-width300">{{ case.title }}</td>
-      <td>{{ casesService.types[case.type-1] }}</td>
-      <td>{{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</td>
-      <td>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }}</td>
-      <td>{{ casesService.statusNames[case.status-1] }}</td>
-      <td>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</td>
-      <!--<td><button class="" [routerLink]="['/case-display/' + case.id]">EDIT2</button></td>-->
-    </tr>
-  </tbody>
-</table>
+<div class="tableOverflow Container1 Flipped">
+  <table *ngIf="cases" class='table table-striped Content1 ' aria-labelledby="tableLabel">
+    <thead>
+      <tr>
+        <th (click)="sortCase('case')" class="highlight">Case</th>
+        <th (click)="sortCase('dateOpened')" class="highlight">Date opened</th>
+        <th>Software</th>
+        <th>Subject</th>
+        <th>Type</th>
+        <th (click)="sortCase('contact')" class="highlight">Contact</th>
+        <th (click)="sortCase('urgency')" class="highlight">Urgency</th>
+        <th (click)="sortCase('status')" class="highlight">Status</th>
+        <th *ngIf="caseFilter != 1">Completion date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let case of cases">
+        <td><button (click)="editCase(case.id)" class="btn btn-outline-secondary">{{ case.id }}</button></td>
+        <td class="min-widthDates">{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
+        <td>{{ case.software.name }}</td>
+        <td class="tdWidth">{{ case.title }}</td>
+        <td>{{ casesService.types[case.type-1] }}</td>
+        <td>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }}</td>
+        <td>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</td>
+        <td>{{ casesService.statusNames[case.status-1] }}</td>
+        <td *ngIf="caseFilter != 1" class="min-widthDates">{{ case.dateCompleted | date: 'dd-MMM-yy' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br />

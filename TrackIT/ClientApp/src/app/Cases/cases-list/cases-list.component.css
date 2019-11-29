@@ -1,0 +1,13 @@
+.selectSize {
+  max-width: 220px;
+  min-width: 220px;
+  margin-bottom: 20px;
+  margin-top: -35px;
+  margin-right: 8px;
+}
+
+.highlight:hover {
+  color: blue;
+  cursor: pointer;
+}
+

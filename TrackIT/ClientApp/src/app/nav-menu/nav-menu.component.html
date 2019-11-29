@@ -1,6 +1,6 @@
 <header>
   <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
+    class="navbar navbar-expand-md navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
   >
     <div class="container">
       <a class="navbar-brand" [routerLink]="['/']">TrackIT</a>
@@ -16,10 +16,10 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div
-        class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
+        class="navbar-collapse collapse d-md-inline-flex flex-sm-row-reverse"
         [ngClass]="{ show: isExpanded }"
       >
-        <app-login-menu></app-login-menu>
+        <app-login-menu></app-login-menu> 
         <ul class="navbar-nav flex-grow">
           <li class="nav-item"
               [routerLinkActive]="['link-active']"
@@ -27,22 +27,22 @@
             <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
           </li>
 
-          <li class="nav-item dropdown" *ngIf="(userRole | async)?.includes('employee')">
-            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <li class="nav-item dropdown" *ngIf="(userRole | async)?.includes('employee')" [routerLinkActive]="['link-active']">
+            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Support staff case list">
               Support Cases
             </a>
             <div class="dropdown-menu">
-              <a class="dropdown-item nav-link text-dark" [routerLink]='["/cases-list-support"]'>View Cases</a>
+              <a class="dropdown-item" [routerLink]='["/cases-list-support"]'>View Cases</a>
             </div>
           </li>
 
-          <li class="nav-item dropdown" *ngIf="isAuthenticated | async">
-            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage your cases">
+          <li class="nav-item dropdown" *ngIf="isAuthenticated | async" [routerLinkActive]="['link-active']">
+            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage cases reported by you">
               Your Cases
             </a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item nav-link text-dark" [routerLink]='["/cases-list"]'>View Cases</a>
-              <a class="dropdown-item nav-link text-dark" [routerLink]='["/case-add"]'>Raise Case</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" [routerLink]='["/cases-list"]'>View Cases</a>
+              <a class="dropdown-item" [routerLink]='["/case-add"]'>Raise Case</a>
             </div>
           </li>
 

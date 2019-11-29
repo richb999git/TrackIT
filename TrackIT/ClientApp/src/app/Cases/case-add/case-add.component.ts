@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CasesService, ISoftwares, ICases } from '../_services/cases.service';
 
@@ -19,7 +19,12 @@ export class CaseAddComponent implements OnInit {
 
     public softwareIds: Array<ISoftwares>;
     
-    constructor(private casesService: CasesService, private router: Router) { }
+    constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef) { }
+
+    ngAfterViewInit() {
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
+    }
 
     ngOnInit() {
         this.casesService.getSoftwareTitles().subscribe(result => {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { CasesService, IMessages, ICases, ISoftwares } from '../../Cases/_services/cases.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorizeService } from '../../../api-authorization/authorize.service';
@@ -32,8 +32,14 @@ export class CaseDisplaySupportComponent implements OnInit {
     public hoursSpentModel: IHoursSpentModel = { timeSpentHours: 0 };
     public deadlineModel: IDeadlineModel = { deadline: null };
 
-    constructor(private casesService: CasesService, private _route: ActivatedRoute, private router: Router, private authorize: AuthorizeService) {
+    constructor(private casesService: CasesService, private _route: ActivatedRoute, private router: Router, private authorize: AuthorizeService,
+                private elementRef: ElementRef) {
         this.id = _route.snapshot.paramMap.get("id");
+    }
+
+    ngAfterViewInit() {
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
     }
 
     ngOnInit() {
@@ -66,15 +72,8 @@ export class CaseDisplaySupportComponent implements OnInit {
     }
 
     onSubmitMessage(messageForm) {
-        this.message.comment = this.messageModel.comment;
-        this.message.isEmployee = false;
-        this.message.userId = this.case.userId;
-        this.message.caseId = this.case.id;
-        //this.message.timeStamp = new Date().toISOString();
-        this.message.timeStamp = null;
-
+        this.message = { comment: this.messageModel.comment, userId: this.case.userId, caseId: this.case.id, isEmployee: true, timeStamp: null };
         this.casesService.addCaseMessage(this.message).subscribe(result => {
-            messageForm.reset(); // or messageForm.resetForm();
             this.message.timeStamp = new Date();
             this.messages.push(this.message);
         }, errors => {
@@ -241,6 +240,13 @@ export class CaseDisplaySupportComponent implements OnInit {
         this.case.dateCompleted = new Date();
         this.updateCase();
     }
+
+
+
+
+    
+
+
 }
 
 interface ICaseAssignedModel {
