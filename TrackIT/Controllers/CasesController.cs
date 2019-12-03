@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrackIT.Data;
 using TrackIT.Models;
+using static TrackIT.Controllers.UsersController; // not sure why I need this as it's in the same namespace (and why it wasn't required the other way around)
 
 namespace TrackIT.Controllers
 {
@@ -41,15 +42,27 @@ namespace TrackIT.Controllers
         public int UrgencyLevel { get; set; }
     }
 
-    public class UserInfo
+    public class Paginated
     {
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public int PageIndex { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
     }
 
+    public class PaginatedListCases : Paginated
+    {
+        public List<CasesToReturn> Cases { get; set; }
+
+        public PaginatedListCases(List<CasesToReturn> cases, int pageIndex, int pageSize, int count)
+        {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            Cases = cases;
+        }
+    }
+
+    
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -67,13 +80,16 @@ namespace TrackIT.Controllers
 
         // Get cases in user section of site (1 = active, 0 = all). Software filter based on id - 0 = all
         [Route("/api/CasesUser")]
-        // GET: api/CasesUser?caseFilter=1&softwareFilter=0&sort=id&sortAsc=true
+        // GET: api/CasesUser?caseFilter=1&softwareFilter=0&sort=id&sortAsc=true&pageIndex=1&searchString=
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CasesToReturn>>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc)
+        //public async Task<ActionResult<IEnumerable<CasesToReturn>>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc)
+        public async Task<ActionResult<PaginatedListCases>> GetCasesSupport(int caseFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
             int statusFilter = caseFilter == 1 ? 7 : 8;
             // Filter just user's cases (or later maybe all their company's cases)
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (searchString?.Length == 0) searchString = null;
 
             var cases = await _context.Cases
                 .Include(c => c.Software)
@@ -93,7 +109,7 @@ namespace TrackIT.Controllers
                     UserInfo = new UserInfo
                     {
                         UserName = c.User.UserName,
-                        UserId = c.User.Id,
+                        Id = c.User.Id,
                         FirstName = c.User.FirstName,
                         LastName = c.User.LastName,
                         Email = c.User.Email
@@ -101,33 +117,39 @@ namespace TrackIT.Controllers
                     ContactInfo = new UserInfo
                     {
                         UserName = c.Contact.UserName,
-                        UserId = c.Contact.Id,
+                        Id = c.Contact.Id,
                         FirstName = c.Contact.FirstName,
                         LastName = c.Contact.LastName,
                         Email = c.Contact.Email
                     }
                 })
-                .Where(x => x.UserInfo.UserId == userId)
+                .Where(c => c.UserInfo.Id == userId)
                 .Where(c => c.Status < statusFilter)
                 .Where(c => softwareFilter != 0 ? c.SoftwareId == softwareFilter : 1==1)
+                .Where(c => searchString != null ? c.Title.Contains(searchString) || c.Description.Contains(searchString) : 1==1)
                 .ToListAsync();
 
-            return SortCases(sort, sortAsc, cases).ToList();
+            cases = SortCases(sort, sortAsc, cases).ToList();
+            var count = cases.Count;
+            var pageSize = 10; // this COULD/SHOULD to be passed in..........
+            cases = cases.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(); // this is ok when I need it
+            return new PaginatedListCases(cases, pageIndex, pageSize, count);
         }
 
 
         // Get case list in support section of site (1 = active, 0 = all). Software filter based on id - 0 = all. Type filter - 0 = all
         [Authorize(Policy = "RequireEmployeeRoleClaim")]
         [Route("/api/CasesSupport")]
-        // GET: api/CasesSupport?caseFilter=1&softwareFilter=0&typeFilter=0&sort=id&sortAsc=true
+        // GET: api/CasesSupport?caseFilter=1&softwareFilter=0&typeFilter=0&sort=id&sortAsc=true&pageIndex=1&searchString=
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CasesToReturn>>> GetCasesSupport(int caseFilter, int softwareFilter, int typeFilter, string sort, bool sortAsc)
+        public async Task<ActionResult<PaginatedListCases>> GetCasesSupport(int caseFilter, int softwareFilter, int typeFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var IsManager = User.HasClaim(ClaimTypes.Role, "manager");
             var IsAdmin = User.HasClaim(ClaimTypes.Role, "admin");
 
             int statusFilter = caseFilter == 1 ? 7 : 8; // status 7 is completed
+            if (searchString?.Length == 0) searchString = null;
 
             var cases = await _context.Cases
                 .Include(c => c.Software)
@@ -157,7 +179,7 @@ namespace TrackIT.Controllers
                     UserInfo = new UserInfo
                     {
                         UserName = c.User.UserName,
-                        UserId = c.User.Id,
+                        Id = c.User.Id,
                         FirstName = c.User.FirstName,
                         LastName = c.User.LastName,
                         Email = c.User.Email
@@ -166,22 +188,27 @@ namespace TrackIT.Controllers
                     ContactInfo = new UserInfo
                     {
                         UserName = c.Contact.UserName,
-                        UserId = c.Contact.Id,
+                        Id = c.Contact.Id,
                         FirstName = c.Contact.FirstName,
                         LastName = c.Contact.LastName,
                         Email = c.Contact.Email
                     }
                 })
                 .Where(c => c.Status < statusFilter)
-                .Where(c => typeFilter != 0 ? c.Type == typeFilter : 1==1)
+                .Where(c => typeFilter != 0 ? c.Type == typeFilter : 1 == 1)
                 .Where(c => softwareFilter != 0 ? c.SoftwareId == softwareFilter : 1 == 1)
-                .Where(c => (!IsManager && !IsAdmin) ? (c.ContactId == userId || (c.StaffAssigned != null && c.StaffAssigned.Contains(userId))) : 1==1)
+                .Where(c => searchString != null ? c.Title.Contains(searchString) || c.Description.Contains(searchString) : 1 == 1)
+                .Where(c => (!IsManager && !IsAdmin) ? (c.ContactId == userId || (c.StaffAssigned != null && c.StaffAssigned.Contains(userId))) : 1 == 1)
                 .ToListAsync();
 
-                // Last where tests if role of user is not Manager and is not an Admin (i.e. just employee)
-                // then filter cases assigned to employee (as contact or developer)
+            // Last where tests if role of current user is not Manager and is not an Admin (i.e. just employee)
+            // then filter cases assigned to employee (as contact or developer)
 
-            return SortCases(sort, sortAsc, cases).ToList();
+            cases = SortCases(sort, sortAsc, cases).ToList();
+            var count = cases.Count;
+            var pageSize = 10; // this COULD/SHOULD to be passed in..........
+            cases = cases.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return new PaginatedListCases(cases, pageIndex, pageSize, count);
         }
 
         // Used in above methods to get list of cases
@@ -198,8 +225,8 @@ namespace TrackIT.Controllers
                     else cases = cases.OrderByDescending(c => c.DateOpened).ToList();
                     break;
                 case "urgency":
-                    if (!sortAsc) cases = cases.OrderBy(c => c.UrgencyLevel).ToList();
-                    else cases = cases.OrderByDescending(c => c.UrgencyLevel).ToList();
+                    if (!sortAsc) cases = cases.OrderByDescending(c => c.UrgencyLevel).ToList();
+                    else cases = cases.OrderBy(c => c.UrgencyLevel).ToList();
                     break;
                 case "status":
                     if (sortAsc) cases = cases.OrderBy(c => c.Status).ToList();
@@ -261,7 +288,7 @@ namespace TrackIT.Controllers
                     UserInfo = new UserInfo
                     {
                         UserName = c.User.UserName,
-                        UserId = c.User.Id,
+                        Id = c.User.Id,
                         FirstName = c.User.FirstName,
                         LastName = c.User.LastName,
                         Email = c.User.Email
@@ -270,7 +297,7 @@ namespace TrackIT.Controllers
                     ContactInfo = new UserInfo
                     {
                         UserName = c.Contact.UserName,
-                        UserId = c.Contact.Id,
+                        Id = c.Contact.Id,
                         FirstName = c.Contact.FirstName,
                         LastName = c.Contact.LastName,
                         Email = c.Contact.Email

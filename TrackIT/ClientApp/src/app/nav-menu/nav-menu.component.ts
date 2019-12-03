@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-//import "jquery";    // added to get ability to use dropdown nav menu
-//import "bootstrap"; // added to get ability to use dropdown nav menu
+//import "jquery";    // added to get ability to use dropdown nav menu - see angular.json because added there
+//import "bootstrap"; // added to get ability to use dropdown nav menu - see angular.json because added there
 declare var $: any;
 
 @Component({

@@ -30,14 +30,14 @@ export class CasesService {
 
     constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
-    getCases(caseFilter, softwareFilter, sort, sortAsc) {
-        return this.http.get<ICases[]>(this.baseUrl + 'api/CasesUser?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
-                                                    + '&sort=' + sort + '&sortAsc=' + sortAsc);
+    getCases(caseFilter, softwareFilter, sort, sortAsc, pageIndex, searchString) {
+        return this.http.get<ICasesPagination>(this.baseUrl + 'api/CasesUser?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
+            + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex + '&searchString=' + searchString);
     }
 
-    getCasesSupport(caseFilter, softwareFilter, typeFilter, sort, sortAsc) {
-        return this.http.get(this.baseUrl + 'api/CasesSupport?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
-                                          + '&typeFilter=' + typeFilter + '&sort=' + sort + '&sortAsc=' + sortAsc);
+    getCasesSupport(caseFilter, softwareFilter, typeFilter, sort, sortAsc, pageIndex, searchString) {
+        return this.http.get<ICasesPagination>(this.baseUrl + 'api/CasesSupport?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
+            + '&typeFilter=' + typeFilter + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex + '&searchString=' + searchString);
     }
 
     getCase(id) {
@@ -56,12 +56,34 @@ export class CasesService {
         return this.http.get<ISoftwares[]>(this.baseUrl + 'api/Softwares');
     }
 
+    getSoftwareTitle(id) {
+        return this.http.get<ISoftwares>(this.baseUrl + 'api/Softwares/' + id);
+    }
+
     addSoftwareTitle(model) {
         return this.http.post(this.baseUrl + 'api/Softwares', model);
     }
 
-    getUsers(role: string) {
-        return this.http.get(this.baseUrl + 'api/Users/' + role);
+    updateSoftwareTitle(model) {
+        return this.http.put(this.baseUrl + 'api/Softwares/' + model.id, model);
+    }
+
+    deleteSoftwareTitle(id) {
+        return this.http.delete(this.baseUrl + 'api/Softwares/' + id);
+    }
+
+    // return type will need to be changed
+    getUsersByRole(role: string, sort: string, sortAsc: boolean, pageIndex: number) {
+        return this.http.get<IUsersPagination>(this.baseUrl + 'api/UsersByRole/' + role + "?" + 'sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex);
+    }
+
+    getUser(id) {
+        return this.http.get<IUser>(this.baseUrl + 'api/User/' + id);
+    }
+
+    updateEmployee(model) {
+        console.log(model);
+        return this.http.put(this.baseUrl + 'api/UserDetails/' + model.id, model);
     }
 
     getCaseMessages(caseId: string) {
@@ -101,4 +123,27 @@ export interface IMessages {
     userId: string;
     isEmployee: boolean;
     caseId: number;
+}
+
+export interface ICasesPagination {
+    cases: ICases,
+    pageIndex: number,
+    totalPages: number,
+    pageSize: number
+}
+
+export interface IUser {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    userName: string;
+    isManager: boolean;
+}
+
+export interface IUsersPagination {
+    users: IUser,
+    pageIndex: number,
+    totalPages: number,
+    pageSize: number
 }

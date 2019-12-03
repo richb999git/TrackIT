@@ -1,0 +1,32 @@
+<h2>Edit software title</h2>
+
+<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
+
+  <p *ngIf="errorMsg=='Server error'">{{ errorMsg }}</p>
+
+  <ul *ngIf="errorMsg!='Server error'">
+    <li *ngFor="let error of errorMsg.Type">
+      {{ error }}
+    </li>
+    <li *ngFor="let error of errorMsg.TypeDescription">
+      {{ error }}
+    </li>
+  </ul>
+
+</div>
+
+<form #softwareForm="ngForm" (ngSubmit)="onSubmit(softwareForm)">
+
+  <div class="form-group">
+    <label for="inputTitle">Title</label>
+    <input type="text" class="form-control" id="title"
+           [ngClass]="(name.invalid && (name.dirty || name.touched))?'text-danger is-invalid':''"
+           placeholder="Enter Title" name="name" minlength="2" required
+           [(ngModel)]="softwareModel.name" #name="ngModel">
+    <small *ngIf="name.errors?.required && (name.dirty || name.touched)" class="text-danger">Title is required</small>
+    <small *ngIf="name.errors?.minlength" class="text-danger">Title must be at least 2 characters long.</small>
+  </div>
+  <br />
+  <button [disabled]="!softwareForm.valid" type="submit" class="btn btn-success col-md-12">Update</button>
+
+</form>

@@ -6,7 +6,7 @@
 <div *ngIf="case && messages">
 
   <br />
-  <a class="" [routerLink]="['/cases-list-support']">Back</a>
+  <a class="" [routerLink]="['/cases-list-support']">Back to Case List</a>
   <br /><br />
   <hr />
   <div>
@@ -250,8 +250,8 @@
 
 
   <div *ngIf="assignStaffFlag">
-    <p *ngIf="!users"><em>Loading...</em></p>
-    <div *ngIf="users">
+    <p *ngIf="!usersP"><em>Loading...</em></p>
+    <div *ngIf="usersP">
       <form #assignForm="ngForm" (ngSubmit)="submitAssignedStaff(assignForm)">
         <button type="submit" class="btn btn-info">Submit staff</button>
       </form>
@@ -260,7 +260,7 @@
         <table class='table table-striped Content1' aria-labelledby="tableLabel">
           <thead>
             <tr>
-              <th>Name</th>
+              <th (click)="sortEmployees('name')" class="highlight">Name</th>
               <th>Contact</th>
               <th>Assigned</th>
               <th></th>
@@ -268,22 +268,24 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of users">
+            <tr *ngFor="let user of usersP.users">
               <td>{{ user.firstName }} {{ user.lastName }}</td>
-              <td *ngIf="user.userId == case.contactId">Contact</td>
-              <td *ngIf="user.userId != case.contactId"></td>
-              <td *ngIf="assignedStaff.includes(user.userId)">Assigned</td>
-              <td *ngIf="!assignedStaff.includes(user.userId)"></td>
-              <td *ngIf="!assignedStaff.includes(user.userId)"><button (click)="assignEmployee(user.userId)" class="btn btn-sm btn-outline-info">Assign</button></td>
-              <td *ngIf="assignedStaff.includes(user.userId)"><button (click)="assignEmployee(user.userId)" class="btn btn-sm btn-outline-info">Unassign</button></td>
-              <td><button (click)="assignContact(user.userId, user.firstName, user.lastName, user.email, user.userName)" class="btn btn-sm btn-outline-info">Set Contact</button></td>
+              <td *ngIf="user.id == case.contactId">Contact</td>
+              <td *ngIf="user.id != case.contactId"></td>
+              <td *ngIf="assignedStaff.includes(user.id)">Assigned</td>
+              <td *ngIf="!assignedStaff.includes(user.id)"></td>
+              <td *ngIf="!assignedStaff.includes(user.id)"><button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info">Assign</button></td>
+              <td *ngIf="assignedStaff.includes(user.id)"><button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info">Unassign</button></td>
+              <td><button (click)="assignContact(user.id, user.firstName, user.lastName, user.email, user.userName)" class="btn btn-sm btn-outline-info">Set Contact</button></td>
             </tr>
           </tbody>
         </table>
       </div>
+      <br />
+      <app-pagination [pageIndex]="pageIndex" [totalPages]="usersP.totalPages" [pagesBefore]="pagesBefore"
+                      [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
+      </app-pagination>
     </div>
-  </div>
-
+  </div> 
   <br />
-
 </div>

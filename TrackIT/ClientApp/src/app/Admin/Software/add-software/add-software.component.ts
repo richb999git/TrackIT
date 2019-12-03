@@ -23,10 +23,7 @@ export class AddSoftwareComponent implements OnInit {
     }
 
     onSubmit(caseForm) {
-        console.log(caseForm);
-        console.log(this.softwareModel);
         this.casesService.addSoftwareTitle(this.softwareModel).subscribe(result => {
-            console.log(result);
             this.router.navigate(['/view-software']);
         }, errors => {
             if (errors.status === 400) {

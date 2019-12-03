@@ -1,0 +1,50 @@
+<h2>Edit Employee</h2>
+
+<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
+
+  <p *ngIf="errorMsg=='Server error'">{{ errorMsg }}</p>
+
+  <ul *ngIf="errorMsg!='Server error'">
+    <li *ngFor="let error of errorMsg.Type">
+      {{ error }}
+    </li>
+    <li *ngFor="let error of errorMsg.TypeDescription">
+      {{ error }}
+    </li>
+  </ul>
+
+</div>
+
+<form #employeeForm="ngForm" (ngSubmit)="onSubmit(employeeForm)">
+  <div class="form-group">
+    <label for="inputFirstName">First Name</label>
+    <input type="text" class="form-control" id="firstName"
+           [ngClass]="(firstName.invalid && (firstName.dirty || firstName.touched))?'text-danger is-invalid':''"
+           placeholder="Enter First Name" name="firstName" required
+           [(ngModel)]="employeeModel.firstName" #firstName="ngModel">
+    <small *ngIf="firstName.errors?.required && (firstName.dirty || firstName.touched)" class="text-danger">First name is required</small>
+  </div>
+  <br />
+  <div class="form-group">
+    <label for="inputLastName">Last Name</label>
+    <input type="text" class="form-control" id="lastName"
+           [ngClass]="(lastName.invalid && (lastName.dirty || lastName.touched))?'text-danger is-invalid':''"
+           placeholder="Enter Last Name" name="lastName" minlength="2" required
+           [(ngModel)]="employeeModel.lastName" #lastName="ngModel">
+    <small *ngIf="lastName.errors?.required && (lastName.dirty || lastName.touched)" class="text-danger">First name is required</small>
+    <small *ngIf="lastName.errors?.minlength" class="text-danger">First name must be at least 2 characters long.</small>
+  </div>
+  <br />
+
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="isManager" name="isManager" [(ngModel)]="employeeModel.isManager" #isManager="ngModel">
+      <label class="form-check-label" for="gridCheck" >
+        Manager?
+      </label>
+    </div>
+  </div>
+
+  <button [disabled]="!employeeForm.valid" type="submit" class="btn btn-success col-md-12">Update</button>
+
+</form>

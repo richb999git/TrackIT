@@ -62,6 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\app\Admin\Employees\" />
     <Folder Include="ClientApp\src\app\Admin\Software\" />
     <Folder Include="ClientApp\src\app\CasesSupport\" />
     <Folder Include="ClientApp\src\assets\images\" />

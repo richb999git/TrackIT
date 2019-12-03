@@ -1,0 +1,17 @@
+.shortMessage {
+  max-width: 250px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.shortMessage:hover, .shortMessage:focus {
+  max-width: initial;
+  text-overflow: initial;
+  white-space: initial;
+}
+
+.widthDatesTime {
+  width: 150px;
+  min-width: 150px;
+}

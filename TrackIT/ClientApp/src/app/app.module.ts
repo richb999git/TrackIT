@@ -20,6 +20,10 @@ import { CaseDisplaySupportComponent } from './CasesSupport/case-display-support
 import { FromToPipe } from '../pipes/from-to.pipe';
 import { AddSoftwareComponent } from './Admin/Software/add-software/add-software.component';
 import { ViewSoftwareComponent } from './Admin/Software/view-software/view-software.component';
+import { EditSoftwareComponent } from './Admin/Software/edit-software/edit-software.component';
+import { PaginationComponent } from './pagination/pagination.component';
+import { ViewEmployeesComponent } from './Admin/Employees/view-employees/view-employees.component';
+import { EditEmployeeComponent } from './Admin/Employees/edit-employee/edit-employee.component';
 
 
 @NgModule({
@@ -34,7 +38,11 @@ import { ViewSoftwareComponent } from './Admin/Software/view-software/view-softw
     CaseDisplaySupportComponent,
     FromToPipe,
     AddSoftwareComponent,
-    ViewSoftwareComponent
+    ViewSoftwareComponent,
+    EditSoftwareComponent,
+    PaginationComponent,
+    ViewEmployeesComponent,
+    EditEmployeeComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -49,7 +57,10 @@ import { ViewSoftwareComponent } from './Admin/Software/view-software/view-softw
         { path: 'cases-list-support', component: CasesListSupportComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "employee", "manager"] } },
         { path: 'case-display-support/:id', component: CaseDisplaySupportComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin", "employee", "manager"] } },
         { path: 'add-software', component: AddSoftwareComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
-        { path: 'view-software', component: ViewSoftwareComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } }
+        { path: 'view-software', component: ViewSoftwareComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'edit-software/:id', component: EditSoftwareComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'view-employees', component: ViewEmployeesComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'edit-employee/:id', component: EditEmployeeComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
     ])
   ],
   providers: [

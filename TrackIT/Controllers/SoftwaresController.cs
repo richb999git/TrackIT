@@ -44,11 +44,13 @@ namespace TrackIT.Controllers
             return software;
         }
 
+
         // PUT: api/Softwares/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSoftware(int id, Software software)
+        public async Task<IActionResult> PutSoftware([Bind("Name")]int id, Software software)
         {
             if (id != software.Id)
             {
@@ -79,8 +81,9 @@ namespace TrackIT.Controllers
         // POST: api/Softwares
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpPost]
-        public async Task<ActionResult<Software>> PostSoftware(Software software)
+        public async Task<ActionResult<Software>> PostSoftware([Bind("Name")] Software software)
         {
             _context.Software.Add(software);
             await _context.SaveChangesAsync();
@@ -89,6 +92,7 @@ namespace TrackIT.Controllers
         }
 
         // DELETE: api/Softwares/5
+        [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Software>> DeleteSoftware(int id)
         {

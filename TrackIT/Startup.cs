@@ -63,7 +63,7 @@ namespace TrackIT
                 options.AddPolicy("RequireEmployeeRole", policy => policy.RequireRole("employee"));  // this doesn't seem to work (even with .AddRoles<IdentityRole>() )
                 options.AddPolicy("RequireEmployeeRoleClaim", policy => policy.RequireClaim(ClaimTypes.Role, "employee"));  // this works
                 options.AddPolicy("RequireManagerRoleClaim", policy => policy.RequireClaim(ClaimTypes.Role, "manager"));
-                options.AddPolicy("RequireAdminRole", policy => policy.RequireClaim(ClaimTypes.Role, "admin"));
+                options.AddPolicy("RequireAdminRoleClaim", policy => policy.RequireClaim(ClaimTypes.Role, "admin"));
             });
 
             services.AddControllersWithViews();

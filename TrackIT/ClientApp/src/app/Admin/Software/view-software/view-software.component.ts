@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CasesService, ISoftwares } from '../../../Cases/_services/cases.service';
+declare var $: any;
 
 @Component({
   selector: 'app-view-software',
@@ -11,6 +12,7 @@ export class ViewSoftwareComponent implements OnInit {
 
     public errorMsg;
     public softwares: Array<ISoftwares>;
+    private deleteId: number;
 
     constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef) { }
 
@@ -22,18 +24,22 @@ export class ViewSoftwareComponent implements OnInit {
     ngOnInit() {
         this.casesService.getSoftwareTitles().subscribe(result => {
             this.softwares = result;
-            console.log(result);
         }, error => console.error(error));
     }
 
     editSoftware(id) {
-        console.log("now go to edit");
-        console.log(id);
+        this.router.navigate(['/edit-software/' + id]);  
     }
 
-}
+    deleteSoftware(id) {
+        this.deleteId = id;
+        $('#myModal').modal('show');
+    }
 
-interface SoftwareModel {
-    //id: number;
-    title: string;
+    confirmDeleteSoftware(e) {
+        this.casesService.deleteSoftwareTitle(this.deleteId).subscribe(result => {
+            this.softwares = this.softwares.filter(x => x.id != this.deleteId);
+        }, error => console.error(error));       
+    }
+
 }

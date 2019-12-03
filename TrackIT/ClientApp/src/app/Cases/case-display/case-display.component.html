@@ -2,9 +2,9 @@
 <br />
 <p *ngIf="!case"><em>Loading...case details</em></p>
 
-<div *ngIf="case">
+<div *ngIf="case && messages">
 
-  <a class="" [routerLink]="['/cases-list']">Back</a>
+  <a class="" [routerLink]="['/cases-list']">Back to Case List</a>
   <br /><br />
   <hr />
   <div>
@@ -55,7 +55,7 @@
   <div><b>{{ case.description }}</b></div>
   <br />
 
-  <button class="btn btn-primary">Upload file</button> <!--need to link up and do this-->
+  <button class="btn btn-success">Upload file</button> <!--need to link up and do this-->
   <br /><br />
 
   <form #messageForm="ngForm" (ngSubmit)="onSubmitMessage(messageForm)">
@@ -70,14 +70,26 @@
       <small *ngIf="comment.errors?.minlength" class="text-danger">Message must be at least 2 characters long.</small>
     </div>
 
-    <button [disabled]="!messageForm.valid" type="submit" class="btn btn-primary">Submit Message</button>
+    <button [disabled]="!messageForm.valid" type="submit" class="btn btn-success">Submit Message</button>
   </form>
 
   <br />
-  <div *ngIf="messages">
-    <div *ngFor="let message of messages">
-      <p>{{message.timeStamp | date: 'dd-MMM-yy HH:mm' }} : {{ message.comment }}</p> <!--need to restrict to say 30 chars and add a button (downward arrow) to show message in full-->
-    </div> <!-- write a pipe to convert isEmployee true into ">" and false into "<" -->
+  <div *ngIf="messages.length!=0" class="">
+    <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
+      <thead>
+        <tr>
+          <th>Sent</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let message of messages">
+          <td class="widthDatesTime">{{ message.timeStamp | date: 'dd-MMM-yy HH:mm' }} {{ message.isEmployee | fromTo }}</td>
+          <td class="shortMessage">{{ message.comment }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <br />
 
 </div>

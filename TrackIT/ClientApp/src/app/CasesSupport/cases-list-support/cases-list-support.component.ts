@@ -1,9 +1,10 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ICases, ISoftwares } from '../../Cases/_services/cases.service';
+import { ISoftwares, ICasesPagination} from '../../Cases/_services/cases.service';
 import { CasesService } from '../../Cases/_services/cases.service';
 import { AuthorizeService } from '../../../api-authorization/authorize.service';
 import { map } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-cases-list-support',
@@ -11,16 +12,24 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./cases-list-support.component.css']
 })
 export class CasesListSupportComponent implements OnInit {
+    
+    public cases: ICasesPagination; //any;
+    public userRole: any;
+    public softwares: ISoftwares[];
 
-    //public cases: ICases[];
-    public cases: any;
+    // pagination sort/filter/search properties:
     public caseFilter: any = 1; // 1 = active cases
     public softwareFilter: any = 0; // 0 = all software
-    public softwares: ISoftwares[];
+    public typeFilter: any = 0; // 0 = all types
     public sortProperty: string = "";
     public sortAsc: boolean = true;
-    public typeFilter: any = 0; // 0 = all types
-    public userRole: any;
+    public searchModel: searchModel = { searchString: "" };
+    public searchString: string = "";
+    // pagination properties:
+    public pageIndex: any = 1;
+    public pagesBefore: Array<number> = [];
+    public pagesAfter: Array<number> = [];
+    public maxPagesEitherSide: number = 4;
 
     constructor(private casesService: CasesService, private router: Router, private authorize: AuthorizeService, private elementRef: ElementRef) { }
 
@@ -30,9 +39,11 @@ export class CasesListSupportComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc).subscribe(result => {
+        this.pageIndex = 1;
+        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, "").subscribe(result => {
+            console.log(result);
             this.cases = result;
-            console.log(this.cases);
+            this.setPagination();
         }, error => console.error(error));
 
         this.casesService.getSoftwareTitles().subscribe(result => {
@@ -50,9 +61,11 @@ export class CasesListSupportComponent implements OnInit {
 
     chooseCaseFilter(e) {
         console.log(this.caseFilter, this.softwareFilter);
-        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc).subscribe(result => {
+        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, this.searchModel.searchString).subscribe(result => {
             this.cases = result;
             console.log(this.cases);
+            this.pageIndex = 1;
+            this.setPagination();
         }, error => console.error(error));
     }
 
@@ -61,9 +74,47 @@ export class CasesListSupportComponent implements OnInit {
             this.sortAsc = !this.sortAsc;
         }
         this.sortProperty = sortProperty;
-        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc).subscribe(result => {
+        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, this.searchModel.searchString).subscribe(result => {
             this.cases = result;
             console.log(this.cases);
+            this.pageIndex = 1;
+            this.setPagination();
         }, error => console.error(error));
     }
+
+    onSubmitSearch(form) {
+        this.searchModel.searchString = form.value.searchString;
+        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, this.searchModel.searchString).subscribe(result => {
+            this.cases = result;
+            console.log(this.cases);
+            this.pageIndex = 1;
+            this.setPagination();
+        }, error => console.error(error));
+    }
+
+    setPagination() {
+        this.pagesBefore = [];
+        this.pagesAfter = [];
+        for (var i = this.cases.pageIndex - this.maxPagesEitherSide; i < this.cases.pageIndex; i++) {
+            if (i > 0) this.pagesBefore.push(i);
+        }
+        for (var i = (this.cases.pageIndex + 1) ; i <= this.cases.totalPages; i++) {
+            this.pagesAfter.push(i);
+            if (i >= this.cases.pageIndex + this.maxPagesEitherSide) break;
+        }
+    }
+
+    pageChangedHandler(page: number) {
+        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, page, this.searchModel.searchString).subscribe(result => {
+            this.cases = result;
+            console.log(this.cases);
+            this.pageIndex = this.cases.pageIndex;
+            this.setPagination();
+        }, error => console.error(error));
+    }
+
+}
+
+interface searchModel {
+    searchString: string;
 }
