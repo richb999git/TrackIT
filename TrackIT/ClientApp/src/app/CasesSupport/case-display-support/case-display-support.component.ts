@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { CasesService, IMessages, ICases, ISoftwares, IUsersPagination } from '../../Cases/_services/cases.service';
+import { CasesService, IMessages, ICases, ISoftwares, IUsersPagination, IUser } from '../../Cases/_services/cases.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorizeService } from '../../../api-authorization/authorize.service';
 import { map } from 'rxjs/operators';
@@ -11,35 +11,35 @@ import { map } from 'rxjs/operators';
 })
 export class CaseDisplaySupportComponent implements OnInit {
 
-    public errorMsg;
-    public case: any;
-    public id: string;
-    public assignedStaff: Array<string> = [];
-    public assignedStaffNames: Array<string> = [];
-    public users: any;
-    public usersP: IUsersPagination;
-    public assignStaffFlag: boolean = false;
-    public userRole: any;
-    public messages: Array<IMessages>;
-    public message: IMessages = { comment: "", userId: "", caseId: null, isEmployee: true, timeStamp: null };
+    private errorMsg;
+    private case: any; // change to ICases? Need to make a lot of changes before I can
+    private userRole: any; // not sure if I can use a type for this
+    private id: string;
+    private assignedStaff: Array<string> = [];
+    private assignedStaffNames: Array<string> = [];
+    private users: IUser; // used to hold just the users (excluding pagination properties)
+    private usersP: IUsersPagination;
+    private assignStaffFlag: boolean = false;
+    private messages: Array<IMessages>;
+    private message: IMessages = { comment: "", userId: "", caseId: null, isEmployee: true, timeStamp: null };
     private messageModel: IMessageModel = { comment: "" };
-    public isUserContact: boolean = false;
-    public isUserDeveloper: boolean = false;
-    public userId: any;
-    public estHoursEntry: boolean = false;
-    public hoursSpentEntry: boolean = false;
-    public estHoursModel: IEstHoursModel = { estimatedTimeHours: 0 };
-    public hoursSpentModel: IHoursSpentModel = { timeSpentHours: 0 };
-    public deadlineModel: IDeadlineModel = { deadline: null };
+    private isUserContact: boolean = false;
+    private isUserDeveloper: boolean = false;
+    private userId: string;
+    private estHoursEntry: boolean = false;
+    private hoursSpentEntry: boolean = false;
+    private estHoursModel: IEstHoursModel = { estimatedTimeHours: 0 };
+    private hoursSpentModel: IHoursSpentModel = { timeSpentHours: 0 };
+    private deadlineModel: IDeadlineModel = { deadline: null };
 
     // pagination sort/filter/search properties:
-    public sortProperty: string = "";
-    public sortAsc: boolean = true;
+    private sortProperty: string = "";
+    private sortAsc: boolean = true;
     // pagination properties:
-    public pageIndex: any = 1;
-    public pagesBefore: Array<number> = [];
-    public pagesAfter: Array<number> = [];
-    public maxPagesEitherSide: number = 4;
+    private pageIndex: number;
+    private pagesBefore: Array<number> = [];
+    private pagesAfter: Array<number> = [];
+    private maxPagesEitherSide: number = 4;
 
     constructor(private casesService: CasesService, private _route: ActivatedRoute, private router: Router, private authorize: AuthorizeService,
                 private elementRef: ElementRef) {
@@ -56,7 +56,7 @@ export class CaseDisplaySupportComponent implements OnInit {
             this.case = result;
             console.log(result);
             this.assignedStaff = this.case.staffAssigned ? this.case.staffAssigned.split(', ') : [];
-            this.populateAssignedStaffNames(); // do I need it here? Yes but only the names of the assigned staff. So find them individually
+            this.populateAssignedStaffNames();
             this.authorize.getUser().pipe(map(u => u && u.userId)).subscribe(
                 userId => {
                     this.userId = userId;
@@ -91,12 +91,23 @@ export class CaseDisplaySupportComponent implements OnInit {
 
     assignEmployee(id: string) {
         // add or subtract employee to/from staff assigned to case list unless already on the list
+        console.log("assignEmployee----------");
+        console.log(this.users);
         if (this.assignedStaff.includes(id)) {
             this.assignedStaff = this.assignedStaff.filter(e => e !== id);
+
+            var name = this.users.find(i => i.id === id); //
+            var fullName = name.firstName + " " + name.lastName;
+            console.log(fullName);
+            this.assignedStaffNames = this.assignedStaffNames.filter(e => e !== fullName);
         } else {
             this.assignedStaff.push(id);
+
+            var name = this.users.find(i => i.id === id); //
+            var fullName = name.firstName + " " + name.lastName;
+            console.log(fullName);
+            this.assignedStaffNames.push(fullName);
         }
-        this.populateAssignedStaffNames(); 
     }
 
     assignContact(id: string, firstName, lastName, email, userName) {
@@ -120,23 +131,26 @@ export class CaseDisplaySupportComponent implements OnInit {
         }
 
         this.updateCase(assignForm);
-
-        this.populateAssignedStaffNames();
+        //this.populateAssignedStaffNames(); not needed?
         this.isUserDeveloper = this.assignedStaff.includes(this.userId) ? true : false;
         this.isUserContact = this.case.contactId == this.userId ? true : false;
     }
 
     showAssignEmployeeSection(caseId) {
         // need to restrict to managers only
-        this.assignStaffFlag = true;
+        this.assignStaffFlag = true;        
         // add filters later: this.progSkills, this.softwareFilter
         this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {
             console.log(result);
             this.usersP = result;
+            this.users = this.usersP.users;
+            console.log(this.assignedStaffNames);
+            this.pageIndex = this.usersP.pageIndex;
             this.setPagination();            
         }, error => console.error(error));
     }    
 
+    // Used only in OnInit
     populateAssignedStaffNames() {
         this.assignedStaffNames = [];
         var fullName = "";
@@ -243,10 +257,12 @@ export class CaseDisplaySupportComponent implements OnInit {
         this.updateCase();
     }
 
+    // not used at the moment
     chooseEmployeeFilter(e) {
         // add filters later: this.progSkills, this.softwareFilter
         this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {
             this.usersP = result;
+            this.users = this.usersP.users;
             this.pageIndex = 1;
             this.setPagination();
         }, error => console.error(error));
@@ -258,6 +274,7 @@ export class CaseDisplaySupportComponent implements OnInit {
         // add filters later: this.progSkills, this.softwareFilter
         this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {
             this.usersP = result;
+            this.users = this.usersP.users;
             console.log(this.usersP);
             this.pageIndex = 1;
             this.setPagination();
@@ -280,6 +297,7 @@ export class CaseDisplaySupportComponent implements OnInit {
         // add filters later: this.progSkills, this.softwareFilter
         this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, page).subscribe(result => {
             this.usersP = result;
+            this.users = this.usersP.users;
             console.log(this.usersP);
             this.pageIndex = this.usersP.pageIndex;
             this.setPagination();

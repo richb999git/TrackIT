@@ -133,6 +133,7 @@ export interface ICasesPagination {
 }
 
 export interface IUser {
+    find(arg0: (i: any) => boolean); // so find can be used
     id: string;
     firstName: string;
     lastName: string;
