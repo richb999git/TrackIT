@@ -41,13 +41,13 @@
   <div class="container row">
     <div class="form-group col-md-4">
       <label for="inputState">Software</label>
-      <select name="softwareId" [(ngModel)]="caseModel.softwareId" (ngModelChange)="changeType($event)" class="form-control">
+      <select name="softwareId" [(ngModel)]="caseModel.softwareId" class="form-control">
         <option *ngFor="let softwareId of softwareIds" [ngValue]="softwareId.id"> {{softwareId.name}} </option>
       </select>
     </div>
     <div class="form-group col-md-4">
       <label for="inputState">Case Type</label>
-      <select name="type" [(ngModel)]="caseModel.type" (ngModelChange)="changeType($event)" class="form-control">
+      <select name="type" [(ngModel)]="caseModel.type" class="form-control">
         <option *ngFor="let type of types" [ngValue]="type.value"> {{type.title}} </option>
       </select>
     </div>

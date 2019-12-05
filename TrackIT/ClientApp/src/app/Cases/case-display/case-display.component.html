@@ -2,7 +2,7 @@
 <br />
 <p *ngIf="!case"><em>Loading...case details</em></p>
 
-<div *ngIf="case && messages">
+<div *ngIf="case && messages && files">
 
   <a class="" [routerLink]="['/cases-list']">Back to Case List</a>
   <br /><br />
@@ -55,7 +55,7 @@
   <div><b>{{ case.description }}</b></div>
   <br />
 
-  <button class="btn btn-success">Upload file</button> <!--need to link up and do this-->
+  <button class="btn btn-success" (click)="uploadFile()">Upload file</button> <!--need to link up and do this-->
   <br /><br />
 
   <form #messageForm="ngForm" (ngSubmit)="onSubmitMessage(messageForm)">
@@ -86,6 +86,26 @@
         <tr *ngFor="let message of messages">
           <td class="widthDatesTime">{{ message.timeStamp | date: 'dd-MMM-yy HH:mm' }} {{ message.isEmployee | fromTo }}</td>
           <td class="shortMessage">{{ message.comment }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br />
+
+  <div *ngIf="files.length!=0" class="">
+    <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
+      <thead>
+        <tr> 
+          <th>FILES ({{ files.length }})</th>   
+          <th>Uploaded</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let file of files">
+          <td class="widthDownload"><a href="{{ file.url }}" (click)="downloadFile()" class="btn btn-success">View</a> </td>
+          <td class="widthDatesTime">{{ file.timeStamp  | date: 'dd-MMM-yy HH:mm' }}</td>
+          <td>{{ file.description }}</td>
         </tr>
       </tbody>
     </table>

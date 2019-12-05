@@ -94,6 +94,10 @@ export class CasesService {
         return this.http.post(this.baseUrl + 'api/Messages', model);
     }
 
+    getCaseFiles(caseId: string) {
+        return this.http.get<IFiles[]>(this.baseUrl + 'api/FileUploadsInCase/' + caseId);
+    }
+
     setSubPageBackground() {
         //this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
         //this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
@@ -147,4 +151,13 @@ export interface IUsersPagination {
     pageIndex: number,
     totalPages: number,
     pageSize: number
+}
+
+export interface IFiles {
+    //id: number;  // auto so not needed
+    description: string;
+    timeStamp: Date;
+    caseId: number;
+    publicId: string;
+    URL: string;
 }

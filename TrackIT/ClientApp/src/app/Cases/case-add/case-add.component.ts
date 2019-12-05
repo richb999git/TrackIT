@@ -10,14 +10,14 @@ import { CasesService, ISoftwares, ICases } from '../_services/cases.service';
 export class CaseAddComponent implements OnInit {
 
     private caseModel: CaseModel = { title: "", description: "", urgencyLevel: 3, softwareId: 2, type: 1 };
-    public errorMsg;
+    private errorMsg;
 
     public types = [{ title: "Bug", value: 1 },
                     { title: "Question", value: 2 },
                     { title: "Issue", value: 3 },
                     { title: "Feature Request", value: 4 }];
 
-    public softwareIds: Array<ISoftwares>;
+    private softwareIds: Array<ISoftwares>;
     
     constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef) { }
 
@@ -48,10 +48,6 @@ export class CaseAddComponent implements OnInit {
         });
     }
 
-    changeType(e) {
-        console.log("changeType selected");
-        console.log(e);
-    }
 }
 
 interface CaseModel {

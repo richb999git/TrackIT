@@ -21,5 +21,6 @@ namespace TrackIT.Data
         public DbSet<TrackIT.Models.Customers> Customers { get; set; }
         public DbSet<TrackIT.Models.Messages> Messages { get; set; }
         public DbSet<TrackIT.Models.Cases> Cases { get; set; }
+        public DbSet<TrackIT.Models.FileUploads> FileUploads { get; set; }
     }
 }

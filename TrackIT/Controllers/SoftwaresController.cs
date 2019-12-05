@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using TrackIT.Data;
 using TrackIT.Models;
+using TrackIT.Settings;
 
 namespace TrackIT.Controllers
 {
@@ -17,6 +19,8 @@ namespace TrackIT.Controllers
     public class SoftwaresController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private TrackITSettings _secrets;
+        private CloudinarySettings _secrets2;
 
         public SoftwaresController(ApplicationDbContext context)
         {

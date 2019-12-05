@@ -46,7 +46,7 @@ namespace TrackIT.Models
 
         public string StaffAssigned { get; set; } // comma delimited string
 
-        public string FilesUploaded { get; set; } // comma delimited string of references to files stored in Cloudify
+        public string FilesUploaded { get; set; } // comma delimited string of references to files stored in Cloudinary (using separate table)
 
         public int Type { get; set; } // enum Type as an int
 

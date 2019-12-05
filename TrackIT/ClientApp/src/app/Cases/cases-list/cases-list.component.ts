@@ -10,20 +10,20 @@ import { CasesService } from '../_services/cases.service';
 })
 export class CasesListComponent implements OnInit {
 
-    public cases: ICasesPagination;
-    public softwares: ISoftwares[];
+    private cases: ICasesPagination;
+    private softwares: ISoftwares[];
 
     // pagination sort/filter/search properties:
-    public caseFilter: any = 1; // 1 = active cases
-    public softwareFilter: any = 0; // 0 = all software
-    public sortProperty: string = "";
-    public sortAsc: boolean = true;
-    public searchModel: searchModel = { searchString: "" };
+    private caseFilter: number = 1; // 1 = active cases
+    private softwareFilter: number = 0; // 0 = all software
+    private sortProperty: string = "";
+    private sortAsc: boolean = true;
+    private searchModel: searchModel = { searchString: "" };
     // pagination properties:
-    public pageIndex: any = 1;
-    public pagesBefore: Array<number> = [];
-    public pagesAfter: Array<number> = [];
-    public maxPagesEitherSide: number = 4;
+    private pageIndex: number = 1;
+    private pagesBefore: Array<number> = [];
+    private pagesAfter: Array<number> = [];
+    private maxPagesEitherSide: number = 4;
 
     constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef) { }
 
@@ -36,14 +36,12 @@ export class CasesListComponent implements OnInit {
         this.pageIndex = 1;
         this.casesService.getCases(this.caseFilter, this.softwareFilter, this.sortProperty, this.sortAsc, 1, "").subscribe(result => {
             this.cases = result;
-            console.log(result);
             this.setPagination();
         }, error => console.error(error));
 
         this.casesService.getSoftwareTitles().subscribe(result => {
             this.softwares = result;
             this.softwares.unshift({ id: 0, name: "All Software" });
-            console.log(this.softwares);
         }, error => console.error(error));
     }
 
@@ -65,7 +63,6 @@ export class CasesListComponent implements OnInit {
         this.sortProperty = sortProperty;
         this.casesService.getCases(this.caseFilter, this.softwareFilter, this.sortProperty, this.sortAsc, 1, this.searchModel.searchString).subscribe(result => {
             this.cases = result;
-            console.log(this.cases);
             this.pageIndex = 1;
             this.setPagination();
         }, error => console.error(error));
@@ -75,7 +72,6 @@ export class CasesListComponent implements OnInit {
         this.searchModel.searchString = form.controls.searchString.value == null ? "" : form.controls.searchString.value;
         this.casesService.getCases(this.caseFilter, this.softwareFilter, this.sortProperty, this.sortAsc, 1, this.searchModel.searchString).subscribe(result => {
             this.cases = result;
-            console.log(this.cases);
             this.pageIndex = 1;
             this.setPagination();
         }, error => console.error(error));
@@ -96,7 +92,6 @@ export class CasesListComponent implements OnInit {
     pageChangedHandler(page: number) {
         this.casesService.getCases(this.caseFilter, this.softwareFilter, this.sortProperty, this.sortAsc, page, this.searchModel.searchString).subscribe(result => {
             this.cases = result;
-            console.log(this.cases);
             this.pageIndex = this.cases.pageIndex;
             this.setPagination();
         }, error => console.error(error));

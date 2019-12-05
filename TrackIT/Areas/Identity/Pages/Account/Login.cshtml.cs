@@ -15,6 +15,7 @@ using TrackIT.Models;
 using System.Security.Claims;
 using IdentityModel;
 using TrackIT.Data;
+using TrackIT.Settings;
 
 namespace TrackIT.Areas.Identity.Pages.Account
 {
@@ -67,7 +68,7 @@ namespace TrackIT.Areas.Identity.Pages.Account
         }
 
         public async Task OnGetAsync(string returnUrl = null)
-        {
+        {            
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
