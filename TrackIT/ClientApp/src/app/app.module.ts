@@ -24,6 +24,9 @@ import { EditSoftwareComponent } from './Admin/Software/edit-software/edit-softw
 import { PaginationComponent } from './pagination/pagination.component';
 import { ViewEmployeesComponent } from './Admin/Employees/view-employees/view-employees.component';
 import { EditEmployeeComponent } from './Admin/Employees/edit-employee/edit-employee.component';
+import { ViewMessagesComponent } from './Messages/view-messages/view-messages.component';
+import { UploadFilesComponent } from './FileUpload/upload-files/upload-files.component';
+import { ShowErrorsComponent } from './show-errors/show-errors.component';
 
 
 @NgModule({
@@ -42,7 +45,10 @@ import { EditEmployeeComponent } from './Admin/Employees/edit-employee/edit-empl
     EditSoftwareComponent,
     PaginationComponent,
     ViewEmployeesComponent,
-    EditEmployeeComponent
+    EditEmployeeComponent,
+    ViewMessagesComponent,
+    UploadFilesComponent,
+    ShowErrorsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -1,0 +1,45 @@
+<div *ngIf="messages">
+
+  <app-show-errors [errors]="errorMsg"></app-show-errors>
+
+  <form #messageForm="ngForm" (ngSubmit)="onSubmitMessage(messageForm)">
+    <div class="form-group">
+      <label for="inputMessage">New message</label>
+      <textarea type="text" class="form-control" id="comment" rows="3"
+                [ngClass]="(comment.invalid && (comment.dirty || comment.touched))?'text-danger is-invalid':''"
+                name="comment" placeholder="Enter Message" minlength="2" required
+                [(ngModel)]="messageModel.comment" #comment="ngModel">
+          </textarea>
+      <small *ngIf="comment.errors?.required && (comment.dirty || comment.touched)" class="text-danger">Message is required. </small>
+      <small *ngIf="comment.errors?.minlength" class="text-danger">Message must be at least 2 characters long.</small>
+    </div>
+
+    <button [disabled]="!messageForm.valid" type="submit" class="btn btn-success">Submit Message</button>
+  </form>
+
+  <br />
+
+  <div *ngIf="messages.length!=0" class="">
+    <h4><b>MESSAGES ({{messages.length}}) <b class="highlightHover" title="show/hide messages" (click)="toggleShowMessages()">{{ showHide }} </b></b></h4>
+    <div *ngIf="showMessages">
+      <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
+        <thead>
+          <tr>
+            <th>Sent</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let message of messages.reverse()">
+            <td class="widthDatesTime">{{ message.timeStamp | date: 'dd-MMM-yy HH:mm' }} {{ message.isEmployee | fromTo }}</td>
+            <td class="shortMessage">{{ message.comment }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+    </div>
+  </div>
+
+  <br />
+
+</div>

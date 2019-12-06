@@ -259,7 +259,6 @@ namespace TrackIT.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CasesToReturn>> GetCase(int id)
         {
-            //var cases = await _context.Cases.FindAsync(id);
             var cases = await _context.Cases
                 .Include(c => c.Software)
                 .Include(c => c.User)

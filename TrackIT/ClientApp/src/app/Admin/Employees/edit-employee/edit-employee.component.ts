@@ -24,7 +24,7 @@ export class EditEmployeeComponent implements OnInit {
             this.casesService.getUser(this.id).subscribe(result => {
                 console.log(result);
                 this.employeeModel = result;
-            }, error => console.error(error));
+            }, errors => this.errorMsg = errors);
         });
     }
 
@@ -37,21 +37,9 @@ export class EditEmployeeComponent implements OnInit {
         console.log(this.employeeModel);
         this.casesService.updateEmployee(this.employeeModel).subscribe(result => {
             this.router.navigate(['/view-employees']);
-        }, errors => {
-            if (errors.status === 400) {
-                this.errorMsg = errors.error.errors;
-            } else {
-                this.errorMsg = "Server error";
-            }
-        });
+        }, errors => this.errorMsg = errors);
     }
 }
-
-//interface EmployeeModel {
-//    id: string;
-//    firstName: string;
-//    lastName: string;
-//}
 
 interface EmployeeModel {
     id: string;

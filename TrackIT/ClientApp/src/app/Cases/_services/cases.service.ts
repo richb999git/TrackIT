@@ -86,7 +86,7 @@ export class CasesService {
         return this.http.put(this.baseUrl + 'api/UserDetails/' + model.id, model);
     }
 
-    getCaseMessages(caseId: string) {
+    getCaseMessages(caseId: string) { // caseId is a number but passed to here as a string
         return this.http.get<IMessages[]>(this.baseUrl + 'api/MessagesInCase/' + caseId);
     }
 
@@ -104,7 +104,7 @@ export class CasesService {
         formData.append('caseId', file.caseId.toString());
         formData.append('description', file.description);
         console.log(formData);
-        return this.http.post(this.baseUrl + 'api/FileUploads', formData)            
+        return this.http.post<IFiles>(this.baseUrl + 'api/FileUploads', formData)            
     }
 
     setSubPageBackground() {

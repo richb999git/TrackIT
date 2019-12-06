@@ -1,11 +1,14 @@
 <h1 id="tableLabel">Case</h1>
 <br />
 <p *ngIf="!case"><em>Loading...case details</em></p>
+<app-show-errors [errors]="errorMsg"></app-show-errors>
 
-<div *ngIf="case && messages && files">
+<div *ngIf="case">
 
   <a class="" [routerLink]="['/cases-list']">Back to Case List</a>
-  <br /><br />
+  <br />
+  <app-show-errors [errors]="errorMsg"></app-show-errors>
+  <br />
   <hr />
   <div>
     <div class="row">
@@ -55,47 +58,13 @@
   <div><b>{{ case.description }}</b></div>
   <br /><br />
 
-  <form #messageForm="ngForm" (ngSubmit)="onSubmitMessage(messageForm)">
-    <div class="form-group">
-      <label for="inputMessage">New message</label>
-      <textarea type="text" class="form-control" id="comment" rows="3"
-                [ngClass]="(comment.invalid && (comment.dirty || comment.touched))?'text-danger is-invalid':''"
-                name="comment" placeholder="Enter Message" minlength="2" required
-                [(ngModel)]="messageModel.comment" #comment="ngModel">
-        </textarea>
-      <small *ngIf="comment.errors?.required && (comment.dirty || comment.touched)" class="text-danger">Message is required. </small>
-      <small *ngIf="comment.errors?.minlength" class="text-danger">Message must be at least 2 characters long.</small>
-    </div>
-
-    <button [disabled]="!messageForm.valid" type="submit" class="btn btn-success">Submit Message</button>
-  </form>
-
   <br />
-  <div *ngIf="messages.length!=0" class="">
-    <h4><b>MESSAGES ({{messages.length}})</b></h4>
-    <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
-      <thead>
-        <tr>
-          <th>Sent</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let message of messages">
-          <td class="widthDatesTime">{{ message.timeStamp | date: 'dd-MMM-yy HH:mm' }} {{ message.isEmployee | fromTo }}</td>
-          <td class="shortMessage">{{ message.comment }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <br />
-    
-  </div>
-
-  <div *ngIf="!openFileUpload">
+  <app-view-messages [caseId]="case.id" [caseUserId]="case.userId" [isEmployee]=false (getErrors)="messageErrorHandler($event)"></app-view-messages>
+  <br />
+  <!--<div *ngIf="!openFileUpload">
     <button  class="btn btn-success" (click)="openFileUploadBox()">Upload file</button>
     <br />
   </div>
-  
 
   <div *ngIf="openFileUpload">
 
@@ -135,7 +104,7 @@
     <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
       <thead>
         <tr>
-          <th></th>  
+          <th></th>
           <th>Uploaded</th>
           <th>Description</th>
         </tr>
@@ -148,8 +117,9 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </div>-->
 
+  <app-upload-files [caseId]="case.id" (getErrors)="messageErrorHandler($event)"></app-upload-files>
 
 </div>
 <br />

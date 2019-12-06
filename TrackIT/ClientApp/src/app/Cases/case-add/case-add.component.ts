@@ -29,7 +29,7 @@ export class CaseAddComponent implements OnInit {
     ngOnInit() {
         this.casesService.getSoftwareTitles().subscribe(result => {
             this.softwareIds = result;
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     onSubmit(caseForm) {
@@ -39,13 +39,7 @@ export class CaseAddComponent implements OnInit {
         this.casesService.addCase(this.caseModel).subscribe(result => {
             console.log(result);
             this.router.navigate(['/cases-list']);
-        }, errors => {
-            if (errors.status === 400) {
-                this.errorMsg = errors.error.errors;
-            } else {
-                this.errorMsg = "Server error";
-            }
-        });
+        }, errors => this.errorMsg = errors);
     }
 
 }

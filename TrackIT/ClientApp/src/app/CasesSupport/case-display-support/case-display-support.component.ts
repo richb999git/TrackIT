@@ -20,9 +20,6 @@ export class CaseDisplaySupportComponent implements OnInit {
     private users: IUser; // used to hold just the users (excluding pagination properties)
     private usersP: IUsersPagination;
     private assignStaffFlag: boolean = false;
-    private messages: Array<IMessages>;
-    private message: IMessages = { comment: "", userId: "", caseId: null, isEmployee: true, timeStamp: null };
-    private messageModel: IMessageModel = { comment: "" };
     private isUserContact: boolean = false;
     private isUserDeveloper: boolean = false;
     private userId: string;
@@ -64,29 +61,9 @@ export class CaseDisplaySupportComponent implements OnInit {
                     this.isUserContact = this.case.contactId == this.userId ? true : false;
                 });
 
-        }, error => console.error(error));
-
-        this.casesService.getCaseMessages(this.id).subscribe(result => {
-            this.messages = result;
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
 
         this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
-    }
-
-    onSubmitMessage(messageForm) {
-        this.message = { comment: this.messageModel.comment, userId: this.case.userId, caseId: this.case.id, isEmployee: true, timeStamp: null };
-        this.casesService.addCaseMessage(this.message).subscribe(result => {
-            this.message.timeStamp = new Date();
-            this.messages.push(this.message);
-        }, errors => {
-            console.log(errors);
-            if (errors.status === 400) {
-                this.errorMsg = errors.error.errors;
-            } else {
-                this.errorMsg = "Server error";
-            }
-        });
-        messageForm.reset(); // or messageForm.resetForm();
     }
 
     assignEmployee(id: string) {
@@ -147,7 +124,7 @@ export class CaseDisplaySupportComponent implements OnInit {
             console.log(this.assignedStaffNames);
             this.pageIndex = this.usersP.pageIndex;
             this.setPagination();            
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }    
 
     // Used only in OnInit
@@ -158,7 +135,7 @@ export class CaseDisplaySupportComponent implements OnInit {
             this.casesService.getUser(id).subscribe(result => {
                 fullName = result.firstName + " " + result.lastName;
                 this.assignedStaffNames.push(fullName);
-            }, error => console.error(error));
+            }, errors => this.errorMsg = errors);
         }
     }    
 
@@ -184,13 +161,7 @@ export class CaseDisplaySupportComponent implements OnInit {
 
     updateCase(form = null) {
         this.casesService.updateCase(this.case).subscribe(result => { // PUT and model?
-        }, errors => {
-            if (errors.status === 400) {
-                this.errorMsg = errors.error.errors; // need to put errors at the top of the screen
-            } else {
-                this.errorMsg = "Server error";
-            }
-        });
+        }, errors => this.errorMsg = errors);
         if (form) form.reset(); // or form.resetForm();
     }
 
@@ -265,7 +236,7 @@ export class CaseDisplaySupportComponent implements OnInit {
             this.users = this.usersP.users;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     sortEmployees(sortProperty) {
@@ -278,7 +249,7 @@ export class CaseDisplaySupportComponent implements OnInit {
             console.log(this.usersP);
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     setPagination() {
@@ -301,11 +272,8 @@ export class CaseDisplaySupportComponent implements OnInit {
             console.log(this.usersP);
             this.pageIndex = this.usersP.pageIndex;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
-
-
-    
 
 
 }

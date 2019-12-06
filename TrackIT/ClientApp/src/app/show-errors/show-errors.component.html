@@ -1,0 +1,23 @@
+<div class="alert alert-danger" role="alert" *ngIf="errors">
+
+  <p *ngIf="!errors.error">Server Error</p>
+
+  <div *ngIf="errors.error">
+    
+    <div *ngIf="!errors.TypeDescription">
+      <p *ngIf="errors.error.status">Error status: {{ errors.error.status }}</p>
+      <p *ngIf="errors.error.title">{{ errors.error.title }}</p>
+      <p *ngIf="!objectHasProperties(errors.error)">{{ errors.error }}</p>
+    </div>
+
+    <ul *ngIf="!errors.TypeDescription">
+      <li *ngFor="let error of errors.Type">
+        {{ error }}
+      </li>
+      <li *ngFor="let error of errors.TypeDescription">
+        {{ error }}
+      </li>
+    </ul>
+  </div>
+
+</div>

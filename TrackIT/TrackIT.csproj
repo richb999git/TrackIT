@@ -68,6 +68,8 @@
     <Folder Include="ClientApp\src\app\Admin\Employees\" />
     <Folder Include="ClientApp\src\app\Admin\Software\" />
     <Folder Include="ClientApp\src\app\CasesSupport\" />
+    <Folder Include="ClientApp\src\app\Messages\" />
+    <Folder Include="ClientApp\src\app\FileUpload\" />
     <Folder Include="ClientApp\src\assets\images\" />
   </ItemGroup>
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

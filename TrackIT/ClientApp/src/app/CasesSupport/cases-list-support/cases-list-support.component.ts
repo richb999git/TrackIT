@@ -12,7 +12,8 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./cases-list-support.component.css']
 })
 export class CasesListSupportComponent implements OnInit {
-    
+
+    private errorMsg: any;
     private cases: ICasesPagination; //any;
     private userRole: any;
     private softwares: ISoftwares[];
@@ -43,12 +44,12 @@ export class CasesListSupportComponent implements OnInit {
         this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, "").subscribe(result => {
             this.cases = result;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
 
         this.casesService.getSoftwareTitles().subscribe(result => {
             this.softwares = result;
             this.softwares.unshift({ id: 0, name: "All Software" });
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
 
         this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
     }
@@ -63,7 +64,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     sortCase(sortProperty) {
@@ -75,7 +76,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     onSubmitSearch(form) {
@@ -84,7 +85,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     setPagination() {
@@ -104,7 +105,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = this.cases.pageIndex;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
 }

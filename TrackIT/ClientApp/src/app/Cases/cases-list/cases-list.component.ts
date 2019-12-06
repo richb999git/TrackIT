@@ -10,6 +10,7 @@ import { CasesService } from '../_services/cases.service';
 })
 export class CasesListComponent implements OnInit {
 
+    private errorMsg: any;
     private cases: ICasesPagination;
     private softwares: ISoftwares[];
 
@@ -37,12 +38,12 @@ export class CasesListComponent implements OnInit {
         this.casesService.getCases(this.caseFilter, this.softwareFilter, this.sortProperty, this.sortAsc, 1, "").subscribe(result => {
             this.cases = result;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => console.log(errors));
 
         this.casesService.getSoftwareTitles().subscribe(result => {
             this.softwares = result;
             this.softwares.unshift({ id: 0, name: "All Software" });
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     editCase(id) {
@@ -54,7 +55,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
 
@@ -65,7 +66,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     onKeySearch(form) {
@@ -74,7 +75,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     setPagination() {
@@ -94,7 +95,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = this.cases.pageIndex;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 }
 

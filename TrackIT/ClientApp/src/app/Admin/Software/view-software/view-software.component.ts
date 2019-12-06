@@ -24,7 +24,7 @@ export class ViewSoftwareComponent implements OnInit {
     ngOnInit() {
         this.casesService.getSoftwareTitles().subscribe(result => {
             this.softwares = result;
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     editSoftware(id) {
@@ -39,7 +39,7 @@ export class ViewSoftwareComponent implements OnInit {
     confirmDeleteSoftware(e) {
         this.casesService.deleteSoftwareTitle(this.deleteId).subscribe(result => {
             this.softwares = this.softwares.filter(x => x.id != this.deleteId);
-        }, error => console.error(error));       
+        }, errors => this.errorMsg = errors);       
     }
 
 }

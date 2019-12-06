@@ -1,19 +1,6 @@
 <h2>Add new software title</h2>
 
-<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
-
-  <p *ngIf="errorMsg=='Server error'">{{ errorMsg }}</p>
-
-  <ul *ngIf="errorMsg!='Server error'">
-    <li *ngFor="let error of errorMsg.Type">
-      {{ error }}
-    </li>
-    <li *ngFor="let error of errorMsg.TypeDescription">
-      {{ error }}
-    </li>
-  </ul>
-
-</div>
+<app-show-errors [errors]="errorMsg"></app-show-errors>
 
 <form #softwareForm="ngForm" (ngSubmit)="onSubmit(softwareForm)">
 

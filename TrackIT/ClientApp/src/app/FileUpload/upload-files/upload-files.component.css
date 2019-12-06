@@ -1,0 +1,30 @@
+.widthDownload {
+   width: 1%;
+}
+
+.max-width500 {
+  max-width: 500px;
+}
+
+.shortMessage {
+  max-width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+  .shortMessage:hover, .shortMessage:focus {
+    max-width: initial;
+    text-overflow: initial;
+    white-space: initial;
+  }
+
+.widthDatesTime {
+  width: 1%;
+  white-space: nowrap
+}
+
+.highlightHover:hover {
+  color: #5cb85c; /*bootstrap success colour*/
+  cursor: pointer;
+}

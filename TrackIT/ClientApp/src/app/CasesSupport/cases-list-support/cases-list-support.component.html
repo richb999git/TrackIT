@@ -40,6 +40,7 @@
 </div>
 
 <p *ngIf="!cases"><em>Loading...</em></p>
+<app-show-errors [errors]="errorMsg"></app-show-errors>
 
 <div *ngIf="cases">
   <br />

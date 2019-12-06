@@ -32,7 +32,7 @@ export class ViewEmployeesComponent implements OnInit {
             this.usersP = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
 
         this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
     }
@@ -53,7 +53,7 @@ export class ViewEmployeesComponent implements OnInit {
             this.usersP = result;
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     sortEmployees(sortProperty) {
@@ -65,7 +65,7 @@ export class ViewEmployeesComponent implements OnInit {
             console.log(this.usersP);
             this.pageIndex = 1;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
     setPagination() {
@@ -87,7 +87,7 @@ export class ViewEmployeesComponent implements OnInit {
             console.log(this.usersP);
             this.pageIndex = this.usersP.pageIndex;
             this.setPagination();
-        }, error => console.error(error));
+        }, errors => this.errorMsg = errors);
     }
 
 }

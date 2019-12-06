@@ -1,19 +1,6 @@
 <h2>Edit Employee</h2>
 
-<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
-
-  <p *ngIf="errorMsg=='Server error'">{{ errorMsg }}</p>
-
-  <ul *ngIf="errorMsg!='Server error'">
-    <li *ngFor="let error of errorMsg.Type">
-      {{ error }}
-    </li>
-    <li *ngFor="let error of errorMsg.TypeDescription">
-      {{ error }}
-    </li>
-  </ul>
-
-</div>
+<app-show-errors [errors]="errorMsg"></app-show-errors>
 
 <form #employeeForm="ngForm" (ngSubmit)="onSubmit(employeeForm)">
   <div class="form-group">

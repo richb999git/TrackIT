@@ -25,13 +25,7 @@ export class AddSoftwareComponent implements OnInit {
     onSubmit(caseForm) {
         this.casesService.addSoftwareTitle(this.softwareModel).subscribe(result => {
             this.router.navigate(['/view-software']);
-        }, errors => {
-            if (errors.status === 400) {
-                this.errorMsg = errors.error.errors;
-            } else {
-                this.errorMsg = "Server error";
-            }
-        });
+        }, errors => this.errorMsg = errors);
     }
 
 }

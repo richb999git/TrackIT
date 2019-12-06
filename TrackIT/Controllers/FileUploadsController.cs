@@ -203,6 +203,7 @@ namespace TrackIT.Controllers
             catch
             {
                 // error therefore should the uploaded file be deleted?
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return CreatedAtAction("GetFileUpload", new { id = newFile.Id }, newFile); // ?????? Need to confirm what is required here

@@ -27,20 +27,14 @@ export class EditSoftwareComponent implements OnInit {
             this.id = parseInt(params.get('id'));
             this.casesService.getSoftwareTitle(this.id).subscribe(result => {
                 this.softwareModel = result;
-            }, error => console.error(error));
+            }, errors => this.errorMsg = errors);
         });
     }
 
     onSubmit(caseForm) {
         this.casesService.updateSoftwareTitle(this.softwareModel).subscribe(result => {
             this.router.navigate(['/view-software']);
-        }, errors => {
-            if (errors.status === 400) {
-                this.errorMsg = errors.error.errors;
-            } else {
-                this.errorMsg = "Server error";
-            }
-        });
+        }, errors => this.errorMsg = errors);
     }
 
 }
