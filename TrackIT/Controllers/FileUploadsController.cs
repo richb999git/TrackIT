@@ -21,6 +21,7 @@ namespace TrackIT.Controllers
         public string Description { get; set; }
         public DateTime? TimeStamp { get; set; }
         public string PublicId { get; set; }
+        public int CaseId { get; set; }
 
         public FileUploadsCreate()
         {
@@ -131,73 +132,78 @@ namespace TrackIT.Controllers
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         //public async Task<ActionResult<FileUploads>> PostFileUploads(FileUploads fileUploads) // was
-        public async Task<ActionResult> PostFileUploads([FromForm] FileUploadsCreate fileUploads, int caseId=44) /////// need to send caseId
+        public async Task<ActionResult> PostFileUploads([FromForm] FileUploadsCreate fileUploads) //[FromForm]
         {
             var file = fileUploads.File;
-            var uploadResultImage = new ImageUploadResult(); // Not sure why this has to be ImageUploadResult
-            var uploadResultRaw = new RawUploadResult(); // How do you set the file extension type? Could get the extention from the file variable (ending)
+            var uploadResultImage = new ImageUploadResult();
+            var uploadResultRaw = new RawUploadResult();
             string url;
             string publicId;
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file provided");
+            }
 
             if (file.Length > 400000)
             {
                 return BadRequest("File too big. Please resize it.");
             }
-
-            // should filter request so only required types are sent here but...
-            // need to check for wrong type error and send back response.
-            if (file == null || file.Length > 0)
+            
+            using (var stream = file.OpenReadStream())
             {
-                using (var stream = file.OpenReadStream())
+                if (file.ContentType.Contains("image"))
                 {
-                    if (file.ContentType.Contains("image"))
+                    var uploadParamsImage = new ImageUploadParams()
                     {
-                        var uploadParamsImage = new ImageUploadParams()
-                        {
-                            File = new FileDescription(file.Name, stream), // Name = "File", seems to work with images
-                            Transformation = new Transformation().Width(400), // this resizes the image maintaining the same aspect ratio
-                        };
-                        uploadResultImage = _cloudinary.Upload(uploadParamsImage);
-                        if (uploadResultImage.Uri == null)
-                        {
-                            return BadRequest("Could not upload file. Wrong file type.");
-                        }
-                        url = uploadResultImage.Uri.ToString();
-                        publicId = uploadResultImage.PublicId;
-                    }
-                    else
+                        File = new FileDescription(file.Name, stream), // Name = "File", seems to work with images
+                        Transformation = new Transformation().Width(400), // this resizes the image maintaining the same aspect ratio
+                    };
+                    uploadResultImage = _cloudinary.Upload(uploadParamsImage);
+                    if (uploadResultImage.Uri == null)
                     {
-                        var uploadParams = new RawUploadParams()
-                        {
-                            File = new FileDescription(file.FileName, stream), // Name = "File", FileName includes file name inc extension
-                        };
-                        uploadResultRaw = _cloudinary.Upload(uploadParams);
-                        if (uploadResultRaw.Uri == null)
-                        {
-                            return BadRequest("Could not upload file. Wrong file type.");
-                        }
-                        url = uploadResultRaw.Uri.ToString();
-                        publicId = uploadResultRaw.PublicId;
+                        return BadRequest("Could not upload file. Wrong file type.");
                     }
+                    url = uploadResultImage.Uri.ToString();
+                    publicId = uploadResultImage.PublicId;
+                }
+                else
+                {
+                    var uploadParams = new RawUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, stream), // Name = "File", FileName includes file name inc extension
+                    };
+                    uploadResultRaw = _cloudinary.Upload(uploadParams);
+                    if (uploadResultRaw.Uri == null)
+                    {
+                        return BadRequest("Could not upload file. Wrong file type.");
+                    }
+                    url = uploadResultRaw.Uri.ToString();
+                    publicId = uploadResultRaw.PublicId;
+                }
 
-                };                
-            }
-            else
-            {
-                return BadRequest("No file provided");
-            }
+            };                
+            
+           
 
             var newFile = new FileUploads
             {
                 URL = url,
-                CaseId = caseId,
+                CaseId = fileUploads.CaseId,
                 TimeStamp = DateTime.Now,
                 PublicId = publicId,
                 Description = fileUploads.Description
             };
 
-            _context.FileUploads.Add(newFile); 
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.FileUploads.Add(newFile); 
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                // error therefore should the uploaded file be deleted?
+            }
 
             return CreatedAtAction("GetFileUpload", new { id = newFile.Id }, newFile); // ?????? Need to confirm what is required here
         }

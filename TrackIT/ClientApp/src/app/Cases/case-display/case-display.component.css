@@ -17,6 +17,10 @@
 }
 
 .widthDownload {
-  width: 108px;
-  min-width: 108px;
+  width: 120px;
+  min-width: 120px;
+}
+
+.max-width500 {
+  max-width: 500px;
 }

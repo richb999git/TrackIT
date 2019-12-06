@@ -53,9 +53,6 @@
   <br />
   <div>Description</div>
   <div><b>{{ case.description }}</b></div>
-  <br />
-
-  <button class="btn btn-success" (click)="uploadFile()">Upload file</button> <!--need to link up and do this-->
   <br /><br />
 
   <form #messageForm="ngForm" (ngSubmit)="onSubmitMessage(messageForm)">
@@ -75,6 +72,7 @@
 
   <br />
   <div *ngIf="messages.length!=0" class="">
+    <h4><b>MESSAGES ({{messages.length}})</b></h4>
     <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
       <thead>
         <tr>
@@ -89,27 +87,69 @@
         </tr>
       </tbody>
     </table>
+    <br />
+    
   </div>
+
+  <div *ngIf="!openFileUpload">
+    <button  class="btn btn-success" (click)="openFileUploadBox()">Upload file</button>
+    <br />
+  </div>
+  
+
+  <div *ngIf="openFileUpload">
+
+    <form #fileUploadForm="ngForm" (ngSubmit)="uploadFile(fileUploadForm)">
+
+      <div class="form-group">
+        <label for="inputDescription">File Description</label>
+        <input type="text" class="form-control max-width500" id="fileDescription"
+               name="fileDescription" placeholder="Enter a description" minlength="2" required
+               [(ngModel)]="fileModel.description" #description="ngModel" />
+        <small *ngIf="description.errors?.required && (description.dirty || description.touched)" class="text-danger">File description is required</small>
+        <small *ngIf="description.errors?.minlength" class="text-danger">Description name must be at least 2 characters long.</small>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group max-width500">
+          <div class="custom-file">
+            <input name="menuFile" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" (change)="chooseFile($event.target.files)">
+            <label id="fileName" class="custom-file-label" for="inputGroupFile01">{{ file?.file?.name || "Choose file" }}</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <button [disabled]="!fileUploadForm.valid" type="submit" class="btn btn-success">Upload</button>
+        <button type="button" class="btn btn-success ml-3" (click)="cancelUpload()">Cancel</button>
+      </div>
+
+    </form>
+
+  </div>
+
   <br />
 
   <div *ngIf="files.length!=0" class="">
+    <h4><b>FILES ({{files.length}})</b></h4>
     <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
       <thead>
-        <tr> 
-          <th>FILES ({{ files.length }})</th>   
+        <tr>
+          <th></th>  
           <th>Uploaded</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let file of files">
-          <td class="widthDownload"><a href="{{ file.url }}" (click)="downloadFile()" class="btn btn-success">View</a> </td>
+          <td class="widthDownload"><a href="{{ file.url }}" target="_blank" (click)="downloadFile()" class="btn btn-sm btn-outline-success">View/Download</a> </td>
           <td class="widthDatesTime">{{ file.timeStamp  | date: 'dd-MMM-yy HH:mm' }}</td>
-          <td>{{ file.description }}</td>
+          <td class="shortMessage">{{ file.description }}</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <br />
+
 
 </div>
+<br />

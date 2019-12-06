@@ -16,7 +16,9 @@ export class CaseDisplayComponent implements OnInit {
     private message: IMessages = {comment: "", userId: "", caseId: null, isEmployee: true, timeStamp: null};
     private messageModel: MessageModel = { comment: "" };
     private files: Array<IFiles>;
-    private file: IFiles;
+    private file: IFiles = { description: "", publicId: "", url: "", caseId: null, timeStamp: null, file: null };
+    private openFileUpload: boolean = false;
+    private fileModel: FileModel = { description: "" };
 
     constructor(private casesService: CasesService, private _route: ActivatedRoute, private elementRef: ElementRef) {
         // For a static snapshot of the route...
@@ -63,13 +65,41 @@ export class CaseDisplayComponent implements OnInit {
         // need to just download the file. Not sure how to do that yet. Get http link and go to it? RowAndGo had an download section so check it.
     }
 
-    uploadFile() {
-        console.log("In upload file section");
-        // need to show a file selection box. Not sure how to do it yet. RowAndGo had an upload section so check it.
+    openFileUploadBox() {
+        this.openFileUpload = true;
+    }
+
+    uploadFile(form) {
+        this.file.description = this.fileModel.description;
+        this.file.timeStamp = new Date();
+        this.openFileUpload = false;
+        this.casesService.postCaseFile(this.file).subscribe(result => {
+            console.log(result);
+            this.files.push(this.file)
+            this.file = null;
+            // display a message to say file uploaded?
+        }, error => console.error(error));
+    }
+
+    chooseFile(filesChosen: FileList) {
+        if (filesChosen) {
+            this.file.file = filesChosen.item(0);
+            this.file.caseId = this.case.id;          
+        }
+    }
+
+    cancelUpload() {
+        this.openFileUpload = false;
+        this.file = { description: "", publicId: "", url: "", caseId: null, timeStamp: null, file: null };
+        this.fileModel.description = "";
     }
 }
 
 interface MessageModel {
     //id: number;
     comment: string;
+}
+
+interface FileModel {
+    description: string;
 }

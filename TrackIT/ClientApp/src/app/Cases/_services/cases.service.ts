@@ -98,6 +98,15 @@ export class CasesService {
         return this.http.get<IFiles[]>(this.baseUrl + 'api/FileUploadsInCase/' + caseId);
     }
 
+    postCaseFile(file: IFiles) {
+        const formData: FormData = new FormData();
+        formData.append('File', file.file, file.file.name);
+        formData.append('caseId', file.caseId.toString());
+        formData.append('description', file.description);
+        console.log(formData);
+        return this.http.post(this.baseUrl + 'api/FileUploads', formData)            
+    }
+
     setSubPageBackground() {
         //this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
         //this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
@@ -159,5 +168,6 @@ export interface IFiles {
     timeStamp: Date;
     caseId: number;
     publicId: string;
-    URL: string;
+    url: string;
+    file: File;
 }
