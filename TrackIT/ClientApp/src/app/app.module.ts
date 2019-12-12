@@ -27,6 +27,13 @@ import { EditEmployeeComponent } from './Admin/Employees/edit-employee/edit-empl
 import { ViewMessagesComponent } from './Messages/view-messages/view-messages.component';
 import { UploadFilesComponent } from './FileUpload/upload-files/upload-files.component';
 import { ShowErrorsComponent } from './show-errors/show-errors.component';
+import { ViewSkillsComponent } from './Admin/Skills/view-skills/view-skills.component';
+import { EditSkillsComponent } from './Admin/Skills/edit-skills/edit-skills.component';
+import { AddSkillsComponent } from './Admin/Skills/add-skills/add-skills.component';
+import { AddSkillsToEmployeeComponent } from './Admin/Employees/EmployeeSkills/add-skills-to-employee/add-skills-to-employee.component';
+import { ViewSkillsOfEmployeeComponent } from './Admin/Employees/EmployeeSkills/view-skills-of-employee/view-skills-of-employee.component';
+import { EditSkillsOfEmployeeComponent } from './Admin/Employees/EmployeeSkills/edit-skills-of-employee/edit-skills-of-employee.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 
 @NgModule({
@@ -49,6 +56,13 @@ import { ShowErrorsComponent } from './show-errors/show-errors.component';
     ViewMessagesComponent,
     UploadFilesComponent,
     ShowErrorsComponent,
+    ViewSkillsComponent,
+    EditSkillsComponent,
+    AddSkillsComponent,
+    AddSkillsToEmployeeComponent,
+    ViewSkillsOfEmployeeComponent,
+    EditSkillsOfEmployeeComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -67,6 +81,17 @@ import { ShowErrorsComponent } from './show-errors/show-errors.component';
         { path: 'edit-software/:id', component: EditSoftwareComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
         { path: 'view-employees', component: ViewEmployeesComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
         { path: 'edit-employee/:id', component: EditEmployeeComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'view-skills', component: ViewSkillsComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'edit-skill/:id', component: EditSkillsComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'add-skill', component: AddSkillsComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'view-employee-skills/:id', component: ViewSkillsOfEmployeeComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'add-employee-skills/:id', component: AddSkillsToEmployeeComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        { path: 'edit-employee-skills/:id', component: EditSkillsOfEmployeeComponent, canActivate: [AuthorizeGuard], data: { roles: ["admin"] } },
+        {
+            path: '**',
+            pathMatch: 'full',
+            component: PageNotFoundComponent
+        }
     ])
   ],
   providers: [

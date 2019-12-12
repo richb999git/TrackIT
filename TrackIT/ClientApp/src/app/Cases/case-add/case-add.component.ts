@@ -39,7 +39,10 @@ export class CaseAddComponent implements OnInit {
         this.casesService.addCase(this.caseModel).subscribe(result => {
             console.log(result);
             this.router.navigate(['/cases-list']);
-        }, errors => this.errorMsg = errors);
+        }, errors => {
+            this.errorMsg = errors;
+            console.log(errors);
+        });
     }
 
 }

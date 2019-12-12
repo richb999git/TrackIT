@@ -11,9 +11,9 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
 })
 export class EditEmployeeComponent implements OnInit {
 
+    public errorMsg;
     private employeeModel: EmployeeModel = { id: "", firstName: "", lastName: "", isManager: null };
     private id: string;
-    public errorMsg;
 
     constructor(private casesService: CasesService, private router: Router, private _route: ActivatedRoute, private authorize: AuthorizeService, private elementRef: ElementRef) { }
 

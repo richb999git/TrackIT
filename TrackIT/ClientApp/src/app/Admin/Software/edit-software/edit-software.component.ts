@@ -10,9 +10,9 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 })
 export class EditSoftwareComponent implements OnInit {
 
+    public errorMsg;
     private softwareModel: SoftwareModel = { id: 0, name: "" };
     private id: number;
-    public errorMsg;
 
     constructor(private casesService: CasesService, private router: Router, private _route: ActivatedRoute, private elementRef: ElementRef) { }
 

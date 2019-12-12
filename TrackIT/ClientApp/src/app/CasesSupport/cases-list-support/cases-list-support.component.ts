@@ -36,7 +36,7 @@ export class CasesListSupportComponent implements OnInit {
 
     ngAfterViewInit() {
         this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
-        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "white"; //DDFFEF
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "DDFFEF";
     }
 
     ngOnInit() {

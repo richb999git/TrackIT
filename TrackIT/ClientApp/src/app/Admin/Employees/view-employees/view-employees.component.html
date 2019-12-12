@@ -7,8 +7,8 @@
 
 <div *ngIf="usersP">
   <br />
-  <div class="tableOverflow Container1 Flippedno">
-    <table class='table table-striped Content1' aria-labelledby="tableLabel">
+  <div class="">
+    <table class='table table-striped table-responsive' aria-labelledby="tableLabel">
       <thead>
         <tr>
           <th>Employee code</th>
@@ -16,16 +16,18 @@
           <th>Email</th>
           <th>Manager?</th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let user of usersP.users">
-          <td>{{ user.id }}</td><!--change to proper employee code?-->
+          <td class="noWrap">{{ user.id }}</td><!--change to proper employee code?-->
           <td>{{ user.firstName }} {{ user.lastName }}</td>
           <td>{{ user.email }}</td>
           <td *ngIf="user.isManager">Manager</td>
           <td *ngIf="!user.isManager"></td>
-          <td><button (click)="editEmployee(user.id)" class="btn btn-outline-success">Edit</button></td>          
+          <td><button (click)="editEmployee(user.id)" class="btn btn-outline-success">Edit</button></td>
+          <td class="noWrap"><button (click)="addEditEmployeeSkills(user.id)" class="btn btn-outline-success">View Skills</button></td>
         </tr>
       </tbody>
     </table>

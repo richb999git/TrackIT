@@ -1,0 +1,36 @@
+<h2>Edit Skill</h2>
+
+<app-show-errors [errors]="errorMsg"></app-show-errors>
+
+<form #skillForm="ngForm" (ngSubmit)="onSubmit(skillForm)">
+
+  <div class="form-group">
+    <label for="editName">Name</label>
+    <input type="text" class="form-control" id="title"
+           [ngClass]="(name.invalid && (name.dirty || name.touched))?'text-danger is-invalid':''"
+           placeholder="Enter Name" name="name" minlength="2" required
+           [(ngModel)]="skillsModel.name" #name="ngModel">
+    <small *ngIf="name.errors?.required && (name.dirty || name.touched)" class="text-danger">Title is required</small>
+    <small *ngIf="name.errors?.minlength" class="text-danger">Name must be at least 2 characters long.</small>
+  </div>
+
+  <div class="container row">
+    <label class="form-check-label form-check-inline">Type:</label>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="type" id="type1" [value]="1" [(ngModel)]="skillsModel.type" #type="ngModel">
+      <label class="form-check-label" for="inputTypeLevel1">Language</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="type" id="type2" [value]="2" [(ngModel)]="skillsModel.type" #type="ngModel">
+      <label class="form-check-label" for="inputTypeLevel2">Framework/Library</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="type" id="type3" [value]="3" [(ngModel)]="skillsModel.type" #type="ngModel">
+      <label class="form-check-label" for="inputTypeLevel3">Other</label>
+    </div>
+  </div>
+
+  <br />
+  <button [disabled]="!skillForm.valid" type="submit" class="btn btn-success col-md-12">Update</button>
+
+</form>

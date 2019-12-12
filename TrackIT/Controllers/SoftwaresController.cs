@@ -19,8 +19,6 @@ namespace TrackIT.Controllers
     public class SoftwaresController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private TrackITSettings _secrets;
-        private CloudinarySettings _secrets2;
 
         public SoftwaresController(ApplicationDbContext context)
         {
@@ -104,6 +102,13 @@ namespace TrackIT.Controllers
             if (software == null)
             {
                 return NotFound();
+            }
+
+            // check if there is associated data? In this case it is only cases
+            var cases = await _context.Cases.FirstOrDefaultAsync(c => c.SoftwareId == id);
+            if (cases != null)
+            {
+                return BadRequest("Sorry, cannot delete as there cases for that software in the database.");
             }
 
             _context.Software.Remove(software);

@@ -259,10 +259,13 @@ namespace TrackIT.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -344,7 +347,9 @@ namespace TrackIT.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)")
+                        .HasMaxLength(1000);
 
                     b.Property<float?>("EstimatedTimeHours")
                         .HasColumnType("real");
@@ -365,7 +370,9 @@ namespace TrackIT.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -420,6 +427,31 @@ namespace TrackIT.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("TrackIT.Models.EmployeeSkills", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Experience")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SkillsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SkillsId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmployeeSkills");
+                });
+
             modelBuilder.Entity("TrackIT.Models.FileUploads", b =>
                 {
                     b.Property<int>("Id")
@@ -431,7 +463,9 @@ namespace TrackIT.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("PublicId")
                         .HasColumnType("nvarchar(max)");
@@ -460,7 +494,9 @@ namespace TrackIT.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)")
+                        .HasMaxLength(1000);
 
                     b.Property<bool>("IsEmployee")
                         .HasColumnType("bit");
@@ -480,7 +516,7 @@ namespace TrackIT.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("TrackIT.Models.Software", b =>
+            modelBuilder.Entity("TrackIT.Models.Skills", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -489,6 +525,26 @@ namespace TrackIT.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("TrackIT.Models.Software", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -562,6 +618,19 @@ namespace TrackIT.Migrations
                     b.HasOne("TrackIT.Models.Software", "Software")
                         .WithMany()
                         .HasForeignKey("SoftwareId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TrackIT.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("TrackIT.Models.EmployeeSkills", b =>
+                {
+                    b.HasOne("TrackIT.Models.Skills", "Skills")
+                        .WithMany()
+                        .HasForeignKey("SkillsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

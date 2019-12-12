@@ -21,6 +21,12 @@ export class NavMenuComponent {
 
     collapse() {
         this.isExpanded = false;
+        if (window.innerWidth < 768) {
+            $(document).ready(function () {            
+                $(".navbar-collapse").collapse('toggle');           
+            });
+            // causes a flicker on non mobile menu (which is set at below 768px (md - medium Bootstrap)
+        }
     }
 
     toggle() {

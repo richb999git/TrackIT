@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { CasesService, IMessages, ICases, ISoftwares, IUsersPagination, IUser } from '../../Cases/_services/cases.service';
+import { CasesService, IMessages, ICases, ISoftwares, IUsersPagination, IUser, ISkills } from '../../Cases/_services/cases.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorizeService } from '../../../api-authorization/authorize.service';
 import { map } from 'rxjs/operators';
@@ -28,10 +28,16 @@ export class CaseDisplaySupportComponent implements OnInit {
     private estHoursModel: IEstHoursModel = { estimatedTimeHours: 0 };
     private hoursSpentModel: IHoursSpentModel = { timeSpentHours: 0 };
     private deadlineModel: IDeadlineModel = { deadline: null };
+    private employeesSkills: any; // change later
+    private usersWithSkills: any; // change late
+    private allSkillsHeadings: Array<string>;
+    private skills: Array<ISkills>;
 
     // pagination sort/filter/search properties:
     private sortProperty: string = "";
     private sortAsc: boolean = true;
+    private skillFilter: number = 0;
+    private skillTypeFilter: number = 0;
     // pagination properties:
     private pageIndex: number;
     private pagesBefore: Array<number> = [];
@@ -61,6 +67,11 @@ export class CaseDisplaySupportComponent implements OnInit {
                     this.isUserContact = this.case.contactId == this.userId ? true : false;
                 });
 
+        }, errors => this.errorMsg = errors);
+
+        this.casesService.getSkills("id", true).subscribe(result => {
+            this.skills = result;
+            console.log(this.skills);
         }, errors => this.errorMsg = errors);
 
         this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
@@ -108,7 +119,6 @@ export class CaseDisplaySupportComponent implements OnInit {
         }
 
         this.updateCase(assignForm);
-        //this.populateAssignedStaffNames(); not needed?
         this.isUserDeveloper = this.assignedStaff.includes(this.userId) ? true : false;
         this.isUserContact = this.case.contactId == this.userId ? true : false;
     }
@@ -116,16 +126,53 @@ export class CaseDisplaySupportComponent implements OnInit {
     showAssignEmployeeSection(caseId) {
         // need to restrict to managers only
         this.assignStaffFlag = true;        
-        // add filters later: this.progSkills, this.softwareFilter
-        this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {
-            console.log(result);
+        // add filters later: this.skillFilter - need to put on html
+        this.casesService.getUsersByRoleBySkill("employee", this.skillFilter, this.sortProperty, this.sortAsc, 1).subscribe(result => {
             this.usersP = result;
             this.users = this.usersP.users;
-            console.log(this.assignedStaffNames);
+            this.populateUsersListWithSkills();
             this.pageIndex = this.usersP.pageIndex;
-            this.setPagination();            
+            this.setPagination();
         }, errors => this.errorMsg = errors);
+        
+        
     }    
+
+    populateUsersListWithSkills() {
+        var skill = 0; // 0 = all skills. This is not the same as "this.skillFilter"
+        this.casesService.getAllSkillsOfAllEmployees(this.users, skill).subscribe(result => {
+            this.employeesSkills = result;
+            this.usersWithSkills = this.users.slice();
+
+            // loop through employeesSkills and get an array of distinct skills for the headings
+            this.allSkillsHeadings = [];
+            for (var i = 0; i < this.employeesSkills.length; i++) {
+                if (!this.allSkillsHeadings.includes(this.employeesSkills[i].skills.name)) {
+                    // if a skills type filter is being used only add it as a heading if it is that type
+                    if (this.skillTypeFilter == 0 || this.skillTypeFilter == this.employeesSkills[i].skills.type) {
+                        this.allSkillsHeadings.push(this.employeesSkills[i].skills.name);
+                    }                    
+                }
+            }           
+
+            // initialize each skill in each user as null so it is used/displayed in the html
+            for (var u = 0; u < this.usersWithSkills.length; u++) {
+                for (var i = 0; i < this.allSkillsHeadings.length; i++) {
+                    this.usersWithSkills[u][this.allSkillsHeadings[i]] = null;
+                }
+            }
+
+            // add a new property in each user for each level of experience in a skill so user array is still flat
+            for (var i = 0; i < this.employeesSkills.length; i++) {
+                // if a skills type filter is being used only add the data if it is that type
+                if (this.skillTypeFilter == 0 || this.skillTypeFilter == this.employeesSkills[i].skills.type) {
+                    var userIndex = this.users.findIndex(a => a.id == this.employeesSkills[i].userId);
+                    this.usersWithSkills[userIndex][this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience;
+                }
+            }           
+
+        }, errors => this.errorMsg = errors);
+    }
 
     // Used only in OnInit
     populateAssignedStaffNames() {
@@ -160,9 +207,9 @@ export class CaseDisplaySupportComponent implements OnInit {
     }
 
     updateCase(form = null) {
-        this.casesService.updateCase(this.case).subscribe(result => { // PUT and model?
+        this.casesService.updateCase(this.case).subscribe(result => { 
         }, errors => this.errorMsg = errors);
-        if (form) form.reset(); // or form.resetForm();
+        if (form) form.reset(); 
     }
 
     onSubmitDeadline(setDeadlineForm) {
@@ -228,12 +275,18 @@ export class CaseDisplaySupportComponent implements OnInit {
         this.updateCase();
     }
 
-    // not used at the moment
-    chooseEmployeeFilter(e) {
-        // add filters later: this.progSkills, this.softwareFilter
-        this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {
+    showHideType(type) {
+        console.log(type);
+        this.skillTypeFilter = type;
+        this.populateUsersListWithSkills();
+    }
+
+    chooseSkillFilter(e) {
+        // add filters later: skillType - need to put on html
+        this.casesService.getUsersByRoleBySkill("employee", this.skillFilter, this.sortProperty, this.sortAsc, 1).subscribe(result => {
             this.usersP = result;
             this.users = this.usersP.users;
+            this.populateUsersListWithSkills();
             this.pageIndex = 1;
             this.setPagination();
         }, errors => this.errorMsg = errors);
@@ -242,11 +295,12 @@ export class CaseDisplaySupportComponent implements OnInit {
     sortEmployees(sortProperty) {
         if (sortProperty == this.sortProperty) this.sortAsc = !this.sortAsc;
         this.sortProperty = sortProperty;
-        // add filters later: this.progSkills, this.softwareFilter
-        this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {
+        // add filters later: skillType - need to put on html
+        this.casesService.getUsersByRoleBySkill("employee", this.skillFilter, this.sortProperty, this.sortAsc, 1).subscribe(result => {
             this.usersP = result;
             this.users = this.usersP.users;
-            console.log(this.usersP);
+            console.log(this.users);
+            this.populateUsersListWithSkills();
             this.pageIndex = 1;
             this.setPagination();
         }, errors => this.errorMsg = errors);
@@ -265,11 +319,11 @@ export class CaseDisplaySupportComponent implements OnInit {
     }
 
     pageChangedHandler(page: number) {
-        // add filters later: this.progSkills, this.softwareFilter
-        this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, page).subscribe(result => {
+        // add filters later: skillType - need to put on html
+        this.casesService.getUsersByRoleBySkill("employee", this.skillFilter, this.sortProperty, this.sortAsc, page).subscribe(result => {
             this.usersP = result;
             this.users = this.usersP.users;
-            console.log(this.usersP);
+            this.populateUsersListWithSkills();
             this.pageIndex = this.usersP.pageIndex;
             this.setPagination();
         }, errors => this.errorMsg = errors);

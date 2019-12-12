@@ -63,9 +63,12 @@
     <Compile Remove="Migrations\20191204165910_FileUpload.Designer.cs" />
     <Compile Remove="Migrations\20191204170419_FileUpload_FK_for_CaseId.cs" />
     <Compile Remove="Migrations\20191204170419_FileUpload_FK_for_CaseId.Designer.cs" />
+    <Compile Remove="Migrations\20191209081813_Add_Skills.cs" />
+    <Compile Remove="Migrations\20191209081813_Add_Skills.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ClientApp\src\app\Admin\Employees\" />
+    <Folder Include="ClientApp\src\app\Admin\Employees\EmployeeSkills\" />
+    <Folder Include="ClientApp\src\app\Admin\Skills\" />
     <Folder Include="ClientApp\src\app\Admin\Software\" />
     <Folder Include="ClientApp\src\app\CasesSupport\" />
     <Folder Include="ClientApp\src\app\Messages\" />

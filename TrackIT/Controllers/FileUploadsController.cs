@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
@@ -18,6 +19,9 @@ namespace TrackIT.Controllers
     {
         public string URL { get; set; }
         public IFormFile File { get; set; }
+
+        [StringLength(50, MinimumLength = 2)]
+        [Required]
         public string Description { get; set; }
         public DateTime? TimeStamp { get; set; }
         public string PublicId { get; set; }

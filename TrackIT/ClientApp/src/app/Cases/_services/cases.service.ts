@@ -28,13 +28,23 @@ export class CasesService {
         "Critical", "High", "Medium", "Low"
     ]
 
+    public skillTypes = [
+        "Language", "Framework/Library", "Other"
+    ]
+
+    public experienceTypes = [
+        "Excellent", "Good", "Beginner"
+    ]
+
     constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
+    // Return type is not an array. Pagination is an object that INCLUDES an array
     getCases(caseFilter, softwareFilter, sort, sortAsc, pageIndex, searchString) {
         return this.http.get<ICasesPagination>(this.baseUrl + 'api/CasesUser?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
             + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex + '&searchString=' + searchString);
     }
 
+    // Return type is not an array. Pagination is an object that INCLUDES an array
     getCasesSupport(caseFilter, softwareFilter, typeFilter, sort, sortAsc, pageIndex, searchString) {
         return this.http.get<ICasesPagination>(this.baseUrl + 'api/CasesSupport?caseFilter=' + caseFilter + '&softwareFilter=' + softwareFilter
             + '&typeFilter=' + typeFilter + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex + '&searchString=' + searchString);
@@ -51,6 +61,8 @@ export class CasesService {
     updateCase(model: any) {
         return this.http.put(this.baseUrl + 'api/Cases/' + model.id, model);
     }
+
+    //-----------------------------------------------------------------------------------------------------------------
 
     getSoftwareTitles() {
         return this.http.get<ISoftwares[]>(this.baseUrl + 'api/Softwares');
@@ -72,9 +84,16 @@ export class CasesService {
         return this.http.delete(this.baseUrl + 'api/Softwares/' + id);
     }
 
-    // return type will need to be changed
+    //-----------------------------------------------------------------------------------------------------------------
+
+    // Return type is not an array. Pagination is an object that INCLUDES an array
     getUsersByRole(role: string, sort: string, sortAsc: boolean, pageIndex: number) {
         return this.http.get<IUsersPagination>(this.baseUrl + 'api/UsersByRole/' + role + "?" + 'sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex);
+    }
+
+    // Return type is not an array. Pagination is an object that INCLUDES an array
+    getUsersByRoleBySkill(role: string, skillFilter: number, sort: string, sortAsc: boolean, pageIndex: number) {
+        return this.http.get<IUsersPagination>(this.baseUrl + 'api/UsersByRoleBySkill/' + role + "?" + 'skill=' + skillFilter + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex);
     }
 
     getUser(id) {
@@ -86,6 +105,8 @@ export class CasesService {
         return this.http.put(this.baseUrl + 'api/UserDetails/' + model.id, model);
     }
 
+    //-----------------------------------------------------------------------------------------------------------------
+
     getCaseMessages(caseId: string) { // caseId is a number but passed to here as a string
         return this.http.get<IMessages[]>(this.baseUrl + 'api/MessagesInCase/' + caseId);
     }
@@ -93,6 +114,8 @@ export class CasesService {
     addCaseMessage(model: any) {
         return this.http.post(this.baseUrl + 'api/Messages', model);
     }
+
+    //-----------------------------------------------------------------------------------------------------------------
 
     getCaseFiles(caseId: string) {
         return this.http.get<IFiles[]>(this.baseUrl + 'api/FileUploadsInCase/' + caseId);
@@ -106,6 +129,77 @@ export class CasesService {
         console.log(formData);
         return this.http.post<IFiles>(this.baseUrl + 'api/FileUploads', formData)            
     }
+
+    //-----------------------------------------------------------------------------------------------------------------
+
+    getSkill(id: number) {
+        return this.http.get<ISkills>(this.baseUrl + 'api/Skills/' + id);
+    }
+
+    getSkills(sort, sortAsc) {
+        return this.http.get<ISkills[]>(this.baseUrl + 'api/Skills' + "?" + 'sort=' + sort + '&sortAsc=' + sortAsc);
+    }
+
+    addSkill(model) {
+        console.log(model);
+        return this.http.post(this.baseUrl + 'api/Skills', model);
+    }
+
+    updateSkill(model) {
+        return this.http.put(this.baseUrl + 'api/Skills/' + model.id, model);
+    }
+
+    deleteSkill(id) {
+        return this.http.delete(this.baseUrl + 'api/Skills/' + id);
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+
+    // get all skills of a single employee
+    getAllEmployeeSkills(userId: string) {
+        return this.http.get<IEmployeeSkills[]>(this.baseUrl + 'api/AllEmployeeSkills/' + userId);
+    }
+
+    // get a specific skill by id
+    getEmployeeSkill(id: number) {
+        console.log(id);
+        return this.http.get<IEmployeeSkills>(this.baseUrl + 'api/EmployeeSkillById/' + id);
+    }
+
+    // get all the skills of all the employees in the array (will be limited to 10 to 20 employees)
+    getAllSkillsOfAllEmployees(users: any, skillId: number) {
+        // create query string
+        var userIdsStr = "";
+        for (var i = 0; i < users.length; i++) {
+            if (i == 0) {
+                userIdsStr = userIdsStr + "users=" + users[i].id
+            } else {
+                userIdsStr = userIdsStr + "&users=" + users[i].id
+            }
+        }
+        userIdsStr += "&skill=" + skillId; 
+        console.log(userIdsStr);
+        return this.http.get<IEmployeeSkills[]>(this.baseUrl + 'api/AllSkillsOfAllEmployees?' + userIdsStr);
+    }
+
+    addSkillToEmployee(model) {
+        console.log(model);
+        return this.http.post(this.baseUrl + 'api/EmployeeSkills', model);
+    }
+
+    updateSkillOfEmployee(model) {
+        console.log(model);
+        return this.http.put(this.baseUrl + 'api/EmployeeSkills/' + model.id, model);
+    }
+
+    deleteSkillOfEmployee(id) {
+        console.log(id);
+        return this.http.delete(this.baseUrl + 'api/EmployeeSkills/' + id);
+    }
+
+
+
+    //-----------------------------------------------------------------------------------------------------------------
 
     setSubPageBackground() {
         //this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
@@ -146,7 +240,8 @@ export interface ICasesPagination {
 }
 
 export interface IUser {
-    find(arg0: (i: any) => boolean); // so find can be used
+    [x: string]: any; // so slice and findIndex can be used
+    find(arg0: (i: any) => boolean); // so find can be used - not sure this is needed if above is included
     id: string;
     firstName: string;
     lastName: string;
@@ -170,4 +265,19 @@ export interface IFiles {
     publicId: string;
     url: string;
     file: File;
+}
+
+export interface ISkills {
+    id: number;
+    name: string,
+    type: number,
+}
+
+export interface IEmployeeSkills {
+    id: number;
+    skillsId: number,
+    skills: ISkills
+    userId: string,
+    user: IUser;
+    experience: number
 }

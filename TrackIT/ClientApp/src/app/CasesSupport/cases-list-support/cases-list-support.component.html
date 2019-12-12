@@ -48,8 +48,8 @@
                   [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
   </app-pagination>
   
-  <div class="tableOverflow Container1 Flipped">
-    <table class='table table-striped Content1' aria-labelledby="tableLabel">
+  <div class="tableOverflow Container1 FlippedNo">
+    <table class='table table-stripedNo table-hover Content1' aria-labelledby="tableLabel">
       <thead>
         <tr>
           <th (click)="sortCase('case')" class="highlight">Case</th>
@@ -66,7 +66,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let case of cases.cases">
+        <tr *ngFor="let case of cases.cases" (click)="editCase(case.id)" class="lineHover">
           <td><button (click)="editCase(case.id)" class="btn btn-sm btn-outline-secondary">{{ case.id }}</button></td>
           <td class="max-widthSoftware ">{{ case.software.name }}</td>
           <td class="min-widthDates">{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
@@ -88,6 +88,3 @@
   </app-pagination>
   <br />
 </div>
-
-<!--// Maybe later have ability to change size of pages-->
-<!--// Maybe later have ability to change how many links displayed-->

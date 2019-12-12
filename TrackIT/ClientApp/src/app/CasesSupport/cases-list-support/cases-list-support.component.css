@@ -11,10 +11,18 @@
   cursor: pointer;
 }
 
+.lineHover:hover {
+  cursor: pointer;
+}
+
 .green-table {
   background-color: #DDFFEF;
 }
 
 .width200 {
   width: 200px;
+}
+
+.table td, .table th {
+  border-bottom: 1px solid #dee2e6; /* line at bottom of table - looks neater I think */
 }

@@ -24,6 +24,7 @@ export class ViewMessagesComponent implements OnInit {
     ngOnInit() {
         this.casesService.getCaseMessages(this.caseId).subscribe(result => {
             this.messages = result;
+            console.log(result);
         }, errors => this.errorMsg = errors);
     }
 
@@ -34,7 +35,7 @@ export class ViewMessagesComponent implements OnInit {
             this.messages.push(this.message);
             this.errorMsg = null;
             this.showMessages = true;
-            this.showHide = "\u21E9"; // "Show" down arrow
+            this.showHide = "\u21E7"; // "Show" up arrow
             // display a message to say message sent?
         }, errors => this.errorMsg = errors);
         messageForm.reset(); // or messageForm.resetForm();

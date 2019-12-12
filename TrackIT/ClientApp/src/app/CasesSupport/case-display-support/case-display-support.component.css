@@ -16,3 +16,33 @@
   color: blue;
   cursor: pointer;
 }
+
+/*Needs stop embed within a span when used in table headers*/
+.verticalHeading {
+  writing-mode: vertical-lr;
+}
+
+
+/* until I manage to get rid of the blank headers */
+.table td, .table th {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 2px;
+  padding-top: 2px;
+  border-top: none;
+  border-bottom: 1px solid #dee2e6; /* line at bottom of table - looks neater I think */
+}
+
+.assignButton {
+  width: 72px;
+}
+
+.widthReduceNoWrap {
+  width: 1%;
+  white-space: nowrap
+}
+
+.widthReduce {
+  width: 1%;
+}
+

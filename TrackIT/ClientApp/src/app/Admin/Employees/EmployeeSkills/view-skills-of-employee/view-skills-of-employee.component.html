@@ -1,0 +1,60 @@
+<h4 *ngIf="user" id="tableLabel">Skills of Employee: {{ user.firstName }} {{ user.lastName }}</h4>
+<a [routerLink]='["/view-employees"]'>Back to Employee List</a>
+<br />
+<br />
+<button class="btn btn-success" [routerLink]="['/add-employee-skills/' + userId]">Add a new Skill</button>
+<br />
+<br />
+<p *ngIf="!employeeSkills || !user"><em>Loading...</em></p>
+<app-show-errors [errors]="errorMsg"></app-show-errors>
+
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" (click)="confirmDeleteSkill()" data-dismiss="modal" class="btn btn-success">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="employeeSkills">
+  <br />
+  <div class="tableOverflow">
+    <table class='table table-striped table-sm' aria-labelledby="tableLabel">
+      <thead>
+        <tr>
+          <th (click)="sortSkills('id')" class="highlight">Id</th>
+          <th (click)="sortSkills('name')" class="highlight">Name</th>
+          <th (click)="sortSkills('type')" class="highlight">Type</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let employeeSkill of employeeSkills">
+          <td>{{ employeeSkill.id }}</td>
+          <td>{{ employeeSkill.skills.name }}</td>
+          <td>{{ casesService.experienceTypes[employeeSkill.experience-1]}}</td>
+          <td><button (click)="editSkill(employeeSkill.id)" class="btn btn-sm btn-outline-success">Edit</button></td>
+          <td><button (click)="deleteSkill(employeeSkill.id)" class="btn btn-sm btn-outline-success">Delete..</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="employeeSkills && employeeSkills.length == 0">
+  <br />
+  <p>No skills added yet..</p>
+</div>

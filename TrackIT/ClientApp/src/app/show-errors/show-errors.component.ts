@@ -8,6 +8,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 export class ShowErrorsComponent implements OnInit {
 
     @Input() errors: any;
+    private entries: any;
 
     constructor() { }
 
@@ -17,5 +18,10 @@ export class ShowErrorsComponent implements OnInit {
     objectHasProperties(obj) {
         return Object.keys(obj).length > 0;
     }
-    
+
+    convertObjectToArray(obj) {
+        this.entries = Object.entries(obj);
+        //console.log(this.entries);
+    }
+
 }

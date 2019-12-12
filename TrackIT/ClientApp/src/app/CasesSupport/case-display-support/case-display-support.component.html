@@ -183,11 +183,16 @@
     </div>
   </div>
 
-  <br /><br /><br />
-  <app-view-messages [caseId]="case.id" [caseUserId]="case.userId" [isEmployee]=true (getErrors)="messageErrorHandler($event)"></app-view-messages>
-  <br />
-  <app-upload-files [caseId]="case.id" (getErrors)="messageErrorHandler($event)"></app-upload-files>
-  <br />
+  <div *ngIf="(isUserDeveloper || isUserContact)">
+    <br /><br /><br />
+    <app-view-messages [caseId]="case.id" [caseUserId]="case.userId" [isEmployee]=true
+                       (getErrors)="messageErrorHandler($event)">
+    </app-view-messages>
+    <br />
+    <app-upload-files [caseId]="case.id" (getErrors)="messageErrorHandler($event)"></app-upload-files>
+    <br />
+  </div>
+
   <hr />
 
   <div>Contact Assigned</div>
@@ -211,51 +216,95 @@
     <button *ngIf="!case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-success">Assign staff</button>
     <button *ngIf="case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-success">Adjust assigned staff</button>
   </div>
-
-
-
-
+  <br />
 
 
 
 
   <div *ngIf="assignStaffFlag">
-    <p *ngIf="!usersP"><em>Loading...</em></p>
-    <div *ngIf="usersP">
+    <p *ngIf="!usersP || !users || !usersWithSkills || !allSkillsHeadings"><em>Loading...</em></p>
+    <div *ngIf="usersP && users && usersWithSkills && allSkillsHeadings">
       <form #assignForm="ngForm" (ngSubmit)="submitAssignedStaff(assignForm)">
-        <button type="submit" class="btn btn-info">Submit staff</button>
+        <button type="submit" class="btn btn-info mb-3 float-left">Submit staff</button>
       </form>
+
+      <div *ngIf="skills" class="float-left mb-2 ml-5">
+        <!--<label for="chooseSkillFilter"></label>-->
+        <select id="chooseSkillFilter" name="chooseSkillFilter" [(ngModel)]="skillFilter" (ngModelChange)="chooseSkillFilter($event)"
+                class="form-control" title="filter by skill">
+          <option value="0">All Skills</option>
+          <option *ngFor="let skill of skills" [value]="skill.id">{{ skill.name }}</option>
+        </select>
+      </div>
+
+      <div *ngIf="skills" class="float-left ml-5">
+        <!--<label for="chooseSkillTypeFilter"></label>-->
+        <select id="chooseSkillTypeFilter" name="chooseSkillTypeFilter" [(ngModel)]="skillTypeFilter" (ngModelChange)="showHideType($event)"
+                class="form-control" title="reduce headings by skill types">
+          <option value="0">All Skill Types</option>
+          <option value="1">Langauges</option>
+          <option value="2">Frameworks/Libraries</option>
+          <option value="3">Other</option>
+        </select>
+      </div>
+
+
+      <div class="clearfix"></div>
       <br />
-      <div class="tableOverflow Container1 Flippedno">
-        <table class='table table-striped Content1' aria-labelledby="tableLabel">
-          <thead>
-            <tr>
-              <th (click)="sortEmployees('name')" class="highlight">Name</th>
-              <th>Contact</th>
-              <th>Assigned</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of usersP.users">
-              <td>{{ user.firstName }} {{ user.lastName }}</td>
-              <td *ngIf="user.id == case.contactId">Contact</td>
-              <td *ngIf="user.id != case.contactId"></td>
-              <td *ngIf="assignedStaff.includes(user.id)">Assigned</td>
-              <td *ngIf="!assignedStaff.includes(user.id)"></td>
-              <td *ngIf="!assignedStaff.includes(user.id)"><button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info">Assign</button></td>
-              <td *ngIf="assignedStaff.includes(user.id)"><button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info">Unassign</button></td>
-              <td><button (click)="assignContact(user.id, user.firstName, user.lastName, user.email, user.userName)" class="btn btn-sm btn-outline-info">Set Contact</button></td>
-            </tr>
-          </tbody>
-        </table>
+      <app-pagination [pageIndex]="pageIndex" [totalPages]="usersP.totalPages" [pagesBefore]="pagesBefore"
+                      [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
+      </app-pagination>
+      <hr />
+      <div class="">
+        <div class="tableOverflow Container1 FlippedNo">
+          <table class='table table-stripedNo table-hover Content1' aria-labelledby="tableLabel">
+            <thead>
+              <tr>
+                <th class="pl-2 highlight" (click)="sortEmployees('name')">Name</th>
+                <th></th>
+                <th></th>
+                <th *ngFor="let item of usersWithSkills[0] | keyvalue" class="table-headings-no-padding">
+                  <!-- have to use usersWithSkills[0] so it's in the same order as the data -->
+                  <span *ngIf="allSkillsHeadings.includes(item.key)"
+                        class="verticalHeading">{{ item.key }}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of usersWithSkills">
+                <!-- the 6 keys below that are included in the above end up being in the table -->
+                <td class="pl-2 widthReduceNoWrap pr-3" [class.text-success]="user.id == case.contactId"
+                    [class.text-primary]="assignedStaff.includes(user.id)"
+                    [class.font-weight-bold]="assignedStaff.includes(user.id) && user.id == case.contactId"
+                    >{{ user.firstName }} {{ user.lastName }} <span *ngIf="user.id == case.contactId"> (c)</span>
+                </td>
+                <td class="widthReduce pr-3" *ngIf="!assignedStaff.includes(user.id)">
+                    <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Assign</button>
+                </td>
+                <td class="widthReduce pr-3" *ngIf="assignedStaff.includes(user.id)">
+                    <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Unassign</button>
+                </td>
+                <td class="widthReduceNoWrap pr-3">
+                    <button (click)="assignContact(user.id, user.firstName, user.lastName, user.email, user.userName)"
+                            class="btn btn-sm btn-outline-info">Set Contact
+                    </button>
+                </td>
+                <td *ngFor="let item of user | keyvalue">
+                  <span *ngIf="allSkillsHeadings.includes(item.key)">
+                    {{ item.value }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p *ngIf="usersWithSkills.length == 0">No employees meet the criteria</p>
+          <p *ngIf="usersWithSkills.length != 0">1 = Excellent, 2 = Good, 3 = Beginner</p>
+        </div>
       </div>
       <br />
       <app-pagination [pageIndex]="pageIndex" [totalPages]="usersP.totalPages" [pagesBefore]="pagesBefore"
                       [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
       </app-pagination>
     </div>
-  </div>
   <br />
 </div>

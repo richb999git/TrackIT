@@ -1,6 +1,7 @@
 <header>
   <nav
     class="navbar navbar-expand-md navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
+        *ngIf="isAuthenticated | async"
   >
     <div class="container">
       <a class="navbar-brand" [routerLink]="['/']">TrackIT</a>
@@ -15,16 +16,29 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div
-        class="navbar-collapse collapse d-md-inline-flex flex-sm-row-reverse"
-        [ngClass]="{ show: isExpanded }"
-      >
-        <app-login-menu></app-login-menu> 
+      <div class="navbar-collapse collapse d-md-inline-flex flex-sm-row-reverse"
+           [ngClass]="{ show: isExpanded }">
+
+
+        <app-login-menu></app-login-menu>
+
         <ul class="navbar-nav flex-grow">
+
+          <li *ngIf="(userRole | async)?.includes('admin')" class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage App">
+              Admin
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" [routerLink]='["/view-employees"]' (click)="collapse()">Manage employees</a>
+              <a class="dropdown-item" [routerLink]='["/view-software"]' (click)="collapse()">Manage Software Titles</a>
+              <a class="dropdown-item" [routerLink]='["/view-skills"]' (click)="collapse()">Manage Skills</a>
+            </div>
+          </li>
+
           <li class="nav-item"
               [routerLinkActive]="['link-active']"
               [routerLinkActiveOptions]="{ exact: true }">
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
+            <a class="nav-link text-dark" [routerLink]="['/']" (click)="collapse()">Home</a>
           </li>
 
           <li class="nav-item dropdown" *ngIf="(userRole | async)?.includes('employee')" [routerLinkActive]="['link-active']">
@@ -32,7 +46,7 @@
               Support Cases
             </a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" [routerLink]='["/cases-list-support"]'>View Cases</a>
+              <a class="dropdown-item" [routerLink]='["/cases-list-support"]' (click)="collapse()">View Cases</a>
             </div>
           </li>
 
@@ -41,8 +55,8 @@
               Your Cases
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]='["/cases-list"]'>View Cases</a>
-              <a class="dropdown-item" [routerLink]='["/case-add"]'>Raise Case</a>
+              <a class="dropdown-item" [routerLink]='["/cases-list"]' (click)="collapse()">View Cases</a>
+              <a class="dropdown-item" [routerLink]='["/case-add"]' (click)="collapse()">Raise Case</a>
             </div>
           </li>
 

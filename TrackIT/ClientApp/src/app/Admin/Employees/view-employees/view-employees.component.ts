@@ -47,6 +47,11 @@ export class ViewEmployeesComponent implements OnInit {
         this.router.navigate(['/edit-employee/' + id]);
     }
 
+    addEditEmployeeSkills(userId) {
+        console.log(userId);
+        this.router.navigate(['/view-employee-skills/' + userId]);
+    }
+
     chooseEmployeeFilter(e) {
         // add filters later: this.progSkills, this.softwareFilter
         this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {

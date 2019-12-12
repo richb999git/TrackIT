@@ -83,7 +83,7 @@ namespace TrackIT.Controllers
         // GET: api/CasesUser?caseFilter=1&softwareFilter=0&sort=id&sortAsc=true&pageIndex=1&searchString=
         [HttpGet]
         //public async Task<ActionResult<IEnumerable<CasesToReturn>>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc)
-        public async Task<ActionResult<PaginatedListCases>> GetCasesSupport(int caseFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex, string searchString)
+        public async Task<ActionResult<PaginatedListCases>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
             int statusFilter = caseFilter == 1 ? 7 : 8;
             // Filter just user's cases (or later maybe all their company's cases)
@@ -132,7 +132,7 @@ namespace TrackIT.Controllers
             cases = SortCases(sort, sortAsc, cases).ToList();
             var count = cases.Count;
             var pageSize = 10; // this COULD/SHOULD to be passed in..........
-            cases = cases.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(); // this is ok when I need it
+            cases = cases.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(); 
             return new PaginatedListCases(cases, pageIndex, pageSize, count);
         }
 
@@ -152,6 +152,7 @@ namespace TrackIT.Controllers
             if (searchString?.Length == 0) searchString = null;
 
             var cases = await _context.Cases
+                .AsNoTracking()
                 .Include(c => c.Software)
                 .Include(c => c.User)
                 .Select(c => new CasesToReturn
@@ -366,6 +367,7 @@ namespace TrackIT.Controllers
         }
 
         // Not needed unless Admin is allowed to delete completed cases that are more than 6 months old?
+        // unless otherwise modified deleting a case will also delete the related messages and upload db entries (but not the uploads in Cloudinary)
         // DELETE: api/Cases/5
         [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpDelete("{id}")]

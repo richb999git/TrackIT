@@ -25,4 +25,5 @@ export class LoginMenuComponent implements OnInit {
     ngOnDestroy() {
         this.userRole.unsubscribe(); // not sure if this is needed
     }
+
 }

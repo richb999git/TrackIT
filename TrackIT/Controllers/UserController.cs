@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -29,7 +30,12 @@ namespace TrackIT.Controllers
         {
             public string Id { get; set; }
             public string UserName { get; set; }
+
+            [Required]
             public string FirstName { get; set; }
+
+            [StringLength(40, MinimumLength = 2)]
+            [Required]
             public string LastName { get; set; }
             public string Email { get; set; }
             public bool? IsManager { get; set; } = null;
@@ -48,13 +54,43 @@ namespace TrackIT.Controllers
             }
         }
 
+        // Get all users in a role with a particular skill (or all skills)
+        [Route("/api/UsersByRoleBySkill/{role}")]
+        // GET: api/UsersByRole/sdfgsdf?pageIndex=1
+        [HttpGet("{role}")]
+        public async Task<PaginatedListUsers> GetUsersByRoleBySkill(string role, int skill, string sort, bool sortAsc, int pageIndex)
+        {
+            var managers = await _userManager.GetUsersForClaimAsync(new Claim(ClaimTypes.Role, "manager"));
+            var users = await _userManager.GetUsersForClaimAsync(new Claim(ClaimTypes.Role, role));
+            var allEmployeeSkills = await _context.EmployeeSkills.Where(es => skill != 0 ? es.SkillsId == skill : 1 == 1).ToListAsync();
+            //var allEmployeeSkillTypes = await _context.EmployeeSkills.Where(es => type != 0 ? es.Skills.Type == type : 1 == 1).ToListAsync();
+
+            var userInfo = users
+                .Select(c => new UserInfo
+                {
+                    UserName = c.UserName,
+                    Id = c.Id,
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    Email = c.Email,
+                    IsManager = managers.Contains(c)
+                })
+                .Where(c => skill != 0 ? allEmployeeSkills.Any(es => c.Id == es.UserId) : 1 == 1); // where employee has a skill in allEmployeeSkills
+
+            // need to create required SortUsers method
+            userInfo = SortUsers(sort, sortAsc, userInfo).ToList();
+            var count = userInfo.Count();
+            var pageSize = 10; // this COULD/SHOULD to be passed in..........
+            userInfo = userInfo.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return new PaginatedListUsers(userInfo.ToList(), pageIndex, pageSize, count);
+        }
+
 
         //public async Task<ActionResult<PaginatedList>> GetUsersForClaimAsync(new Claim(ClaimTypes.Role, role), int pageIndex)
         //public async Task<ActionResult<PaginatedList>> GetUsersByRole(string role, int progSkillsFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex)
         [Route("/api/UsersByRole/{role}")]
         // GET: api/UsersByRole/sdfgsdf?pageIndex=1
         [HttpGet("{role}")]
-        //public async Task<IEnumerable<UserInfo>> GetUsersByRole(string role)
         public async Task<PaginatedListUsers> GetUsersByRole(string role, string sort, bool sortAsc, int pageIndex)
         {
             var managers = await _userManager.GetUsersForClaimAsync(new Claim(ClaimTypes.Role, "manager"));

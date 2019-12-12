@@ -2,3 +2,11 @@
   color: blue;
   cursor: pointer;
 }
+
+.noWrap {
+  white-space: nowrap
+}
+
+.table td, .table th {
+  border-bottom: 1px solid #dee2e6; /* line at bottom of table - looks neater I think */
+}

@@ -1,0 +1,37 @@
+<h4 *ngIf="employeeSkillsModel && employeeSkillsModel.userInfo">Edit Skill of Employee: {{ employeeSkillsModel.userInfo.firstName }} {{ employeeSkillsModel.userInfo.lastName }}</h4>
+<br />
+<a [routerLink]='["/view-employees"]'>Back to Employee List</a>
+<br />
+<app-show-errors [errors]="errorMsg"></app-show-errors>
+
+<br />
+<form #employeeSkillForm="ngForm" (ngSubmit)="onSubmit(employeeSkillForm)">
+
+  <div class="form-group col-md-6 form-left15">
+    <label for="inputSkill">Skill</label>
+    <select name="skillsId" [(ngModel)]="employeeSkillsModel.skillsId" class="form-control" required>
+      <option *ngFor="let skill of skills" [ngValue]="skill.id"> {{skill.name}} </option>
+    </select>
+  </div>
+
+  <div class="container row">
+    <label class="form-check-label form-check-inline">Type:</label>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="type" id="type1" [value]="1" [(ngModel)]="employeeSkillsModel.experience" #experience="ngModel">
+      <label class="form-check-label" for="inputExperenceLevel1">Excellent</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="type" id="type2" [value]="2" [(ngModel)]="employeeSkillsModel.experience" #experience="ngModel">
+      <label class="form-check-label" for="inputExperenceLevel2">Good</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="type" id="type3" [value]="3" [(ngModel)]="employeeSkillsModel.experience" #experience="ngModel">
+      <label class="form-check-label" for="inputExperenceLevel3">Beginner</label>
+    </div>
+  </div>
+
+  <br />
+  <button [disabled]="!employeeSkillForm.valid" type="submit" class="btn btn-success col-md-12">Update</button>
+
+</form>
+
