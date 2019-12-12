@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace TrackIT.Controllers
         }
     }
 
-
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileUploadsController : ControllerBase
@@ -84,58 +85,11 @@ namespace TrackIT.Controllers
             return fileUploads;
         }
 
-        // get file
-        // GET: api/FileUploads/5
-        [HttpGet("{id}", Name = "GetFileUpload")]
-        public async Task<ActionResult<FileUploads>> GetFileUpload(int id)
-        {
-            var fileUploads = await _context.FileUploads.FindAsync(id);
-
-            if (fileUploads == null)
-            {
-                return NotFound();
-            }
-
-            return fileUploads;
-        }
-
-        // PUT: api/FileUploads/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutFileUploads(int id, FileUploads fileUploads)
-        {
-            if (id != fileUploads.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(fileUploads).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FileUploadsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/FileUploads
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
         //public async Task<ActionResult<FileUploads>> PostFileUploads(FileUploads fileUploads) // was
+        [HttpPost]
         public async Task<ActionResult> PostFileUploads([FromForm] FileUploadsCreate fileUploads) //[FromForm]
         {
             var file = fileUploads.File;
@@ -188,8 +142,6 @@ namespace TrackIT.Controllers
 
             };                
             
-           
-
             var newFile = new FileUploads
             {
                 URL = url,
@@ -210,10 +162,12 @@ namespace TrackIT.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction("GetFileUpload", new { id = newFile.Id }, newFile); // ?????? Need to confirm what is required here
+            return CreatedAtAction("GetFileUpload", new { id = newFile.Id }, newFile); 
         }
 
+        // Not used but could be implemented
         // DELETE: api/FileUploads/5
+        [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<FileUploads>> DeleteFileUploads(int id)
         {

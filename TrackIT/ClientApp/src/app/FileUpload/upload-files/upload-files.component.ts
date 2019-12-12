@@ -23,13 +23,11 @@ export class UploadFilesComponent implements OnInit {
     ngOnInit() {
         this.casesService.getCaseFiles(this.caseId).subscribe(result => {
             this.files = result;
-            console.log(this.files);
         }, errors => this.errorMsg = errors);
     }
 
     downloadFile() {
-        console.log("In download file section");
-        // downloads or shows the file based on what the browser can do
+        // downloads or shows the file based on what the browser can do - see html
     }
 
     openFileUploadBox() {

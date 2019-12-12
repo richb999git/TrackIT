@@ -24,7 +24,6 @@ export class ViewMessagesComponent implements OnInit {
     ngOnInit() {
         this.casesService.getCaseMessages(this.caseId).subscribe(result => {
             this.messages = result;
-            console.log(result);
         }, errors => this.errorMsg = errors);
     }
 

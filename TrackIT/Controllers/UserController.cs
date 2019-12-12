@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -54,16 +55,24 @@ namespace TrackIT.Controllers
             }
         }
 
+
+        // If I wanted to implement a sort I would need to get paginated employees with a certain skill..
+        // Couldn't use EmployeeSkill Controller to get paginated employees with a certain skill mainly because it
+        // would require being able to create dynamic properties for each skill added (which I can do in Javascript) 
+        // but I'm not sure how to do in c#. Sorting would be tricky as well.
+        // Therefore it was simpler to get the employees from the User Controller and process further in Javascript
+        // See in Users Controller: UsersByRoleBySkill
+
         // Get all users in a role with a particular skill (or all skills)
+        // GET: api/UsersByRole/sdfgsdf?skill=0&sort=&sortAsc=&pageIndex=1
+        [Authorize(Policy = "RequireManagerRoleClaim")]
         [Route("/api/UsersByRoleBySkill/{role}")]
-        // GET: api/UsersByRole/sdfgsdf?pageIndex=1
         [HttpGet("{role}")]
         public async Task<PaginatedListUsers> GetUsersByRoleBySkill(string role, int skill, string sort, bool sortAsc, int pageIndex)
         {
             var managers = await _userManager.GetUsersForClaimAsync(new Claim(ClaimTypes.Role, "manager"));
             var users = await _userManager.GetUsersForClaimAsync(new Claim(ClaimTypes.Role, role));
             var allEmployeeSkills = await _context.EmployeeSkills.Where(es => skill != 0 ? es.SkillsId == skill : 1 == 1).ToListAsync();
-            //var allEmployeeSkillTypes = await _context.EmployeeSkills.Where(es => type != 0 ? es.Skills.Type == type : 1 == 1).ToListAsync();
 
             var userInfo = users
                 .Select(c => new UserInfo
@@ -77,7 +86,6 @@ namespace TrackIT.Controllers
                 })
                 .Where(c => skill != 0 ? allEmployeeSkills.Any(es => c.Id == es.UserId) : 1 == 1); // where employee has a skill in allEmployeeSkills
 
-            // need to create required SortUsers method
             userInfo = SortUsers(sort, sortAsc, userInfo).ToList();
             var count = userInfo.Count();
             var pageSize = 10; // this COULD/SHOULD to be passed in..........
@@ -86,10 +94,10 @@ namespace TrackIT.Controllers
         }
 
 
-        //public async Task<ActionResult<PaginatedList>> GetUsersForClaimAsync(new Claim(ClaimTypes.Role, role), int pageIndex)
-        //public async Task<ActionResult<PaginatedList>> GetUsersByRole(string role, int progSkillsFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex)
+        // Get all users in a role
+        // GET: api/UsersByRole/sdfgsdf?&sort=&sortAsc=&pageIndex=1
+        [Authorize(Policy = "RequireManagerRoleClaim")]
         [Route("/api/UsersByRole/{role}")]
-        // GET: api/UsersByRole/sdfgsdf?pageIndex=1
         [HttpGet("{role}")]
         public async Task<PaginatedListUsers> GetUsersByRole(string role, string sort, bool sortAsc, int pageIndex)
         {
@@ -107,7 +115,6 @@ namespace TrackIT.Controllers
                     IsManager = managers.Contains(c)
                 });
 
-            // need to create required SortUsers method
             userInfo = SortUsers(sort, sortAsc, userInfo).ToList();
             var count = userInfo.Count();
             var pageSize = 10; // this COULD/SHOULD to be passed in..........
@@ -126,7 +133,7 @@ namespace TrackIT.Controllers
                     else users = users.OrderByDescending(u => u.LastName).ToList();
                     break;
                 default:
-                    // no sort, i.e. by case
+                    // no sort, i.e. by id
                     break;
             }
 
@@ -134,14 +141,13 @@ namespace TrackIT.Controllers
         }
 
 
-
-        [Route("/api/User/{id}")]
         //GET: api/User/5
+        [Authorize(Policy = "RequireManagerRoleClaim")]
+        [Route("/api/User/{id}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserInfo>> GetUser(string id) 
         {
             var user = await _userManager.FindByIdAsync(id); 
-            //var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id); 
 
             if (user == null)
             {
@@ -162,10 +168,12 @@ namespace TrackIT.Controllers
             return userInfo;
         }
 
-        [Route("/api/UserDetails/{id}")]
+        // Update user info
         // PUT: api/User/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        [Authorize(Policy = "RequireAdminRoleClaim")]
+        [Route("/api/UserDetails/{id}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(string id, [Bind("FirstName", "LastName", "IsManager")] UserInfo userInput)
         {
@@ -227,7 +235,7 @@ namespace TrackIT.Controllers
             return NoContent();
         }
 
-        // No need fo a delete user. Disable is better but I won't implement.
+        // No need for a delete user. Disable is better but I won't implement.
 
         private bool UserExists(string id) // User
         {

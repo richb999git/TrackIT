@@ -24,6 +24,7 @@ namespace TrackIT.Controllers
         }
 
         // GET: api/Skills?sort=id&sortAsc=true
+        [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Skills>>> GetSkills(string sort, bool sortAsc)
         {
@@ -59,6 +60,7 @@ namespace TrackIT.Controllers
 
 
         // GET: api/Skill/5
+        [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Skills>> GetSkills(int id)
         {
@@ -118,6 +120,7 @@ namespace TrackIT.Controllers
             return CreatedAtAction("GetSkills", new { id = skill.Id }, skill);
         }
 
+        // Will delete related data, wwhich is what I want (if user (admin only) wants
         // DELETE: api/Skills/5
         [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpDelete("{id}")]
@@ -128,13 +131,6 @@ namespace TrackIT.Controllers
             {
                 return NotFound();
             }
-
-            // check if there is associated data? In this case it is only cases
-            //var cases = await _context.Cases.FirstOrDefaultAsync(c => c.SoftwareId == id);
-            //if (cases != null)
-            //{
-            //    return BadRequest("Sorry, cannot delete as there cases for that software in the database.");
-            //}
 
             _context.Skills.Remove(skill);
             await _context.SaveChangesAsync();

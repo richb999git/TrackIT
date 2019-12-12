@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorizeService } from '../../../api-authorization/authorize.service';
 import { map } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-case-display-support',
   templateUrl: './case-display-support.component.html',
@@ -57,7 +58,6 @@ export class CaseDisplaySupportComponent implements OnInit {
     ngOnInit() {
         this.casesService.getCase(this.id).subscribe(result => {
             this.case = result;
-            console.log(result);
             this.assignedStaff = this.case.staffAssigned ? this.case.staffAssigned.split(', ') : [];
             this.populateAssignedStaffNames();
             this.authorize.getUser().pipe(map(u => u && u.userId)).subscribe(
@@ -71,29 +71,28 @@ export class CaseDisplaySupportComponent implements OnInit {
 
         this.casesService.getSkills("id", true).subscribe(result => {
             this.skills = result;
-            console.log(this.skills);
         }, errors => this.errorMsg = errors);
 
         this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
     }
 
+    backToList() {
+        this.router.navigate(['/cases-list-support']); //, { id: heroId, foo: 'foo' }]); // then get the parameters in the list compenent and change the properties in ngOnInit
+    }
+
     assignEmployee(id: string) {
         // add or subtract employee to/from staff assigned to case list unless already on the list
-        console.log("assignEmployee----------");
-        console.log(this.users);
         if (this.assignedStaff.includes(id)) {
             this.assignedStaff = this.assignedStaff.filter(e => e !== id);
 
             var name = this.users.find(i => i.id === id); //
             var fullName = name.firstName + " " + name.lastName;
-            console.log(fullName);
             this.assignedStaffNames = this.assignedStaffNames.filter(e => e !== fullName);
         } else {
             this.assignedStaff.push(id);
 
             var name = this.users.find(i => i.id === id); //
             var fullName = name.firstName + " " + name.lastName;
-            console.log(fullName);
             this.assignedStaffNames.push(fullName);
         }
     }
@@ -276,7 +275,6 @@ export class CaseDisplaySupportComponent implements OnInit {
     }
 
     showHideType(type) {
-        console.log(type);
         this.skillTypeFilter = type;
         this.populateUsersListWithSkills();
     }
@@ -299,7 +297,6 @@ export class CaseDisplaySupportComponent implements OnInit {
         this.casesService.getUsersByRoleBySkill("employee", this.skillFilter, this.sortProperty, this.sortAsc, 1).subscribe(result => {
             this.usersP = result;
             this.users = this.usersP.users;
-            console.log(this.users);
             this.populateUsersListWithSkills();
             this.pageIndex = 1;
             this.setPagination();

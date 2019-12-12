@@ -27,9 +27,11 @@ a {
 }
 
 .min-widthDates { min-width:90px; }
+
 .max-widthSoftware {
   max-width: 120px;
-  overflow-wrap:break-word;
+  min-width: 120px;
+  overflow-wrap: break-word;
 }
 
 .tableOverflow { /* make the table scrollable if screen too small */

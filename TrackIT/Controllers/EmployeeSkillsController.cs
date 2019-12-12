@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrackIT.Data;
 using TrackIT.Models;
-using static TrackIT.Controllers.UsersController;
+using static TrackIT.Controllers.UsersController; // not sure why I need this as it's in the same namespace (and why it wasn't required the other way around)
 
 namespace TrackIT.Controllers
 {
@@ -22,20 +22,6 @@ namespace TrackIT.Controllers
         public int Experience { get; set; } // enum? 1 = Excellent, 2 = Good, 3 = Beginner, 4 = None
 
     }
-
-    //public class PaginatedListEmployeeSkills: Paginated
-    //{
-    //    public List<EmployeeSkillsToReturn> EmployeesSkills { get; set; } 
-
-    //    public PaginatedListEmployeeSkills(List<EmployeeSkillsToReturn> employeeSkills, int pageIndex, int pageSize, int count) 
-    //    {
-    //        PageIndex = pageIndex;
-    //        PageSize = pageSize;
-    //        TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-    //        EmployeesSkills = employeeSkills; 
-    //    }
-    //}
-
 
 
     [Authorize]
@@ -63,8 +49,8 @@ namespace TrackIT.Controllers
 
         // get a skill by id (with limited user info)
         // GET: api/EmployeeSkills/5
-        [Route("/api/EmployeeSkillById/{id}")]
         [Authorize(Policy = "RequireAdminRoleClaim")]
+        [Route("/api/EmployeeSkillById/{id}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeSkillsToReturn>> GetEmployeeSkillById(int id)
         {
@@ -99,54 +85,14 @@ namespace TrackIT.Controllers
         }
 
 
-        
+        // If I wanted to implement a sort I would need to get paginated employees with a certain skill..
+        // Couldn't use EmployeeSkill Controller to get paginated employees with a certain skill mainly because it
+        // would require being able to create dynamic properties for each skill added (which I can do in Javascript) 
+        // but I'm not sure how to do in c#. Sorting would be tricky as well.
+        // Therefore it was simpler to get the employees from the User Controller and process further in Javascript
+        // See in Users Controller: UsersByRoleBySkill
 
-        // get all the employees with a skill (all if users array is null)
-        // GET: api/AllSkillsOfAllEmployees?user=hjgftfhtf&user=eriuege&user=sdvnurgeh etc
-        //[Route("/api/AllSkillsOfAllEmployeesPage")]
-        //[Authorize(Policy = "RequireAdminRoleClaim")]
-        //[HttpGet]
-        //public async Task<ActionResult<PaginatedListEmployeeSkills>> GetAllSkillsOfAllEmployeesPage([FromQuery]string[] users, int skill, int pageIndex)
-        //{
-        //    //skill = 1; // c# temporary
-
-        //    var usersWithSkills = await _context.EmployeeSkills
-        //                                       .Include(s => s.Skills)
-        //                                       .Select(s => new EmployeeSkillsToReturn
-        //                                       {
-        //                                           Id = s.Id,
-        //                                           Experience = s.Experience,
-        //                                           SkillsId = s.SkillsId,
-        //                                           Skills = s.Skills,
-        //                                           UserId = s.UserId,
-        //                                           UserInfo = new UserInfo
-        //                                           {
-        //                                               UserName = s.User.UserName,
-        //                                               Id = s.User.Id,
-        //                                               FirstName = s.User.FirstName,
-        //                                               LastName = s.User.LastName,
-        //                                               Email = s.User.Email
-        //                                           }
-        //                                       })
-        //                                       .Where(s => users != null ? users.Contains(s.UserId) : 1 == 1)
-        //                                       .Where(s => skill != 0 ? s.SkillsId == skill : 1 == 1)
-        //                                       .ToListAsync();
-
-        //    if (usersWithSkills == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    // usersWithSkills = SortUsersWithSkills(sort, sortAsc, usersWithSkills).ToList(); // later?
-        //    var count = usersWithSkills.Count;
-        //    var pageSize = 10; // this COULD/SHOULD to be passed in..........
-        //    usersWithSkills = usersWithSkills.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(); 
-        //    return new PaginatedListEmployeeSkills(usersWithSkills, pageIndex, pageSize, count);
-
-        //}
-
-
-        // get all the skills for an array of users
+        // Get all the skills for an array of users
         // GET: api/AllSkillsOfAllEmployees?user=hjgftfhtf&user=eriuege&user=sdvnurgeh etc
         [Route("/api/AllSkillsOfAllEmployees")]
         [Authorize(Policy = "RequireAdminRoleClaim")]
@@ -188,8 +134,8 @@ namespace TrackIT.Controllers
 
         // get all the skills for a user
         // GET: api/EmployeeSkills/5
-        [Route("/api/AllEmployeeSkills/{userId}")]
         [Authorize(Policy = "RequireAdminRoleClaim")]
+        [Route("/api/AllEmployeeSkills/{userId}")]
         [HttpGet("{userId}")]
         public async Task<ActionResult<IEnumerable<EmployeeSkillsToReturn>>> GetAllEmployeeSkills(string userId)
         {

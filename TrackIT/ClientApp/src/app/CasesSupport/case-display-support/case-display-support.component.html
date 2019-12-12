@@ -7,8 +7,8 @@
 <div *ngIf="case">
 
   <br />
-  <a class="" [routerLink]="['/cases-list-support']">Back to Case List</a>
-  <br /><br />
+  <p class="text-primary blueLine" (click)="backToList()">Back to Case List</p>
+  <br />
   <hr />
   <div>
     <div class="row">
@@ -275,19 +275,20 @@
                 <!-- the 6 keys below that are included in the above end up being in the table -->
                 <td class="pl-2 widthReduceNoWrap pr-3" [class.text-success]="user.id == case.contactId"
                     [class.text-primary]="assignedStaff.includes(user.id)"
-                    [class.font-weight-bold]="assignedStaff.includes(user.id) && user.id == case.contactId"
-                    >{{ user.firstName }} {{ user.lastName }} <span *ngIf="user.id == case.contactId"> (c)</span>
+                    [class.font-weight-bold]="assignedStaff.includes(user.id) && user.id == case.contactId">
+                  {{ user.firstName }} {{ user.lastName }} <span *ngIf="user.id == case.contactId"> (c)</span>
                 </td>
                 <td class="widthReduce pr-3" *ngIf="!assignedStaff.includes(user.id)">
-                    <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Assign</button>
+                  <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Assign</button>
                 </td>
                 <td class="widthReduce pr-3" *ngIf="assignedStaff.includes(user.id)">
-                    <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Unassign</button>
+                  <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Unassign</button>
                 </td>
                 <td class="widthReduceNoWrap pr-3">
-                    <button (click)="assignContact(user.id, user.firstName, user.lastName, user.email, user.userName)"
-                            class="btn btn-sm btn-outline-info">Set Contact
-                    </button>
+                  <button (click)="assignContact(user.id, user.firstName, user.lastName, user.email, user.userName)"
+                          class="btn btn-sm btn-outline-info">
+                    Set Contact
+                  </button>
                 </td>
                 <td *ngFor="let item of user | keyvalue">
                   <span *ngIf="allSkillsHeadings.includes(item.key)">
@@ -306,5 +307,6 @@
                       [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
       </app-pagination>
     </div>
-  <br />
+    <br />
+  </div>
 </div>

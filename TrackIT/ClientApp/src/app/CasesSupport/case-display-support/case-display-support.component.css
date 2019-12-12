@@ -17,6 +17,11 @@
   cursor: pointer;
 }
 
+.blueLine:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /*Needs stop embed within a span when used in table headers*/
 .verticalHeading {
   writing-mode: vertical-lr;

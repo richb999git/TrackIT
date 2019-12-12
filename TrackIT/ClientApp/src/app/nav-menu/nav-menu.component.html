@@ -1,7 +1,7 @@
 <header>
   <nav
     class="navbar navbar-expand-md navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
-        *ngIf="isAuthenticated | async"
+        
   >
     <div class="container">
       <a class="navbar-brand" [routerLink]="['/']">TrackIT</a>
@@ -22,7 +22,7 @@
 
         <app-login-menu></app-login-menu>
 
-        <ul class="navbar-nav flex-grow">
+        <ul class="navbar-nav flex-grow" *ngIf="isAuthenticated | async">
 
           <li *ngIf="(userRole | async)?.includes('admin')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage App">

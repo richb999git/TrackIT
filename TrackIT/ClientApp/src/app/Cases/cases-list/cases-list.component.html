@@ -45,14 +45,14 @@
     <table class='table table-stripedNo table-hover Content1 ' aria-labelledby="tableLabel">
       <thead>
         <tr>
-          <th (click)="sortCase('case')" class="highlight">Case</th>
-          <th (click)="sortCase('dateOpened')" class="highlight">Date opened</th>
+          <th (click)="sortCase('case')" class="highlight" [class.text-success]="sortProperty=='case'">Case</th>
+          <th (click)="sortCase('dateOpened')" class="highlight" [class.text-success]="sortProperty=='dateOpened'">Date opened</th>
           <th>Software</th>
           <th>Subject</th>
           <th>Type</th>
-          <th (click)="sortCase('contact')" class="highlight">Contact</th>
-          <th (click)="sortCase('urgency')" class="highlight">Urgency</th>
-          <th (click)="sortCase('status')" class="highlight">Status</th>
+          <th (click)="sortCase('contact')" class="highlight" [class.text-success]="sortProperty=='contact'">Contact</th>
+          <th (click)="sortCase('urgency')" class="highlight" [class.text-success]="sortProperty=='urgency'">Urgency</th>
+          <th (click)="sortCase('status')" class="highlight" [class.text-success]="sortProperty=='status'">Status</th>
           <th *ngIf="caseFilter != 1">Completion date</th>
         </tr>
       </thead>

@@ -53,7 +53,9 @@
         </thead>
         <tbody>
           <tr *ngFor="let file of files.reverse()">
-            <td class="widthDownload"><a href="{{ file.url }}" target="_blank" (click)="downloadFile()" class="btn btn-sm btn-outline-success">View/Download</a> </td>
+            <td class="widthDownload">
+                <a href="{{ file.url }}" target="_blank" (click)="downloadFile()" class="btn btn-sm btn-outline-success">View/Download</a> 
+             </td>
             <td class="widthDatesTime">{{ file.timeStamp  | date: 'dd-MMM-yy HH:mm' }}</td>
             <td class="shortMessage">{{ file.description }}</td>
           </tr>

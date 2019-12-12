@@ -40,8 +40,15 @@ export class CasesListSupportComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.pageIndex = 1;
-        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, "").subscribe(result => {
+        this.caseFilter = this.casesService.getCaseFilter();
+        this.softwareFilter = this.casesService.getSoftwareFilter();
+        this.typeFilter = this.casesService.getTypeFilter();
+        this.sortProperty = this.casesService.getSortProperty();
+        this.sortAsc = this.casesService.getSortAsc();
+        this.pageIndex = this.casesService.getPageIndex();
+        this.searchModel.searchString = this.casesService.getSearchString();
+
+        this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString).subscribe(result => {                                     
             this.cases = result;
             this.setPagination();
         }, errors => this.errorMsg = errors);
@@ -55,11 +62,11 @@ export class CasesListSupportComponent implements OnInit {
     }
 
     editCase(id) {
+        this.casesService.setFilters(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         this.router.navigate(['/case-display-support/' + id]);
     }
 
     chooseCaseFilter(e) {
-        console.log(this.caseFilter, this.softwareFilter);
         this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, this.searchModel.searchString).subscribe(result => {
             this.cases = result;
             this.pageIndex = 1;
@@ -68,9 +75,7 @@ export class CasesListSupportComponent implements OnInit {
     }
 
     sortCase(sortProperty) {
-        if (sortProperty == this.sortProperty) {
-            this.sortAsc = !this.sortAsc;
-        }
+        this.sortAsc = sortProperty == this.sortProperty ? !this.sortAsc : true;
         this.sortProperty = sortProperty;
         this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, 1, this.searchModel.searchString).subscribe(result => {
             this.cases = result;

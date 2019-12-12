@@ -79,10 +79,9 @@ namespace TrackIT.Controllers
 
 
         // Get cases in user section of site (1 = active, 0 = all). Software filter based on id - 0 = all
-        [Route("/api/CasesUser")]
         // GET: api/CasesUser?caseFilter=1&softwareFilter=0&sort=id&sortAsc=true&pageIndex=1&searchString=
+        [Route("/api/CasesUser")]
         [HttpGet]
-        //public async Task<ActionResult<IEnumerable<CasesToReturn>>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc)
         public async Task<ActionResult<PaginatedListCases>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
             int statusFilter = caseFilter == 1 ? 7 : 8;
@@ -138,9 +137,9 @@ namespace TrackIT.Controllers
 
 
         // Get case list in support section of site (1 = active, 0 = all). Software filter based on id - 0 = all. Type filter - 0 = all
+        // GET: api/CasesSupport?caseFilter=1&softwareFilter=0&typeFilter=0&sort=id&sortAsc=true&pageIndex=1&searchString=
         [Authorize(Policy = "RequireEmployeeRoleClaim")]
         [Route("/api/CasesSupport")]
-        // GET: api/CasesSupport?caseFilter=1&softwareFilter=0&typeFilter=0&sort=id&sortAsc=true&pageIndex=1&searchString=
         [HttpGet]
         public async Task<ActionResult<PaginatedListCases>> GetCasesSupport(int caseFilter, int softwareFilter, int typeFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
@@ -218,7 +217,7 @@ namespace TrackIT.Controllers
             switch (sort)
             {
                 case "deadline":
-                    if (!sortAsc) cases = cases.OrderBy(c => c.Deadline).ToList();
+                    if (sortAsc) cases = cases.OrderBy(c => c.Deadline).ToList();
                     else cases = cases.OrderByDescending(c => c.Deadline).ToList();
                     break;
                 case "dateOpened":
@@ -318,6 +317,7 @@ namespace TrackIT.Controllers
         // PUT: api/Cases/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        [Authorize(Policy = "RequireEmployeeRoleClaim")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCases(int id, 
             [Bind("StaffAssigned", "ContactId", "Status", "EstimatedTimeHours", "TimeSpentHours",

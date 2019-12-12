@@ -36,7 +36,36 @@ export class CasesService {
         "Excellent", "Good", "Beginner"
     ]
 
+    // pagination sort/filter/search properties:
+    private caseFilter: number;
+    private softwareFilter: number;
+    private typeFilter: number;
+    private sortProperty: string;
+    private sortAsc: boolean;
+    private searchString: string;
+    // pagination properties:
+    private pageIndex: number = 1;
+
     constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
+
+    setFilters(caseFilter, softwareFilter, typeFilter, sortProperty, sortAsc, pageIndex, searchString) {
+        this.caseFilter = caseFilter;
+        this.softwareFilter = softwareFilter;
+        this.typeFilter = typeFilter;
+        this.sortProperty = sortProperty;
+        this.sortAsc = sortAsc;
+        this.pageIndex = pageIndex;
+        this.searchString = searchString;
+    }
+    
+    getCaseFilter() { return this.caseFilter || 1 };
+    getSoftwareFilter() { return this.softwareFilter || 0 };
+    getTypeFilter() { return this.typeFilter || 0 };
+    getSortProperty() { return this.sortProperty || "" };
+    getSortAsc() { return this.sortAsc == null ? true : false; };
+    getPageIndex() { return this.pageIndex || 0 };
+    getSearchString() { return this.searchString || "" };
+    
 
     // Return type is not an array. Pagination is an object that INCLUDES an array
     getCases(caseFilter, softwareFilter, sort, sortAsc, pageIndex, searchString) {
