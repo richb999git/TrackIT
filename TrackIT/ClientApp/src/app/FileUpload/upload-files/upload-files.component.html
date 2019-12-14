@@ -41,7 +41,7 @@
   <br />
 
   <div *ngIf="files.length!=0" class="">
-    <h4><b>FILES ({{files.length}}) <b class="highlightHover" title="show/hide files" (click)="toggleShowFiles()">{{ showHide }} </b></b></h4>
+    <h4 class="highlightHover" title="show/hide files" (click)="toggleShowFiles()"><b><i class="fa fa-copy briefcase-colour"></i> FILES ({{files.length}}) <b >{{ showHide }} </b></b></h4>
     <div *ngIf="showFiles">
       <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
         <thead>

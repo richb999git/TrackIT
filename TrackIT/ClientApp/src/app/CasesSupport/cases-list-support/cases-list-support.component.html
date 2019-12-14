@@ -1,5 +1,5 @@
-<h3 id="tableLabel" *ngIf="(userRole | async)?.includes('manager')">Support Cases - Manager View</h3>
-<h3 id="tableLabel" *ngIf="!(userRole | async)?.includes('manager')">Support Cases - Developer View (restricted)</h3>
+<h3 id="tableLabel" *ngIf="(userRole | async)?.includes('manager')"><i class="fa fa-briefcase briefcase-colour"></i> Support Cases - Manager View</h3>
+<h3 id="tableLabel" *ngIf="!(userRole | async)?.includes('manager')"><i class="fa fa-briefcase briefcase-colour"></i> Support Cases - Developer View (restricted)</h3>
 
 <form #searchForm="ngForm" (ngSubmit)="onSubmitSearch(searchForm)" class="width200 float-right" title="search through cases">
   <div class="input-group">
@@ -52,16 +52,16 @@
     <table class='table table-stripedNo table-hover Content1' aria-labelledby="tableLabel">
       <thead>
         <tr>
-          <th (click)="sortCase('case')" class="highlight" [class.text-success]="sortProperty=='case'">Case</th>
+          <th (click)="sortCase('case')" class="highlight" [class.selected]="sortProperty=='case'">Case</th>
           <th>Software</th>
-          <th (click)="sortCase('dateOpened')" class="highlight" [class.text-success]="sortProperty=='dateOpened'">Date Opened</th>
+          <th (click)="sortCase('dateOpened')" class="highlight" [class.selected]="sortProperty=='dateOpened'">Date Opened</th>
           <th>Subject</th>
           <th>Type</th>
-          <th (click)="sortCase('user')" class="highlight"[class.text-success]="sortProperty=='user'">Created by</th>
-          <th (click)="sortCase('contact')" class="highlight" [class.text-success]="sortProperty=='contact'">Contact</th>
-          <th (click)="sortCase('urgency')" class="highlight" [class.text-success]="sortProperty=='urgency'">Urgency</th>
-          <th (click)="sortCase('deadline')" class="highlight" [class.text-success]="sortProperty=='deadline'">Deadline</th>
-          <th (click)="sortCase('status')" class="highlight" [class.text-success]="sortProperty=='status'">Status</th>
+          <th (click)="sortCase('user')" class="highlight"[class.selected]="sortProperty=='user'">Created by</th>
+          <th (click)="sortCase('contact')" class="highlight" [class.selected]="sortProperty=='contact'">Contact</th>
+          <th (click)="sortCase('urgency')" class="highlight" [class.selected]="sortProperty=='urgency'">Urgency</th>
+          <th (click)="sortCase('deadline')" class="highlight" [class.selected]="sortProperty=='deadline'">Deadline</th>
+          <th (click)="sortCase('status')" class="highlight" [class.selected]="sortProperty=='status'">Status</th>
           <th *ngIf="caseFilter != 1">Date Completed</th>
         </tr>
       </thead>

@@ -52,7 +52,7 @@ export class CaseDisplaySupportComponent implements OnInit {
 
     ngAfterViewInit() {
         this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
-        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
+        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF"; // #DDFFEF
     }
 
     ngOnInit() {
@@ -74,10 +74,6 @@ export class CaseDisplaySupportComponent implements OnInit {
         }, errors => this.errorMsg = errors);
 
         this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
-    }
-
-    backToList() {
-        this.router.navigate(['/cases-list-support']); //, { id: heroId, foo: 'foo' }]); // then get the parameters in the list compenent and change the properties in ngOnInit
     }
 
     assignEmployee(id: string) {
@@ -141,7 +137,8 @@ export class CaseDisplaySupportComponent implements OnInit {
         var skill = 0; // 0 = all skills. This is not the same as "this.skillFilter"
         this.casesService.getAllSkillsOfAllEmployees(this.users, skill).subscribe(result => {
             this.employeesSkills = result;
-            this.usersWithSkills = this.users.slice();
+            //this.usersWithSkills = this.users.slice(); // this only shallow copies to one level so no good if skills:{} used
+            this.usersWithSkills = JSON.parse(JSON.stringify(this.users)); // this is a deep copy so ok for skills (and it's a simple object)
 
             // loop through employeesSkills and get an array of distinct skills for the headings
             this.allSkillsHeadings = [];
@@ -152,12 +149,14 @@ export class CaseDisplaySupportComponent implements OnInit {
                         this.allSkillsHeadings.push(this.employeesSkills[i].skills.name);
                     }                    
                 }
-            }           
+            }
 
             // initialize each skill in each user as null so it is used/displayed in the html
             for (var u = 0; u < this.usersWithSkills.length; u++) {
                 for (var i = 0; i < this.allSkillsHeadings.length; i++) {
-                    this.usersWithSkills[u][this.allSkillsHeadings[i]] = null;
+                    //this.usersWithSkills[u][this.allSkillsHeadings[i]] = null; // if Object for skills not used
+                    var pair = { [this.allSkillsHeadings[i]]: null };
+                    this.usersWithSkills[u].skills = { ...this.usersWithSkills[u].skills, ...pair };
                 }
             }
 
@@ -166,9 +165,12 @@ export class CaseDisplaySupportComponent implements OnInit {
                 // if a skills type filter is being used only add the data if it is that type
                 if (this.skillTypeFilter == 0 || this.skillTypeFilter == this.employeesSkills[i].skills.type) {
                     var userIndex = this.users.findIndex(a => a.id == this.employeesSkills[i].userId);
-                    this.usersWithSkills[userIndex][this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience;
+                    //this.usersWithSkills[userIndex][this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience; // if Object for skills not used
+                    this.usersWithSkills[userIndex].skills[this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience;
                 }
-            }           
+            }
+
+            console.log(this.usersWithSkills);
 
         }, errors => this.errorMsg = errors);
     }

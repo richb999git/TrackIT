@@ -7,7 +7,7 @@
 
 @*<h1>@ViewData["Title"]</h1>*@
 
-<div class="text-center login-background" style="width: 400px; background-color: #DDFFEF; padding: 10px; margin: 0 auto;">
+<div class="text-center login-background" style="max-width: 400px; background-color: #DDFFEF; padding: 10px; margin: 0 auto;  border: solid; border-width: thin; box-shadow: 5px 10px 8px #888888; border-color: limegreen;">
     <div class="text-center login-center-it" style="margin: 0 auto; width: 80%;">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             @if (User.IsInRole("admin") || User.HasClaim(ClaimTypes.Role, "admin"))
@@ -70,7 +70,7 @@
 
             <button type="submit" class="btn btn-success col-md-12">REGISTER</button>
         </form>
-        <br />
+        <br /><br />    
     </div>
     @*<div class="col-md-6 col-md-offset-2">
         <section>

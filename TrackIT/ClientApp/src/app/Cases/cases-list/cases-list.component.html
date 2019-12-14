@@ -1,8 +1,8 @@
-<h1 id="tableLabel">Your Reported Cases</h1>
-
+<h3 id="tableLabel"><i class="fa fa-briefcase briefcase-colour"></i> Your Reported Cases</h3>
+<br />
 <button class="btn btn-success" [routerLink]="['/case-add']">Raise Case</button>
 
-<form #searchForm="ngForm" class="width200 float-right" >
+<form #searchForm="ngForm" class="width150 float-right" >
   <div class="input-group">
     <label for="inputSearch"></label>
     <input type="search" class="form-control" id="searchString" (ngModelChange)="onKeySearch(searchForm)"
@@ -45,14 +45,14 @@
     <table class='table table-stripedNo table-hover Content1 ' aria-labelledby="tableLabel">
       <thead>
         <tr>
-          <th (click)="sortCase('case')" class="highlight" [class.text-success]="sortProperty=='case'">Case</th>
-          <th (click)="sortCase('dateOpened')" class="highlight" [class.text-success]="sortProperty=='dateOpened'">Date opened</th>
+          <th (click)="sortCase('case')" class="highlight" [class.selected]="sortProperty=='case'">Case</th>
+          <th (click)="sortCase('dateOpened')" class="highlight" [class.selected]="sortProperty=='dateOpened'">Date opened</th>
           <th>Software</th>
           <th>Subject</th>
           <th>Type</th>
-          <th (click)="sortCase('contact')" class="highlight" [class.text-success]="sortProperty=='contact'">Contact</th>
-          <th (click)="sortCase('urgency')" class="highlight" [class.text-success]="sortProperty=='urgency'">Urgency</th>
-          <th (click)="sortCase('status')" class="highlight" [class.text-success]="sortProperty=='status'">Status</th>
+          <th (click)="sortCase('contact')" class="highlight" [class.selected]="sortProperty=='contact'">Contact</th>
+          <th (click)="sortCase('urgency')" class="highlight" [class.selected]="sortProperty=='urgency'">Urgency</th>
+          <th (click)="sortCase('status')" class="highlight" [class.selected]="sortProperty=='status'">Status</th>
           <th *ngIf="caseFilter != 1">Completion date</th>
         </tr>
       </thead>

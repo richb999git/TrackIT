@@ -1,5 +1,5 @@
-<h3 id="tableLabel" *ngIf="(userRole | async)?.includes('manager')">Case - Manager View</h3>
-<h3 id="tableLabel" *ngIf="!(userRole | async)?.includes('manager')">Case - Developer View (restricted)</h3>
+<h3 id="tableLabel" *ngIf="(userRole | async)?.includes('manager')"><i class="fa fa-briefcase briefcase-colour"></i> Case - Manager View</h3>
+<h3 id="tableLabel" *ngIf="!(userRole | async)?.includes('manager')"><i class="fa fa-briefcase briefcase-colour"></i> Case - Developer View (restricted)</h3>
 
 <p *ngIf="!case"><em>Loading...case details</em></p>
 <app-show-errors [errors]="errorMsg"></app-show-errors>
@@ -7,7 +7,7 @@
 <div *ngIf="case">
 
   <br />
-  <p class="text-primary blueLine" (click)="backToList()">Back to Case List</p>
+  <a class="" [routerLink]="['/cases-list-support']">Back to Case List</a>
   <br />
   <hr />
   <div>
@@ -48,8 +48,8 @@
     </div>
     <br />
 
-    <!--Bug/Feature only-->
-    <div *ngIf="(case.type == 1 || case.type == 4)">
+    <!--Bug/Issue/Feature only (not question)-->
+    <div *ngIf="(case.type !=2)">
       <div class="row">
         <div class="col" title="Managers only">Deadline Date</div>
         <div class="col" *ngIf="(isUserDeveloper || isUserContact)">Date of Fix Approval Request</div>
@@ -76,7 +76,7 @@
     </div>
     <br />
 
-    <div *ngIf="(case.type == 1 || case.type == 4) && (isUserDeveloper || isUserContact)">
+    <div *ngIf="(case.type != 2) && (isUserDeveloper || isUserContact)">
       <div class="row">
         <div class="col" title="managers only">Date Fix Approved</div>
         <div class="col">Date Fix Applied</div>
@@ -89,7 +89,7 @@
       </div>
       <br />
     </div>
-    <!--Bug/Feature only-->
+    <!--Bug/Issue/Feature only (not question)-->
 
     <div class="row">
       <div class="col">Date Case Assigned</div>
@@ -160,7 +160,7 @@
   <br />
 
   <div class="row">
-    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type == 2 || case.type == 3)" class="col">
+    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type == 2)" class="col">
       <form #completeForm="ngForm" (ngSubmit)="onSubmitComplete(completeForm)">
         <button *ngIf="case.status != 7" type="submit" class="btn btn-success">Consider Complete</button>
         <button *ngIf="case.status == 7" type="submit" class="btn btn-success">Re-Open Case</button>
@@ -175,7 +175,7 @@
   </div>
   <br />
   <div class="row">
-    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type == 1 || case.type == 4)" class="col">
+    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type !=2)" class="col">
       <form #onHoldForm="ngForm" (ngSubmit)="onSubmitOnHold(onHoldForm)">
         <button *ngIf="case.status <= 3" type="submit" class="btn btn-success">Put case on hold</button>
         <button *ngIf="case.status == 4" type="submit" class="btn btn-success">Release from hold</button>
@@ -194,6 +194,7 @@
   </div>
 
   <hr />
+  <h4><i class="fa fa-user-plus briefcase-colour"></i> Staff Assignment</h4>
 
   <div>Contact Assigned</div>
   <div *ngIf="!case.contactId"><b>No contact</b></div>
@@ -254,53 +255,49 @@
       <app-pagination [pageIndex]="pageIndex" [totalPages]="usersP.totalPages" [pagesBefore]="pagesBefore"
                       [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
       </app-pagination>
-      <hr />
+      
       <div class="">
-        <div class="tableOverflow Container1 FlippedNo">
-          <table class='table table-stripedNo table-hover Content1' aria-labelledby="tableLabel">
+        <div class="">
+          <table class='table table-sm table-striped table-responsive table-light black-border font85' aria-labelledby="tableLabel">
             <thead>
-              <tr>
-                <th class="pl-2 highlight" (click)="sortEmployees('name')">Name</th>
+              <tr class="green-heading">
+                <th class="pl-2 highlight freezeH col1" (click)="sortEmployees('name')">Name</th>
+                <th class=""></th>
                 <th></th>
-                <th></th>
-                <th *ngFor="let item of usersWithSkills[0] | keyvalue" class="table-headings-no-padding">
+                <th *ngFor="let item of usersWithSkills[0].skills | keyvalue" class="">
                   <!-- have to use usersWithSkills[0] so it's in the same order as the data -->
-                  <span *ngIf="allSkillsHeadings.includes(item.key)"
-                        class="verticalHeading">{{ item.key }}</span>
+                  <span class="verticalHeading">{{ item.key }}</span><!--*ngIf='allSkillsHeadings.includes(item.key)'-->
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let user of usersWithSkills">
                 <!-- the 6 keys below that are included in the above end up being in the table -->
-                <td class="pl-2 widthReduceNoWrap pr-3" [class.text-success]="user.id == case.contactId"
-                    [class.text-primary]="assignedStaff.includes(user.id)"
+                <td class="pl-2 widthReduceNoWrap pr-3 freeze col1" [class.text-danger]="user.id == case.contactId"
+                    [class.text-success]="assignedStaff.includes(user.id)"
                     [class.font-weight-bold]="assignedStaff.includes(user.id) && user.id == case.contactId">
                   {{ user.firstName }} {{ user.lastName }} <span *ngIf="user.id == case.contactId"> (c)</span>
                 </td>
-                <td class="widthReduce pr-3" *ngIf="!assignedStaff.includes(user.id)">
-                  <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Assign</button>
+                <td class="widthReduce pr-3"  *ngIf="!assignedStaff.includes(user.id)">
+                  <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-success assignButton">Assign</button>
                 </td>
                 <td class="widthReduce pr-3" *ngIf="assignedStaff.includes(user.id)">
-                  <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-info assignButton">Unassign</button>
+                  <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-success assignButton">Unassign</button>
                 </td>
                 <td class="widthReduceNoWrap pr-3">
                   <button (click)="assignContact(user.id, user.firstName, user.lastName, user.email, user.userName)"
-                          class="btn btn-sm btn-outline-info">
+                          class="btn btn-sm btn-outline-success">
                     Set Contact
                   </button>
                 </td>
-                <td *ngFor="let item of user | keyvalue">
-                  <span *ngIf="allSkillsHeadings.includes(item.key)">
-                    {{ item.value }}
-                  </span>
-                </td>
+                <td *ngFor="let skill of user.skills | keyvalue">{{ skill.value }}</td>
               </tr>
             </tbody>
           </table>
-          <p *ngIf="usersWithSkills.length == 0">No employees meet the criteria</p>
-          <p *ngIf="usersWithSkills.length != 0">1 = Excellent, 2 = Good, 3 = Beginner</p>
         </div>
+        
+        <p *ngIf="usersWithSkills.length == 0">No employees meet the criteria</p>
+        <p *ngIf="usersWithSkills.length != 0">1 = Excellent, 2 = Good, 3 = Beginner</p>
       </div>
       <br />
       <app-pagination [pageIndex]="pageIndex" [totalPages]="usersP.totalPages" [pagesBefore]="pagesBefore"

@@ -11,13 +11,22 @@
   cursor: pointer;
 }
 
+.selected {
+  color: green;
+}
+
+  .selected:hover {
+    color: blue;
+    cursor: pointer;
+  }
+
 .lineHover:hover {
   cursor: pointer;
 }
 
-.green-table {
+/*.green-table {
   background-color: #DDFFEF;
-}
+}*/
 
 .width200 {
   width: 200px;

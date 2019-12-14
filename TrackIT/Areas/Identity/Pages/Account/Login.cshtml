@@ -6,13 +6,15 @@
 }
 
 @*<h1>@ViewData["Title"]</h1>*@
-<div class="text-center login-background" style="width: 400px; background-color: #DDFFEF; padding: 10px; margin: 0 auto;">
+<div class="text-center login-background" style="max-width: 400px; background-color: #DDFFEF; padding: 10px; margin: 0 auto;  border: solid; border-width: thin; box-shadow: 5px 10px 8px #888888; border-color: limegreen;">
     <div class="row text-center"> 
         <div class="text-center login-center-it" style="margin: 0 auto; width: 80%;">
             <section>
                 <form id="account" method="post">
                     <br />
-                    <h4  class="text-center">TrackIT</h4>
+                    <h4 class="text-center">
+                        TrackIT
+                    </h4>
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
@@ -48,7 +50,7 @@
                         </p>
                     </div>
                 </form>
-                <br />
+                <br /><br />
             </section>
         </div>
         @*<div class="col-md-6 col-md-offset-2">

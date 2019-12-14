@@ -24,7 +24,11 @@
   white-space: nowrap
 }
 
-.highlightHover:hover {
-  color: #5cb85c; /*bootstrap success colour*/
-  cursor: pointer;
+.highlightHover {
+  width: 250px;
 }
+  .highlightHover:hover {
+    cursor: pointer;
+    color: green; /*bootstrap success colour #5cb85c */
+    width: 250px;
+  }

@@ -20,7 +20,7 @@
   <br />
 
   <div *ngIf="messages.length!=0" class="">
-    <h4><b>MESSAGES ({{messages.length}}) <b class="highlightHover" title="show/hide messages" (click)="toggleShowMessages()">{{ showHide }} </b></b></h4>
+    <h4 class="highlightHover" title="show/hide messages" (click)="toggleShowMessages()"><b><i class="fa fa-envelope briefcase-colour"></i> MESSAGES ({{messages.length}}) <b>{{ showHide }} </b></b></h4>
     <div *ngIf="showMessages">
       <table class='table table-bordered table-sm' aria-labelledby="tableLabel">
         <thead>

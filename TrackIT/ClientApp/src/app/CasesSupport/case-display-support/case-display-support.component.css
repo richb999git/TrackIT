@@ -22,20 +22,9 @@
   cursor: pointer;
 }
 
-/*Needs stop embed within a span when used in table headers*/
+/*Needs to be within a span when used in table headers*/
 .verticalHeading {
   writing-mode: vertical-lr;
-}
-
-
-/* until I manage to get rid of the blank headers */
-.table td, .table th {
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 2px;
-  padding-top: 2px;
-  border-top: none;
-  border-bottom: 1px solid #dee2e6; /* line at bottom of table - looks neater I think */
 }
 
 .assignButton {
@@ -50,4 +39,46 @@
 .widthReduce {
   width: 1%;
 }
+
+
+
+/* Make tables have a fixed first column*/
+
+.freeze {
+  position: sticky;
+}
+
+tr:nth-child(even) .freeze {
+  background: white;
+}
+
+tr:nth-child(odd) .freeze {
+  background: #ECEFF1; /* Bootstrap default colour */
+}
+
+.freezeH {
+  position: sticky;
+  background: green;
+}
+
+.col1 {
+  left: 1px;
+}
+.col2 {left: 143px;} /* Not used */
+.col3 {left: 220px;}/* Not used */
+
+.green-heading {
+  color: white;
+  background-color: green;
+}
+
+.black-border {
+  border: 1px solid gray;
+}
+
+.font85 {
+  font-size: 85%;
+}
+
+/*-----------------------------------------------------------------------------------*/
 

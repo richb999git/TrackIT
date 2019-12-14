@@ -57,12 +57,13 @@ export class CasesService {
         this.pageIndex = pageIndex;
         this.searchString = searchString;
     }
-    
+
+    // If null set to a default. Boolean has to be treated differently because of truthy/falsy
     getCaseFilter() { return this.caseFilter || 1 };
     getSoftwareFilter() { return this.softwareFilter || 0 };
     getTypeFilter() { return this.typeFilter || 0 };
     getSortProperty() { return this.sortProperty || "" };
-    getSortAsc() { return this.sortAsc == null ? true : false; };
+    getSortAsc() { return this.sortAsc == null ? true : this.sortAsc };
     getPageIndex() { return this.pageIndex || 0 };
     getSearchString() { return this.searchString || "" };
     

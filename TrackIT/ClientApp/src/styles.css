@@ -90,3 +90,9 @@ body {
   cursor: pointer;
 }
 
+.briefcase-colour {
+  background: orange;
+  color: white;
+  padding: 7px;
+}
+

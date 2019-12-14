@@ -11,12 +11,20 @@
   cursor: pointer;
 }
 
+.selected {
+  color: green;
+}
+  .selected:hover {
+    color: blue;
+    cursor: pointer;
+  }
+
 .lineHover:hover {
   cursor: pointer;
 }
 
-.width200 {
-  width: 200px;
+.width150 {
+  width: 150px;
 }
 
 .table td, .table th {
