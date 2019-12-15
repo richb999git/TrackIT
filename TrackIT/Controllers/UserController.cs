@@ -68,11 +68,14 @@ namespace TrackIT.Controllers
         [Authorize(Policy = "RequireManagerRoleClaim")]
         [Route("/api/UsersByRoleBySkill/{role}")]
         [HttpGet("{role}")]
-        public async Task<PaginatedListUsers> GetUsersByRoleBySkill(string role, int skill, string sort, bool sortAsc, int pageIndex)
+        public async Task<PaginatedListUsers> GetUsersByRoleBySkill(string role, int skill, string sort, bool sortAsc, int pageIndex, string skillSearch  )
         {
             var managers = await _userManager.GetUsersForClaimAsync(new Claim(ClaimTypes.Role, "manager"));
             var users = await _userManager.GetUsersForClaimAsync(new Claim(ClaimTypes.Role, role));
+
+            if (skillSearch == null || skillSearch == "null") skillSearch = "";
             var allEmployeeSkills = await _context.EmployeeSkills.Where(es => skill != 0 ? es.SkillsId == skill : 1 == 1).ToListAsync();
+            var allEmployeeSkillsSearch = await _context.EmployeeSkills.Where(es => skillSearch != null ? es.Skills.Name.Contains(skillSearch) : 1 == 1).ToListAsync();
 
             var userInfo = users
                 .Select(c => new UserInfo
@@ -84,7 +87,8 @@ namespace TrackIT.Controllers
                     Email = c.Email,
                     IsManager = managers.Contains(c)
                 })
-                .Where(c => skill != 0 ? allEmployeeSkills.Any(es => c.Id == es.UserId) : 1 == 1); // where employee has a skill in allEmployeeSkills
+                .Where(c => skillSearch != "" ? allEmployeeSkillsSearch.Any(es => c.Id == es.UserId) : 1 == 1) // where employee has a skill (via search) in allEmployeeSkills
+                .Where(c => skill != 0 ? allEmployeeSkills.Any(es => c.Id == es.UserId) : 1 == 1); // where employee has a skill(via filter) in allEmployeeSkills
 
             userInfo = SortUsers(sort, sortAsc, userInfo).ToList();
             var count = userInfo.Count();

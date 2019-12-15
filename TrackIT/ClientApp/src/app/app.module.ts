@@ -34,6 +34,8 @@ import { AddSkillsToEmployeeComponent } from './Admin/Employees/EmployeeSkills/a
 import { ViewSkillsOfEmployeeComponent } from './Admin/Employees/EmployeeSkills/view-skills-of-employee/view-skills-of-employee.component';
 import { EditSkillsOfEmployeeComponent } from './Admin/Employees/EmployeeSkills/edit-skills-of-employee/edit-skills-of-employee.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -92,7 +94,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
             pathMatch: 'full',
             component: PageNotFoundComponent
         }
-    ])
+    ]),
+    BsDatepickerModule.forRoot(),
+    BrowserAnimationsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }

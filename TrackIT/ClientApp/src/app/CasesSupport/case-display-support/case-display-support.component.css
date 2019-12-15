@@ -4,7 +4,6 @@
 }
 
 .deadline {
-  width: 260px;
   margin-left: -15px;
 }
 
@@ -41,8 +40,15 @@
 }
 
 
+/* Make tables have a fixed first column and a subtle shadow on column 1 */
 
-/* Make tables have a fixed first column*/
+thead .freezeH {
+  box-shadow: 1px 0 5px -2px white; /* to create a subtle shadow on right side of freeze column*/
+}
+
+tbody .freeze {
+  box-shadow: 3px 0 5px -5px #888; /* to create a subtle shadow on right side of freeze column*/
+}
 
 .freeze {
   position: sticky;
@@ -53,7 +59,7 @@ tr:nth-child(even) .freeze {
 }
 
 tr:nth-child(odd) .freeze {
-  background: #ECEFF1; /* Bootstrap default colour */
+  background: #ECEFF1; /* Bootstrap default 2nd stripe colour */
 }
 
 .freezeH {
@@ -62,10 +68,15 @@ tr:nth-child(odd) .freeze {
 }
 
 .col1 {
-  left: 1px;
+  left: 0px;
 }
 .col2 {left: 143px;} /* Not used */
 .col3 {left: 220px;}/* Not used */
+
+/* Added to avoid strange differences on header (particularly Firefox) - copied from the Inspector in Firefox - no side effects */
+.table-light tbody + tbody, .table-light td, .table-light th, .table-light thead th {
+  border: 0px
+}
 
 .green-heading {
   color: white;

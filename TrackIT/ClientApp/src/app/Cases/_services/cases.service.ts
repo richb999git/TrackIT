@@ -1,6 +1,7 @@
 import { Injectable, Inject, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from 'oidc-client';
+import { encode } from 'punycode';
 
 @Injectable({
   providedIn: 'root'
@@ -122,8 +123,12 @@ export class CasesService {
     }
 
     // Return type is not an array. Pagination is an object that INCLUDES an array
-    getUsersByRoleBySkill(role: string, skillFilter: number, sort: string, sortAsc: boolean, pageIndex: number) {
-        return this.http.get<IUsersPagination>(this.baseUrl + 'api/UsersByRoleBySkill/' + role + "?" + 'skill=' + skillFilter + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex);
+    getUsersByRoleBySkill(role: string, skillFilter: number, sort: string, sortAsc: boolean, pageIndex: number, skillSearch: string) {
+        if (skillSearch != null) {
+            skillSearch = escape(skillSearch); // escape so that c# can be searched for (plus other special characters)
+            skillSearch = skillSearch.replace(/\+/g, '%2B'); // replace + so that c++ can be searched for
+        }       
+        return this.http.get<IUsersPagination>(this.baseUrl + 'api/UsersByRoleBySkill/' + role + "?" + 'skill=' + skillFilter + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex + '&skillSearch=' + skillSearch);
     }
 
     getUser(id) {

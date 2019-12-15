@@ -26,7 +26,7 @@
     </div>
     <div class="row">
       <div class="col"><b>{{ case.software.name }}</b></div>
-      <div class="col"><b>{{ case.dateOpened | date: 'dd-MMM-yy HH:mm' }}</b></div>
+      <div class="col"><b>{{ case.dateOpened | date: 'dd-MMM-yyyy HH:mm' }}</b></div>
     </div>
     <br />
     <div class="row">
@@ -39,7 +39,7 @@
     </div>
     <br />
     <div class="row">
-      <div class="col">Urgency</div>
+      <div class="col">Urgency (per user)</div>
       <div class="col">Contact</div>
     </div>
     <div class="row">
@@ -49,29 +49,30 @@
     <br />
 
     <!--Bug/Issue/Feature only (not question)-->
-    <div *ngIf="(case.type !=2)">
+    <div >
       <div class="row">
         <div class="col" title="Managers only">Deadline Date</div>
-        <div class="col" *ngIf="(isUserDeveloper || isUserContact)">Date of Fix Approval Request</div>
+        <div *ngIf="(case.type !=2) && (isUserDeveloper || isUserContact)" class="col">Date of Fix Approval Request</div>
       </div>
-
+      
       <div class="row">
-        <div *ngIf="case.deadline || !(userRole | async)?.includes('manager')" class="col"><b>{{ (case.deadline | date: 'dd-MMM-yy') || "Not yet set" }}</b></div>
-        <div *ngIf="(userRole | async)?.includes('manager') && !case.deadline" class="col">
-          <!--or change this to col-6 and drop the class below-->
-          <form #setDeadlineForm="ngForm" (ngSubmit)="onSubmitDeadline(setDeadlineForm)" class="col deadline">
+        <div *ngIf="case.deadline || !(userRole | async)?.includes('manager')" class="col"><b>{{ (case.deadline | date: 'dd-MMM-yyyy') || "Not yet set" }}</b></div>
+        <div *ngIf="(userRole | async)?.includes('manager') && !case.deadline" class="col" title="click to change">         
+          <form #setDeadlineForm="ngForm" (ngSubmit)="onSubmitDeadline(setDeadlineForm)" class="col col-xs-12 col-12 col-md-4 deadline">
             <div class="input-group">
-              <input type="date" class="form-control" id="deadline"
+              <input type="text" class="form-control" id="deadline"
                      name="deadline" placeholder="Deadline" required
-                     [(ngModel)]="deadlineModel.deadline" #deadline="ngModel" />
+                     bsDatepicker
+                     [(ngModel)]="deadlineModel.deadline" #deadline="ngModel"
+                     [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }" /> 
               <div class="input-group-prepend">
                 <button [disabled]="!setDeadlineForm.valid" type="submit" class="btn btn-sm btn-success">OK</button>
               </div>
             </div>
           </form>
         </div>
-        <div *ngIf="!case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col"><button (click)="submitFix()" class="btn btn-sm btn-outline-success">Request Fix Approval</button></div>
-        <div *ngIf="case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col"><b>{{ (case.dateAwaitApproval | date: 'dd-MMM-yy HH:mm') }}</b></div>
+        <div *ngIf="case.type !=2 && !case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col"><button (click)="submitFix()" class="btn btn-sm btn-outline-success">Request Fix Approval</button></div>
+        <div *ngIf="case.type !=2 && case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col"><b>{{ (case.dateAwaitApproval | date: 'dd-MMM-yyyy HH:mm') }}</b></div>
       </div>
     </div>
     <br />
@@ -85,7 +86,7 @@
         <div *ngIf="(userRole | async)?.includes('manager') && case.dateAwaitApproval && !case.dateApproved" class="col"><button (click)="submitFixApproval()" class="btn btn-sm btn-outline-success">Approve Fix</button></div>
         <div *ngIf="(case.dateApproved || !case.dateAwaitApproval) || !(userRole | async)?.includes('manager')" class="col"><b>{{ (case.dateApproved | date: 'dd-MMM-yy HH:mm') || "N/A" }}</b></div>
         <div *ngIf="case.dateApproved && !case.dateApplied" class="col"><button (click)="submitFixApplied()" class="btn btn-sm btn-outline-success">Applied Fix</button></div>
-        <div *ngIf="case.dateApplied || !case.dateApproved" class="col"><b>{{ (case.dateApplied | date: 'dd-MMM-yy HH:mm') || "N/A" }}</b></div>
+        <div *ngIf="case.dateApplied || !case.dateApproved" class="col"><b>{{ (case.dateApplied | date: 'dd-MMM-yyyy HH:mm') || "N/A" }}</b></div>
       </div>
       <br />
     </div>
@@ -96,8 +97,8 @@
       <div class="col">Date Completed</div>
     </div>
     <div class="row">
-      <div class="col"><b>{{ (case.dateAssigned | date: 'dd-MMM-yy HH:mm') || "Not set yet (or no contact)" }}</b></div>
-      <div class="col"><b>{{ (case.dateCompleted | date: 'dd-MMM-yy HH:mm') || "Not completed" }}</b></div>
+      <div class="col"><b>{{ (case.dateAssigned | date: 'dd-MMM-yyyy HH:mm') || "Not set yet (or no contact)" }}</b></div>
+      <div class="col"><b>{{ (case.dateCompleted | date: 'dd-MMM-yyyy HH:mm') || "Not completed" }}</b></div>
     </div>
     <br />
 
@@ -214,6 +215,7 @@
 
   <br />
   <div *ngIf="(userRole | async)?.includes('manager') && !assignStaffFlag">
+    <p *ngIf="deadlineToSetMessage" class="text-danger">Please enter a deadline before assigning staff</p>
     <button *ngIf="!case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-success">Assign staff</button>
     <button *ngIf="case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-success">Adjust assigned staff</button>
   </div>
@@ -228,17 +230,8 @@
       <form #assignForm="ngForm" (ngSubmit)="submitAssignedStaff(assignForm)">
         <button type="submit" class="btn btn-info mb-3 float-left">Submit staff</button>
       </form>
-
-      <div *ngIf="skills" class="float-left mb-2 ml-5">
-        <!--<label for="chooseSkillFilter"></label>-->
-        <select id="chooseSkillFilter" name="chooseSkillFilter" [(ngModel)]="skillFilter" (ngModelChange)="chooseSkillFilter($event)"
-                class="form-control" title="filter by skill">
-          <option value="0">All Skills</option>
-          <option *ngFor="let skill of skills" [value]="skill.id">{{ skill.name }}</option>
-        </select>
-      </div>
-
-      <div *ngIf="skills" class="float-left ml-5">
+      <div class="clearfix"></div>
+      <div *ngIf="skills" class="float-left mb-2 mr-5">
         <!--<label for="chooseSkillTypeFilter"></label>-->
         <select id="chooseSkillTypeFilter" name="chooseSkillTypeFilter" [(ngModel)]="skillTypeFilter" (ngModelChange)="showHideType($event)"
                 class="form-control" title="reduce headings by skill types">
@@ -249,15 +242,37 @@
         </select>
       </div>
 
+      <div *ngIf="skills" class="float-left mb-2 mr-5">
+        <!--<label for="chooseSkillFilter"></label>-->
+        <select id="chooseSkillFilter" name="chooseSkillFilter" [(ngModel)]="skillFilter" (ngModelChange)="chooseSkillFilter($event)"
+                class="form-control" title="filter by skill">
+          <option value="0">All Skills</option>
+          <option *ngFor="let skill of skills" [value]="skill.id">{{ skill.name }}</option>
+        </select>
+      </div>
+
+      <form #skillSearchForm="ngForm" class="float-left mb-2 mr-5"> <!--width150 float-right">-->
+        <div class="input-group">
+          <label for="skillSearch"></label>
+          <input type="search" class="form-control" id="skillSearch" (ngModelChange)="onKeySearch(skillSearchForm)"
+                 name="skillSearch" placeholder="Skill Search" title="alternative skill filter by search"
+                 [(ngModel)]="searchModel.skillSearch" #skillSearch="ngModel" />
+          <div class="input-group-prepend">
+            <button type="reset" class="btn btn-sm btn-success" title="reset search">RESET</button>
+          </div>
+        </div>
+      </form>
+
+
 
       <div class="clearfix"></div>
       <br />
       <app-pagination [pageIndex]="pageIndex" [totalPages]="usersP.totalPages" [pagesBefore]="pagesBefore"
                       [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
       </app-pagination>
-      
+
       <div class="">
-        <div class="">
+        <div *ngIf="usersWithSkills.length > 0" class="">
           <table class='table table-sm table-striped table-responsive table-light black-border font85' aria-labelledby="tableLabel">
             <thead>
               <tr class="green-heading">
@@ -278,7 +293,7 @@
                     [class.font-weight-bold]="assignedStaff.includes(user.id) && user.id == case.contactId">
                   {{ user.firstName }} {{ user.lastName }} <span *ngIf="user.id == case.contactId"> (c)</span>
                 </td>
-                <td class="widthReduce pr-3"  *ngIf="!assignedStaff.includes(user.id)">
+                <td class="widthReduce pr-3" *ngIf="!assignedStaff.includes(user.id)">
                   <button (click)="assignEmployee(user.id)" class="btn btn-sm btn-outline-success assignButton">Assign</button>
                 </td>
                 <td class="widthReduce pr-3" *ngIf="assignedStaff.includes(user.id)">
@@ -295,8 +310,8 @@
             </tbody>
           </table>
         </div>
-        
-        <p *ngIf="usersWithSkills.length == 0">No employees meet the criteria</p>
+
+        <p *ngIf="usersWithSkills.length == 0" class="text-danger">No employees meet the criteria</p>
         <p *ngIf="usersWithSkills.length != 0">1 = Excellent, 2 = Good, 3 = Beginner</p>
       </div>
       <br />

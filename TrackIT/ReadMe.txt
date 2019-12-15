@@ -15,3 +15,11 @@ Then "Remove-Migration" to go back to previous migration. If you've done several
 
 All the views and code is hidden initially. To unhide it Add a scaffolding item and choose Identity then tick whatever you need to unhide.
 You can then edit views and c# files as required.
+
+
+Adding ngx-bootstrap datepicker:
+  ng add ngx-bootstrap  --component datepicker
+
+Needed to delete the line in angular.json where the styles are: node_modules/bootstrap/dist/css/bootstrap.min.css". ngx-bootstrap adds it in but it was already
+put there by the ASP.NET Core Angular template.
+
