@@ -13,9 +13,7 @@ declare var $: any;
 export class ViewSkillsComponent implements OnInit {
 
     public errorMsg;
-    //public usersP: IUsersPagination;
     public skills: Array<ISkills>;
-    //public userRole: any;
     private deleteId: number;
 
     public sortProperty: string = "";
@@ -27,8 +25,6 @@ export class ViewSkillsComponent implements OnInit {
         this.casesService.getSkills(this.sortProperty, this.sortAsc).subscribe(result => {
             this.skills = result;
         }, errors => this.errorMsg = errors);
-
-        //this.userRole = this.authorize.getUser().pipe(map(u => u && u.role));
     }
 
     ngAfterViewInit() {
@@ -37,17 +33,14 @@ export class ViewSkillsComponent implements OnInit {
     }
 
     editSkill(id) {
-        console.log(id);
         this.router.navigate(['/edit-skill/' + id]);
     }
 
     sortSkills(sortProperty) {
         if (sortProperty == this.sortProperty) this.sortAsc = !this.sortAsc;
         this.sortProperty = sortProperty;
-        console.log(sortProperty);
         this.casesService.getSkills(this.sortProperty, this.sortAsc).subscribe(result => {
             this.skills = result;
-            console.log(result);
         }, errors => this.errorMsg = errors);
     }
   

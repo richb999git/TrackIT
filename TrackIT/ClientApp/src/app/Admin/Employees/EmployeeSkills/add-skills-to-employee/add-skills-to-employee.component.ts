@@ -40,14 +40,9 @@ export class AddSkillsToEmployeeComponent implements OnInit {
 
     onSubmit(form) {
         this.employeeSkillsModel.userId = this.userId;
-        // need to check if skill has already been added ***************************************************************
-        // will need to get all the skills that have userId and skillsId ************************************************
         this.casesService.addSkillToEmployee(this.employeeSkillsModel).subscribe(result => {
             this.router.navigate(['/view-employee-skills/' + this.userId]);
-        }, errors => {
-                console.log(errors);
-            this.errorMsg = errors
-        });
+        }, errors => this.errorMsg = errors);
     }
 
 }

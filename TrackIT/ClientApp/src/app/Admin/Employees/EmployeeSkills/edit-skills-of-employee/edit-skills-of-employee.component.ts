@@ -26,32 +26,21 @@ export class EditSkillsOfEmployeeComponent implements OnInit {
     ngOnInit() {
         this._route.paramMap.subscribe((params: ParamMap) => {
             this.id = parseInt(params.get('id'));
-            console.log(this.id);
-
             // get particular skill of employee to be edited
             this.casesService.getEmployeeSkill(this.id).subscribe(result => {
                 this.employeeSkillsModel = result;
-                console.log(result);
-            }, errors => {
-                    console.log(errors);
-                this.errorMsg = errors
-            });
+            }, errors => this.errorMsg = errors);
         });
 
         this.casesService.getSkills("id", true).subscribe(result => {
             this.skills = result;
-            console.log(result);
         }, errors => this.errorMsg = errors);
     }
 
     onSubmit(form) {
         this.casesService.updateSkillOfEmployee(this.employeeSkillsModel).subscribe(result => {
             this.router.navigate(['/view-employee-skills/' + this.employeeSkillsModel.userId]);
-        }, errors => {
-            console.log(errors);
-            this.errorMsg = errors;
-            console.log(this.errorMsg);
-        });
+        }, errors => this.errorMsg = errors);
     }
 
 }

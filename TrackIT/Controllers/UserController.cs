@@ -146,7 +146,7 @@ namespace TrackIT.Controllers
 
 
         //GET: api/User/5
-        [Authorize(Policy = "RequireManagerRoleClaim")]
+        [Authorize(Policy = "RequireEmployeeRoleClaim")]
         [Route("/api/User/{id}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserInfo>> GetUser(string id) 

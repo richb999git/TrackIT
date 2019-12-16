@@ -20,9 +20,7 @@ export class EditEmployeeComponent implements OnInit {
     ngOnInit() {
         this._route.paramMap.subscribe((params: ParamMap) => {
             this.id = params.get('id');
-            console.log(this.id);
             this.casesService.getUser(this.id).subscribe(result => {
-                console.log(result);
                 this.employeeModel = result;
             }, errors => this.errorMsg = errors);
         });
@@ -34,7 +32,6 @@ export class EditEmployeeComponent implements OnInit {
     }
 
     onSubmit(employeeForm) {
-        console.log(this.employeeModel);
         this.casesService.updateEmployee(this.employeeModel).subscribe(result => {
             this.router.navigate(['/view-employees']);
         }, errors => this.errorMsg = errors);

@@ -12,7 +12,7 @@
 }
 
 .selected {
-  color: green;
+  color: yellow;
 }
   .selected:hover {
     color: blue;
@@ -25,6 +25,21 @@
 
 .width150 {
   width: 150px;
+}
+
+.tdWidthList {
+  min-width: 350px;
+  max-width: 350px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
+
+
+/* Added to avoid strange differences on header (particularly Firefox) - copied from the Inspector in Firefox - no side effects */
+.table-light tbody + tbody, .table-light td, .table-light th, .table-light thead th {
+  border: 0px
 }
 
 .table td, .table th {

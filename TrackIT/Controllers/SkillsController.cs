@@ -24,7 +24,7 @@ namespace TrackIT.Controllers
         }
 
         // GET: api/Skills?sort=id&sortAsc=true
-        [Authorize(Policy = "RequireAdminRoleClaim")]
+        [Authorize(Policy = "RequireEmployeeRoleClaim")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Skills>>> GetSkills(string sort, bool sortAsc)
         {

@@ -33,16 +33,9 @@ export class CaseAddComponent implements OnInit {
     }
 
     onSubmit(caseForm) {
-        console.log(caseForm);
-        console.log(this.caseModel);
-        //this.caseModel.urgencyLevel = +this.caseModel.urgencyLevel;
         this.casesService.addCase(this.caseModel).subscribe(result => {
-            console.log(result);
             this.router.navigate(['/cases-list']);
-        }, errors => {
-            this.errorMsg = errors;
-            console.log(errors);
-        });
+        }, errors => this.errorMsg = errors);
     }
 
 }

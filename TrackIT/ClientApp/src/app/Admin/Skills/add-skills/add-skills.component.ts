@@ -20,18 +20,12 @@ export class AddSkillsComponent implements OnInit {
         this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     onSubmit(caseForm) {
-        console.log(this.skillsModel);
         ; this.casesService.addSkill(this.skillsModel).subscribe(result => {
             this.router.navigate(['/view-skills']);
-        }, errors => {
-            console.log(errors);
-            this.errorMsg = errors;
-            console.log(this.errorMsg);
-        });
+        }, errors => this.errorMsg = errors);
     }
 }
 

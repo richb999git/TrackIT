@@ -84,7 +84,7 @@ namespace TrackIT.Controllers
         [HttpGet]
         public async Task<ActionResult<PaginatedListCases>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
-            int statusFilter = caseFilter == 1 ? 7 : 8;
+            int statusFilter = caseFilter == 1 ? 7 : 8; // if 1 then get uncomplete cases (status 7 = complete), otherwise get all cases
             // Filter just user's cases (or later maybe all their company's cases)
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -147,7 +147,7 @@ namespace TrackIT.Controllers
             var IsManager = User.HasClaim(ClaimTypes.Role, "manager");
             var IsAdmin = User.HasClaim(ClaimTypes.Role, "admin");
 
-            int statusFilter = caseFilter == 1 ? 7 : 8; // status 7 is completed
+            int statusFilter = caseFilter == 1 ? 7 : 8; // if 1 then get uncomplete cases (status 7 = complete), otherwise get all cases
             if (searchString?.Length == 0) searchString = null;
 
             var cases = await _context.Cases

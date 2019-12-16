@@ -6,30 +6,44 @@
   margin-right: 8px;
 }
 
+/* Minimum width */
+.widthReduceNoWrap {
+  width: 1%;
+  white-space: nowrap
+}
+
+/* Sort header highlighting -------*/
 .highlight:hover {
   color: blue;
   cursor: pointer;
 }
 
 .selected {
-  color: green;
+  color: yellow;
 }
 
   .selected:hover {
     color: blue;
     cursor: pointer;
   }
+/* Sort header highlighting -------*/
 
-.lineHover:hover {
-  cursor: pointer;
-}
-
-/*.green-table {
-  background-color: #DDFFEF;
-}*/
 
 .width200 {
   width: 200px;
+}
+
+.tdWidthList {
+  min-width: 350px;
+  max-width: 350px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
+/* Added to avoid strange differences on header (particularly Firefox) - copied from the Inspector in Firefox - no side effects */
+.table-light tbody + tbody, .table-light td, .table-light th, .table-light thead th {
+  border: 0px
 }
 
 .table td, .table th {

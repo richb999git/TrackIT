@@ -1,7 +1,6 @@
 import { Injectable, Inject, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from 'oidc-client';
-import { encode } from 'punycode';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +14,9 @@ export class CasesService {
         "Awaiting Customer",
         "On Hold",
         "Awaiting Approval",
-        "Applied Fix/Feature",
+        "Fix Approved",
         "Complete"
-    ];
+    ];   
 
     // duplicate of levels in c# class EnumStrings
     public types = [
@@ -33,6 +32,7 @@ export class CasesService {
         "Language", "Framework/Library", "Other"
     ]
 
+    // not currently used
     public experienceTypes = [
         "Excellent", "Good", "Beginner"
     ]
@@ -126,7 +126,7 @@ export class CasesService {
     getUsersByRoleBySkill(role: string, skillFilter: number, sort: string, sortAsc: boolean, pageIndex: number, skillSearch: string) {
         if (skillSearch != null) {
             skillSearch = escape(skillSearch); // escape so that c# can be searched for (plus other special characters)
-            skillSearch = skillSearch.replace(/\+/g, '%2B'); // replace + so that c++ can be searched for
+            skillSearch = skillSearch.replace(/\+/g, '%2B'); // replace + so that c++ can be searched for ( a "+" is converted to a space otherwise )
         }       
         return this.http.get<IUsersPagination>(this.baseUrl + 'api/UsersByRoleBySkill/' + role + "?" + 'skill=' + skillFilter + '&sort=' + sort + '&sortAsc=' + sortAsc + '&pageIndex=' + pageIndex + '&skillSearch=' + skillSearch);
     }
@@ -136,7 +136,6 @@ export class CasesService {
     }
 
     updateEmployee(model) {
-        console.log(model);
         return this.http.put(this.baseUrl + 'api/UserDetails/' + model.id, model);
     }
 
@@ -161,7 +160,6 @@ export class CasesService {
         formData.append('File', file.file, file.file.name);
         formData.append('caseId', file.caseId.toString());
         formData.append('description', file.description);
-        console.log(formData);
         return this.http.post<IFiles>(this.baseUrl + 'api/FileUploads', formData)            
     }
 
@@ -176,7 +174,6 @@ export class CasesService {
     }
 
     addSkill(model) {
-        console.log(model);
         return this.http.post(this.baseUrl + 'api/Skills', model);
     }
 
@@ -197,7 +194,6 @@ export class CasesService {
 
     // get a specific skill by id
     getEmployeeSkill(id: number) {
-        console.log(id);
         return this.http.get<IEmployeeSkills>(this.baseUrl + 'api/EmployeeSkillById/' + id);
     }
 
@@ -213,22 +209,18 @@ export class CasesService {
             }
         }
         userIdsStr += "&skill=" + skillId; 
-        console.log(userIdsStr);
         return this.http.get<IEmployeeSkills[]>(this.baseUrl + 'api/AllSkillsOfAllEmployees?' + userIdsStr);
     }
 
     addSkillToEmployee(model) {
-        console.log(model);
         return this.http.post(this.baseUrl + 'api/EmployeeSkills', model);
     }
 
     updateSkillOfEmployee(model) {
-        console.log(model);
         return this.http.put(this.baseUrl + 'api/EmployeeSkills/' + model.id, model);
     }
 
     deleteSkillOfEmployee(id) {
-        console.log(id);
         return this.http.delete(this.baseUrl + 'api/EmployeeSkills/' + id);
     }
 
@@ -248,9 +240,20 @@ export interface ICases { // should add more if needed
     description: string;
     type: number;
     dateCompleted: Date;
-    status: string;
+    status: number; // why was it string? corrected 16th Dec
     userId: string;
     user: User;
+    // added
+    staffAssigned: string;
+    contactId: string;
+    estimatedTimeHours: number;
+    timeSpentHours: number;
+    deadline: Date;
+    dateAssigned: Date; //any; // it is converted to a string temporarily - see line 161 of assign-staff.component.ts (look into changing)
+    dateAwaitApproval: Date;
+    dateApproved: Date;
+    dateApplied: Date;
+    contactInfo: IUser;
 }
 
 export interface ISoftwares {
@@ -268,10 +271,10 @@ export interface IMessages {
 }
 
 export interface ICasesPagination {
-    cases: ICases,
-    pageIndex: number,
-    totalPages: number,
-    pageSize: number
+    cases: ICases;
+    pageIndex: number;
+    totalPages: number;
+    pageSize: number;
 }
 
 export interface IUser {
@@ -286,10 +289,10 @@ export interface IUser {
 }
 
 export interface IUsersPagination {
-    users: IUser,
-    pageIndex: number,
-    totalPages: number,
-    pageSize: number
+    users: IUser;
+    pageIndex: number;
+    totalPages: number;
+    pageSize: number;
 }
 
 export interface IFiles {
@@ -304,15 +307,29 @@ export interface IFiles {
 
 export interface ISkills {
     id: number;
-    name: string,
-    type: number,
+    name: string;
+    type: number;
 }
 
 export interface IEmployeeSkills {
     id: number;
-    skillsId: number,
-    skills: ISkills
-    userId: string,
+    skillsId: number;
+    skills: ISkills;
+    userId: string;
     user: IUser;
-    experience: number
+    experience: number;
 }
+
+export interface IUsersWithSkills {
+    id: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    email: string;
+    isManager: boolean;
+    skills: any; // dynamic array of skills
+}
+
+export enum CaseType { Bug = 1, Question, Issue, FeatureRequest };
+export enum CaseStatus { Opened = 1, Assigned, AwaitingCustomer, OnHold, AwaitingApproval, FixApproved, Complete };
+export enum CaseUrgencyLevel { Critical = 1, High, Medium, Low };

@@ -94,8 +94,8 @@ namespace TrackIT.Controllers
 
         // Get all the skills for an array of users
         // GET: api/AllSkillsOfAllEmployees?user=hjgftfhtf&user=eriuege&user=sdvnurgeh etc
+        [Authorize(Policy = "RequireManagerRoleClaim")]
         [Route("/api/AllSkillsOfAllEmployees")]
-        [Authorize(Policy = "RequireAdminRoleClaim")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeSkillsToReturn>>> GetAllSkillsOfAllEmployees([FromQuery]string[] users, int skill)
         {

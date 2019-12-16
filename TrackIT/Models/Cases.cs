@@ -60,36 +60,41 @@ namespace TrackIT.Models
         public int UrgencyLevel { get; set; }
     }
 
-    enum Type { Bug = 1, Question, Issue, FeatureRequest };
-    enum Status { Opened = 1, Assigned, AwaitingCustomer, OnHold, AwaitingApproval, Applied, Complete };
-    enum UrgencyLevel { Critical = 1, High, Medium, Low };
-    enum Importance { }; // needed?
+    /* Enums not used in c# - no real benefit
+    // enum Type { Bug = 1, Question, Issue, FeatureRequest };
+    // enum Status { Opened = 1, Assigned, AwaitingCustomer, OnHold, AwaitingApproval, Applied, Complete };
+    // enum UrgencyLevel { Critical = 1, High, Medium, Low };
+    */
 
+    //enum Importance { }; // needed?
+
+    /*
     class EnumStrings
     {
         // duplicate of levels in angular class CasesService - not currently being used
-        public string[] StatusNames = new string[]
-        {
-            "Opened",
-            "Assigned",
-            "Awaiting Customer",
-            "On Hold",
-            "Awaiting Approval",
-            "Applied Fix/Feature",
-            "Complete"
-        };
+        //public string[] StatusNames = new string[]
+        //{
+        //    "Opened",
+        //    "Assigned",
+        //    "Awaiting Customer",
+        //    "On Hold",
+        //    "Awaiting Approval",
+        //    "Fix Approved",
+        //    "Complete"
+        //};
 
         // duplicate of levels in angular class CasesService - not currently being used
-        public string[] Types = new string[]
-        {
-            "Bug", "Question", "Issue", "Feature Request"
-        };
+        //public string[] Types = new string[]
+        //{
+        //    "Bug", "Question", "Issue", "Feature Request"
+        //};
 
         // duplicate of levels in angular class CasesService - not currently being used
-        public string[] UrgencyLevels = new string[]
-        {
-            "Critical", "High", "Medium (Normal)", "Low"
-        };
+        //public string[] UrgencyLevels = new string[]
+        //{
+        //    "Critical", "High", "Medium (Normal)", "Low"
+        //};
     }
+    */
 
 }

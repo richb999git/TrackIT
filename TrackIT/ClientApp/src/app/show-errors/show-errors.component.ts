@@ -21,7 +21,6 @@ export class ShowErrorsComponent implements OnInit {
 
     convertObjectToArray(obj) {
         this.entries = Object.entries(obj);
-        //console.log(this.entries);
     }
 
 }

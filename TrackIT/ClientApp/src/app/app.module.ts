@@ -36,6 +36,7 @@ import { EditSkillsOfEmployeeComponent } from './Admin/Employees/EmployeeSkills/
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AssignStaffComponent } from './CasesSupport/assign-staff/assign-staff.component';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ViewSkillsOfEmployeeComponent,
     EditSkillsOfEmployeeComponent,
     PageNotFoundComponent,
+    AssignStaffComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

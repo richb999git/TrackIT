@@ -23,9 +23,7 @@ export class ViewSkillsOfEmployeeComponent implements OnInit {
     ngOnInit() {
         this._route.paramMap.subscribe((params: ParamMap) => {
             this.userId = params.get('id');
-            console.log(this.userId);
             this.casesService.getAllEmployeeSkills(this.userId).subscribe(result => {
-                console.log(result);
                 this.employeeSkills = result;
             }, errors => this.errorMsg = errors);
             this.casesService.getUser(this.userId).subscribe(result => {
@@ -40,7 +38,6 @@ export class ViewSkillsOfEmployeeComponent implements OnInit {
     }
 
     editSkill(id) {
-        console.log(id);
         this.router.navigate(['/edit-employee-skills/' + id]);
     }
 

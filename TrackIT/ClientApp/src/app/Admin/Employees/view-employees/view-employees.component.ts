@@ -43,12 +43,10 @@ export class ViewEmployeesComponent implements OnInit {
     }
 
     editEmployee(id) {
-        console.log(id);
         this.router.navigate(['/edit-employee/' + id]);
     }
 
     addEditEmployeeSkills(userId) {
-        console.log(userId);
         this.router.navigate(['/view-employee-skills/' + userId]);
     }
 
@@ -67,7 +65,6 @@ export class ViewEmployeesComponent implements OnInit {
         // add filters later: this.progSkills, this.softwareFilter
         this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, 1).subscribe(result => {
             this.usersP = result;
-            console.log(this.usersP);
             this.pageIndex = 1;
             this.setPagination();
         }, errors => this.errorMsg = errors);
@@ -89,7 +86,6 @@ export class ViewEmployeesComponent implements OnInit {
         // add filters later: this.progSkills, this.softwareFilter
         this.casesService.getUsersByRole("employee", this.sortProperty, this.sortAsc, page).subscribe(result => {
             this.usersP = result;
-            console.log(this.usersP);
             this.pageIndex = this.usersP.pageIndex;
             this.setPagination();
         }, errors => this.errorMsg = errors);

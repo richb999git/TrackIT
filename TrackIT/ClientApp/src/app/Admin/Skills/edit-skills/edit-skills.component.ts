@@ -26,13 +26,11 @@ export class EditSkillsComponent implements OnInit {
             this.id = parseInt(params.get('id'));
             this.casesService.getSkill(this.id).subscribe(result => {
                 this.skillsModel = result;
-                console.log(result);
             }, errors => this.errorMsg = errors);
         });
     }
 
     onSubmit(caseForm) {
-        console.log(this.skillsModel);
 ;        this.casesService.updateSkill(this.skillsModel).subscribe(result => {
             this.router.navigate(['/view-skills']);
         }, errors => this.errorMsg = errors);

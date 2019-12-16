@@ -47,7 +47,6 @@ export class CasesListSupportComponent implements OnInit {
         this.sortAsc = this.casesService.getSortAsc();
         this.pageIndex = this.casesService.getPageIndex();
         this.searchModel.searchString = this.casesService.getSearchString();
-        console.log(this.sortAsc);
 
         this.casesService.getCasesSupport(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString).subscribe(result => {                                     
             this.cases = result;
