@@ -49,7 +49,7 @@
     <br />
 
     <!--Bug/Issue/Feature only (not question)-->
-    <div>
+    <div *ngIf="case.status != CaseStatusEnum.Cancelled">
       <div class="row">
         <div class="col" title="Managers only">Deadline Date</div>
         <div *ngIf="(case.type != CaseTypeEnum.Question) && (isUserDeveloper || isUserContact)" class="col">Date of Fix Approval Request</div>
@@ -74,7 +74,7 @@
           </form>
         </div>
         <div *ngIf="case.type != CaseTypeEnum.Question && !case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col">
-          <button (click)="submitFix()" class="btn btn-sm btn-outline-success">Request Fix Approval</button>
+          <button (click)="submitFix()" class="btn btn-sm btn-success">Request Fix Approval</button>
         </div>
         <div *ngIf="case.type != CaseTypeEnum.Question && case.dateAwaitApproval && (isUserDeveloper || isUserContact)" class="col">
           <b>{{ (case.dateAwaitApproval | date: 'dd-MMM-yyyy HH:mm') }}</b>
@@ -83,20 +83,20 @@
     </div>
     <br />
 
-    <div *ngIf="(case.type != CaseTypeEnum.Question) && (isUserDeveloper || isUserContact)">
+    <div *ngIf="(case.type != CaseTypeEnum.Question) && (isUserDeveloper || isUserContact) && case.status != CaseStatusEnum.Cancelled">
       <div class="row">
         <div class="col" title="managers only">Date Fix Approved</div>
         <div class="col">Date Fix Applied</div>
       </div>
       <div class="row">
         <div *ngIf="(userRole | async)?.includes('manager') && case.dateAwaitApproval && !case.dateApproved" class="col">
-          <button (click)="submitFixApproval()" class="btn btn-sm btn-outline-success">Approve Fix</button>
+          <button (click)="submitFixApproval()" class="btn btn-sm btn-success">Approve Fix</button>
         </div>
         <div *ngIf="(case.dateApproved || !case.dateAwaitApproval) || !(userRole | async)?.includes('manager')" class="col">
           <b>{{ (case.dateApproved | date: 'dd-MMM-yy HH:mm') || "Awaiting approval" }}</b>
         </div>
-        <div *ngIf="case.dateApproved && !case.dateApplied" class="col">
-          <button (click)="submitFixApplied()" class="btn btn-sm btn-outline-success">Applied Fix</button>
+        <div *ngIf="case.dateApproved && !case.dateApplied && case.status" class="col">
+          <button (click)="submitFixApplied()" class="btn btn-sm btn-success">Confirm Fix Applied</button>
         </div>
         <div *ngIf="case.dateApplied || !case.dateApproved" class="col">
           <b>{{ (case.dateApplied | date: 'dd-MMM-yyyy HH:mm') || "Awaiting approval" }}</b>
@@ -164,32 +164,39 @@
   <div>Description</div>
   <div><b>{{ case.description }}</b></div>
   <br />
-  
-  <div class="row">
-    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type == CaseTypeEnum.Question)" class="col">
+
+  <div class="">
+    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type == CaseTypeEnum.Question)" class="float-left">
       <form #completeForm="ngForm" (ngSubmit)="onSubmitComplete(completeForm)">
-        <button *ngIf="case.status != CaseStatusEnum.Complete" type="submit" class="btn btn-success">Consider Complete</button>
-        <button *ngIf="case.status == CaseStatusEnum.Complete" type="submit" class="btn btn-success">Re-Open Case</button>
+        <button *ngIf="case.status < CaseStatusEnum.Complete" type="submit" class="btn btn-sm btn-success mb-2 mr-2">Consider Complete</button>
+        <button *ngIf="case.status == CaseStatusEnum.Complete" type="submit" class="btn btn-sm btn-success mb-2 mr-2">Re-Open Case</button>
       </form>
     </div>
-    <div *ngIf="isUserDeveloper || isUserContact" class="col">
+    <div *ngIf="isUserDeveloper || isUserContact" class="float-left">
       <form #awaitCustForm="ngForm" (ngSubmit)="onSubmitAwaitCust(awaitCustForm)">
-        <button *ngIf="case.status == CaseStatusEnum.Assigned" type="submit" class="btn btn-success">Set as Await Customer</button>
-        <button *ngIf="case.status == CaseStatusEnum.AwaitingCustomer" type="submit" class="btn btn-success">Set as Await Us</button>
+        <button *ngIf="case.status == CaseStatusEnum.Assigned" type="submit" class="btn btn-sm btn-success mb-2 mr-2">Set as Await Customer</button>
+        <button *ngIf="case.status == CaseStatusEnum.AwaitingCustomer" type="submit" class="btn btn-sm btn-success mb-2 mr-2">Set as Await Us</button>
       </form>
     </div>
   </div>
-  <br />
-  <div class="row">
-    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type != CaseTypeEnum.Question)" class="col">
+  
+  <div class="float-left">
+    <div *ngIf="(isUserDeveloper || isUserContact) && (case.type != CaseTypeEnum.Question)" class="">
       <form #onHoldForm="ngForm" (ngSubmit)="onSubmitOnHold(onHoldForm)">
-        <button *ngIf="case.status <= CaseStatusEnum.AwaitingCustomer" type="submit" class="btn btn-success">Put case on hold</button>
-        <button *ngIf="case.status == CaseStatusEnum.OnHold" type="submit" class="btn btn-success">Release from hold</button>
+        <button *ngIf="case.status <= CaseStatusEnum.AwaitingCustomer" type="submit" class="btn btn-sm btn-success mb-2 mr-2">Put case on hold</button>
+        <button *ngIf="case.status == CaseStatusEnum.OnHold" type="submit" class="btn btn-sm btn-success mb-2 mr-2">Release from hold</button>
       </form>
     </div>
   </div>
 
-  <div *ngIf="(isUserDeveloper || isUserContact)">
+  <div class="float-left">
+    <div *ngIf="(userRole | async)?.includes('manager')" class="">
+      <button *ngIf="case.status < CaseStatusEnum.Complete" type="submit" class="btn btn-sm btn-success mb-2" (click)="onSubmitCancel(true)">Cancel Case</button>
+      <button *ngIf="case.status == CaseStatusEnum.Cancelled" type="submit" class="btn btn-sm btn-success mb-2" (click)="onSubmitCancel(false)">Uncancel Case</button>
+    </div>
+  </div>
+  <br /><br />
+  <div class="clearfix" *ngIf="(isUserDeveloper || isUserContact)">
     <!-- Only allowed to comment if assigned or contact (not just being a manager) -->
     <br />
     <app-view-messages [caseId]="case.id" [caseUserId]="case.userId" [isEmployee]=true
@@ -200,8 +207,10 @@
     <br />
   </div>
 
-  <app-assign-staff [case]="case" (passAssignedStaff)="getAssignedStaff($event)" (passCase)="getCase($event)"
-                    [deadlineToSetMessage]="deadlineToSetMessage" (passDeadlineToSetMessage)="getDeadlineToSetMessage($event)">
-  </app-assign-staff>
+  <div>
+    <app-assign-staff [case]="case" (passAssignedStaff)="getAssignedStaff($event)" (passCase)="getCase($event)"
+                      [deadlineToSetMessage]="deadlineToSetMessage" (passDeadlineToSetMessage)="getDeadlineToSetMessage($event)">
+    </app-assign-staff>
+  </div>
 
 </div>

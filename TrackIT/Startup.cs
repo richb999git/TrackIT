@@ -25,14 +25,14 @@ namespace TrackIT
     {
         // see https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.0&tabs=windows
         // method 1?
-        private string _trackITApiKey = null; // added
-        private string _trackITApiSecret = null; // added
-        // method 2?
-        private string _trackITApiKey2 = null; // added
-        private string _trackITApiSecret2 = null; // added
-        // method 2?
-        private string _trackITApiKey3 = null; // added
-        private string _trackITApiSecret3 = null; // added
+        //private string _trackITApiKey = null; // added
+        //private string _trackITApiSecret = null; // added
+        //// method 2?
+        //private string _trackITApiKey2 = null; // added
+        //private string _trackITApiSecret2 = null; // added
+        //// method 2?
+        //private string _trackITApiKey3 = null; // added
+        //private string _trackITApiSecret3 = null; // added
 
         public Startup(IConfiguration configuration)
         {
@@ -44,17 +44,18 @@ namespace TrackIT
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // method 1 for reading secrets here
-            _trackITApiKey = Configuration["TrackIT:ApiKey"]; // added
-            _trackITApiSecret = Configuration["TrackIT:ApiSecret"]; // added
-            // method 2 for reading secrets here (mapped to POCO)
-            var trackITConfig2 = Configuration.GetSection("TrackIT").Get<TrackITSettings>(); // added
-            _trackITApiKey2 = trackITConfig2.ApiKey; // added
-            _trackITApiSecret2 = trackITConfig2.ApiSecret; // added
-            var trackITConfig3 = Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>(); // added
-            _trackITApiKey3 = trackITConfig3.ApiKey; // added
-            _trackITApiSecret3 = trackITConfig3.ApiSecret; // added
+            //// method 1 for reading secrets here
+            //_trackITApiKey = Configuration["TrackIT:ApiKey"]; // added
+            //_trackITApiSecret = Configuration["TrackIT:ApiSecret"]; // added
+            //// method 2 for reading secrets here (mapped to POCO)
+            //var trackITConfig2 = Configuration.GetSection("TrackIT").Get<TrackITSettings>(); // added
+            //_trackITApiKey2 = trackITConfig2.ApiKey; // added
+            //_trackITApiSecret2 = trackITConfig2.ApiSecret; // added
+            //var trackITConfig3 = Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>(); // added
+            //_trackITApiKey3 = trackITConfig3.ApiKey; // added
+            //_trackITApiSecret3 = trackITConfig3.ApiSecret; // added
 
+            // https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.0&tabs=windows
             // makes secrets available in rest of the app through dependency injection
             // use "IOptions<CloudinarySettings> secrets" in the constructor and then read secrets.Value
             // see https://www.twilio.com/blog/2018/05/user-secrets-in-a-net-core-web-app.html

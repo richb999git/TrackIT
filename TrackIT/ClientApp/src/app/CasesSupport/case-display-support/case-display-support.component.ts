@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { CasesService, IMessages, ICases, ISoftwares, IUsersPagination, IUser, ISkills, CaseType, CaseStatus } from '../../Cases/_services/cases.service';
+import { CasesService, ICases, IUsersPagination, IUser, CaseType, CaseStatus } from '../../Cases/_services/cases.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorizeService } from '../../../api-authorization/authorize.service';
 import { map } from 'rxjs/operators';
@@ -146,6 +146,15 @@ export class CaseDisplaySupportComponent implements OnInit {
                 this.updateCase(onHoldForm);
             }
         }
+    }
+
+    onSubmitCancel(cancelled: boolean) {
+        if (cancelled) {
+            this.case.status = this.CaseStatusEnum.Cancelled;
+        } else {
+            this.case.status = this.case.staffAssigned ? this.case.status = this.CaseStatusEnum.Assigned : this.case.status = this.CaseStatusEnum.Opened;
+        }
+        this.updateCase();
     }
 
     submitFix() {

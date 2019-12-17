@@ -1,9 +1,9 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, TemplateRef } from '@angular/core';
 import { CasesService, IMessages, ICases, ISoftwares, IUser, IEmployeeSkills } from '../../../../Cases/_services/cases.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { AuthorizeService } from '../../../../../api-authorization/authorize.service';
-declare var $: any;
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-view-skills-of-employee',
@@ -18,7 +18,10 @@ export class ViewSkillsOfEmployeeComponent implements OnInit {
     private user: IUser;
     private deleteId: number;
 
-    constructor(private casesService: CasesService, private router: Router, private _route: ActivatedRoute, private authorize: AuthorizeService, private elementRef: ElementRef) { }
+    private modalRef: BsModalRef;
+
+    constructor(private casesService: CasesService, private router: Router, private _route: ActivatedRoute,
+        private authorize: AuthorizeService, private elementRef: ElementRef, private modalService: BsModalService) { }
 
     ngOnInit() {
         this._route.paramMap.subscribe((params: ParamMap) => {
@@ -41,12 +44,13 @@ export class ViewSkillsOfEmployeeComponent implements OnInit {
         this.router.navigate(['/edit-employee-skills/' + id]);
     }
 
-    deleteSkill(id) {
+    deleteSkill(template: TemplateRef<any>, id) {
         this.deleteId = id;
-        $('#myModal').modal('show');
+        this.modalRef = this.modalService.show(template);
     }
 
     confirmDeleteSkill(e) {
+        this.modalRef.hide();
         this.casesService.deleteSkillOfEmployee(this.deleteId).subscribe(result => {
             this.employeeSkills = this.employeeSkills.filter(x => x.id != this.deleteId);
         }, errors => this.errorMsg = errors);

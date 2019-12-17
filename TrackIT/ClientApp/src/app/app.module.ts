@@ -37,6 +37,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AssignStaffComponent } from './CasesSupport/assign-staff/assign-staff.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 
 @NgModule({
@@ -98,7 +99,8 @@ import { AssignStaffComponent } from './CasesSupport/assign-staff/assign-staff.c
         }
     ]),
     BsDatepickerModule.forRoot(),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ModalModule.forRoot()
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }

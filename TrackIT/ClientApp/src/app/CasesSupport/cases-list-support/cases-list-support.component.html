@@ -54,15 +54,15 @@
         <tr>
           <th (click)="sortCase('case')" class="highlight" [class.selected]="sortProperty=='case'">Case</th>
           <th>Software</th>
-          <th (click)="sortCase('dateOpened')" class="highlight" [class.selected]="sortProperty=='dateOpened'">Date Opened</th>
+          <th (click)="sortCase('dateOpened')" class="highlight" [class.selected]="sortProperty=='dateOpened'">Opened</th>
           <th>Subject</th>
           <th>Type</th>
-          <th (click)="sortCase('user')" class="highlight" [class.selected]="sortProperty=='user'">Created by</th>
+          <th (click)="sortCase('user')" class="highlight widthReduceNoWrap" [class.selected]="sortProperty=='user'">Created by</th>
           <th (click)="sortCase('contact')" class="highlight" [class.selected]="sortProperty=='contact'">Contact</th>
           <th (click)="sortCase('urgency')" class="highlight" [class.selected]="sortProperty=='urgency'">Urgency</th>
           <th (click)="sortCase('deadline')" class="highlight" [class.selected]="sortProperty=='deadline'">Deadline</th>
           <th (click)="sortCase('status')" class="highlight" [class.selected]="sortProperty=='status'">Status</th>
-          <th *ngIf="caseFilter != 1">Date Completed</th>
+          <th *ngIf="caseFilter != 1">Completed</th>
         </tr>
       </thead>
       <tbody>
@@ -70,7 +70,7 @@
           <td><button (click)="editCase(case.id)" class="btn btn-sm btn-outline-secondary">{{ case.id }}</button></td>
           <td class="max-widthSoftware ">{{ case.software.name }}</td>
           <td class="widthReduceNoWrap">{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
-          <td class="">{{ case.title }}</td>
+          <td><div class="shortMessage2">{{ case.title }}</div></td>
           <td>{{ casesService.types[case.type-1] }}</td>
           <td>{{ case.userInfo.firstName }} {{ case.userInfo.lastName }}</td>
           <td>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }}</td>

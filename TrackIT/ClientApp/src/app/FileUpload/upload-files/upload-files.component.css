@@ -5,30 +5,3 @@
 .max-width500 {
   max-width: 500px;
 }
-
-.shortMessage {
-  max-width: 150px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-  .shortMessage:hover, .shortMessage:focus {
-    max-width: initial;
-    text-overflow: initial;
-    white-space: initial;
-  }
-
-.widthDatesTime {
-  width: 1%;
-  white-space: nowrap
-}
-
-.highlightHover {
-  width: 250px;
-}
-  .highlightHover:hover {
-    cursor: pointer;
-    color: green; /*bootstrap success colour #5cb85c */
-    width: 250px;
-  }

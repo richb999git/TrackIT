@@ -108,7 +108,7 @@ namespace TrackIT.Controllers
             var cases = await _context.Cases.FirstOrDefaultAsync(c => c.SoftwareId == id);
             if (cases != null)
             {
-                return BadRequest("Sorry, cannot delete as there cases for that software in the database.");
+                return BadRequest("Sorry, cannot delete as there are cases for that software in the database.");
             }
 
             _context.Software.Remove(software);

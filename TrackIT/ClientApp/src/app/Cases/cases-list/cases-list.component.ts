@@ -26,6 +26,7 @@ export class CasesListComponent implements OnInit {
     private pagesAfter: Array<number> = [];
     private maxPagesEitherSide: number = 4;
 
+
     constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef) { }
 
     ngAfterViewInit() {
@@ -50,6 +51,7 @@ export class CasesListComponent implements OnInit {
             this.softwares.unshift({ id: 0, name: "All Software" });
         }, errors => this.errorMsg = errors);
     }
+
 
     editCase(id) {
         this.casesService.setFilters(this.caseFilter, this.softwareFilter, 0, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
@@ -104,6 +106,7 @@ export class CasesListComponent implements OnInit {
             this.setPagination();
         }, errors => this.errorMsg = errors);
     }
+
 }
 
 interface searchModel {

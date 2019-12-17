@@ -35,7 +35,6 @@ export class ViewMessagesComponent implements OnInit {
             this.errorMsg = null;
             this.showMessages = true;
             this.showHide = "\u21E7"; // "Show" up arrow
-            // display a message to say message sent?
         }, errors => this.errorMsg = errors);
         messageForm.reset(); // or messageForm.resetForm();
     }

@@ -45,7 +45,6 @@ export class UploadFilesComponent implements OnInit {
             this.file = null;
             this.showFiles = true;
             this.showHide = "\u21E9"; // "Show" down arrow
-            // display a message to say file uploaded?
         }, errors => this.errorMsg = errors);
     }
 

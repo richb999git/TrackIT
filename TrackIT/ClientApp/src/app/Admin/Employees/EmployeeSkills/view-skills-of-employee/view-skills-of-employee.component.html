@@ -8,7 +8,7 @@
 <p *ngIf="!employeeSkills || !user"><em>Loading...</em></p>
 <app-show-errors [errors]="errorMsg"></app-show-errors>
 
-<div class="modal" tabindex="-1" role="dialog" id="myModal">
+<!--<div class="modal" tabindex="-1" role="dialog" id="myModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -26,7 +26,23 @@
       </div>
     </div>
   </div>
-</div>
+</div>-->
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Delete employee skill</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">No</button>
+    <button type="button" (click)="confirmDeleteSkill()" class="btn btn-success">Yes</button>
+  </div>
+</ng-template>
 
 <div *ngIf="employeeSkills">
   <br />
@@ -47,7 +63,7 @@
           <td>{{ employeeSkill.skills.name }}</td>
           <td>{{ casesService.experienceTypes[employeeSkill.experience-1]}}</td>
           <td><button (click)="editSkill(employeeSkill.id)" class="btn btn-sm btn-outline-success">Edit</button></td>
-          <td><button (click)="deleteSkill(employeeSkill.id)" class="btn btn-sm btn-outline-success">Delete..</button></td>
+          <td><button (click)="deleteSkill(template, employeeSkill.id)" class="btn btn-sm btn-outline-success">Delete..</button></td>
         </tr>
       </tbody>
     </table>

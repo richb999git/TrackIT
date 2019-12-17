@@ -5,26 +5,22 @@
 <p *ngIf="!skills"><em>Loading...</em></p>
 <app-show-errors [errors]="errorMsg"></app-show-errors>
 
-<div class="modal" tabindex="-1" role="dialog" id="myModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure?</p>
-        <p>Employees with this skill will lose it.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-        <button type="button" (click)="confirmDeleteSkill()" data-dismiss="modal" class="btn btn-success">Yes</button>
-      </div>
-    </div>
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Delete skill</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
-</div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+    <p>Employees with this skill will lose it.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">No</button>
+    <button type="button" (click)="confirmDeleteSkill()" class="btn btn-success">Yes</button>
+  </div>
+</ng-template>
 
 <div *ngIf="skills">
   <br />
@@ -45,7 +41,7 @@
           <td>{{ skill.name }}</td>
           <td>{{ casesService.skillTypes[skill.type-1] }}</td>
           <td><button (click)="editSkill(skill.id)" class="btn btn-sm btn-outline-success">Edit</button></td>
-          <td><button (click)="deleteSkill(skill.id)" class="btn btn-sm btn-outline-success">Delete..</button></td>
+          <td><button (click)="deleteSkill(template, skill.id)" class="btn btn-sm btn-outline-success">Delete..</button></td>
         </tr>
       </tbody>
     </table>

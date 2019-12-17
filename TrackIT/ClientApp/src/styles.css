@@ -119,3 +119,45 @@ body {
 .font85 {
   font-size: 85%;
 }
+
+.shortMessage2 {
+  width: 200px;
+  text-overflow: ellipsis;
+  /*white-space: nowrap;*/
+  overflow: hidden;
+  max-height: 3em;
+}
+
+  .shortMessage2:hover, shortMessage2:focus {
+    max-width: 200px;
+    max-height: 5em;
+    /*white-space: initial;*/
+  }
+
+.shortMessage {
+  max-width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+  .shortMessage:hover, .shortMessage:focus {
+    max-width: initial;
+    text-overflow: initial;
+    white-space: initial;
+  }
+
+.widthDatesTime {
+  width: 1%;
+  white-space: nowrap
+}
+
+.highlightHover {
+  width: 250px;
+}
+
+  .highlightHover:hover {
+    cursor: pointer;
+    color: green; /*bootstrap success colour #5cb85c */
+    width: 250px;
+  }

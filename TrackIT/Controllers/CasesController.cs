@@ -69,12 +69,10 @@ namespace TrackIT.Controllers
     public class CasesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CasesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public CasesController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
 
@@ -84,12 +82,13 @@ namespace TrackIT.Controllers
         [HttpGet]
         public async Task<ActionResult<PaginatedListCases>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
-            int statusFilter = caseFilter == 1 ? 7 : 8; // if 1 then get uncomplete cases (status 7 = complete), otherwise get all cases
+            // if 1 then get uncompleted cases (status 7 = complete), otherwise get all cases (8 = cancelled)
+            int statusFilter = caseFilter == 1 ? 7 : 9; 
             // Filter just user's cases (or later maybe all their company's cases)
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+            
             if (searchString?.Length == 0) searchString = null;
-
+            
             var cases = await _context.Cases
                 .Include(c => c.Software)
                 .Include(c => c.User)
@@ -147,7 +146,8 @@ namespace TrackIT.Controllers
             var IsManager = User.HasClaim(ClaimTypes.Role, "manager");
             var IsAdmin = User.HasClaim(ClaimTypes.Role, "admin");
 
-            int statusFilter = caseFilter == 1 ? 7 : 8; // if 1 then get uncomplete cases (status 7 = complete), otherwise get all cases
+            // if 1 then get uncompleted cases (status 7 = complete), otherwise get all cases (8 = cancelled)
+            int statusFilter = caseFilter == 1 ? 7 : 9; 
             if (searchString?.Length == 0) searchString = null;
 
             var cases = await _context.Cases

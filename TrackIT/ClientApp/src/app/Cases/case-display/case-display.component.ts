@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { CasesService, IMessages, ICases, ISoftwares, IFiles } from '../_services/cases.service';
+import { CasesService, ICases } from '../_services/cases.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

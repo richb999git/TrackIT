@@ -45,7 +45,7 @@
             <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Support staff case list">
               Support Cases
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu dropdown-menu-right">
               <a class="dropdown-item" [routerLink]='["/cases-list-support"]' (click)="collapse()">View Cases</a>
             </div>
           </li>
@@ -54,7 +54,7 @@
             <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Manage cases reported by you">
               Your Cases
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" [routerLink]='["/cases-list"]' (click)="collapse()">View Cases</a>
               <a class="dropdown-item" [routerLink]='["/case-add"]' (click)="collapse()">Raise Case</a>
             </div>

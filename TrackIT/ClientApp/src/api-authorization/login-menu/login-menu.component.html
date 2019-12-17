@@ -3,7 +3,7 @@
         <a  class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="manage login">
           <i class="fa fa-user-circle text-warning"></i> {{ userName | async }}
         </a>
-        <div class="dropdown-menu">
+        <div class="dropdown-menu dropdown-menu-right">
           <a class="dropdown-item" [routerLink]='["/authentication/profile"]' [state]='{ local: true }' >Manage Login</a>
           <a class="dropdown-item" [routerLink]='["/authentication/logout"]' [state]='{ local: true }' >Logout</a>
         </div>

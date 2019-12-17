@@ -42,18 +42,18 @@
   </app-pagination>
 
   <div *ngIf="cases.cases.length > 0" class="">
-    <table class='table table-hover table-stripedNo table-responsive table-light black-border' aria-labelledby="tableLabel">
+    <table class='table table-hover table-stripedNo table-responsive table-light black-border font85' aria-labelledby="tableLabel">
       <thead class="green-heading">
         <tr>
           <th (click)="sortCase('case')" class="highlight" [class.selected]="sortProperty=='case'">Case</th>
-          <th (click)="sortCase('dateOpened')" class="highlight" [class.selected]="sortProperty=='dateOpened'">Date opened</th>
+          <th (click)="sortCase('dateOpened')" class="highlight" [class.selected]="sortProperty=='dateOpened'">Opened</th>
           <th>Software</th>
           <th>Subject</th>
           <th>Type</th>
           <th (click)="sortCase('contact')" class="highlight" [class.selected]="sortProperty=='contact'">Contact</th>
           <th (click)="sortCase('urgency')" class="highlight" [class.selected]="sortProperty=='urgency'">Urgency</th>
           <th (click)="sortCase('status')" class="highlight" [class.selected]="sortProperty=='status'">Status</th>
-          <th *ngIf="caseFilter != 1">Completion date</th>
+          <th *ngIf="caseFilter != 1">Completed</th>
         </tr>
       </thead>
       <tbody>
@@ -61,7 +61,7 @@
           <td><button (click)="editCase(case.id)" class="btn btn-outline-secondary">{{ case.id }}</button></td>
           <td class="widthReduceNoWrap">{{ case.dateOpened | date: 'dd-MMM-yy' }}</td>
           <td>{{ case.software.name }}</td>
-          <td class="tdWidthList">{{ case.title }}</td>
+          <td><div class="shortMessage2">{{ case.title }}</div></td>
           <td>{{ casesService.types[case.type-1] }}</td>
           <td>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }}</td>
           <td>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</td>
@@ -72,7 +72,7 @@
     </table>
   </div>
   <p *ngIf="cases.cases.length == 0" class="font-weight-bold lead">No cases found</p>
-  
+
   <app-pagination [pageIndex]="pageIndex" [totalPages]="cases.totalPages" [pagesBefore]="pagesBefore"
                   [pagesAfter]="pagesAfter" (pageChanged)="pageChangedHandler($event)">
   </app-pagination>
@@ -80,5 +80,3 @@
 
 </div>
 <br />
-
-

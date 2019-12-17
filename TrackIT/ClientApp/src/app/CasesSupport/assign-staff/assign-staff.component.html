@@ -58,7 +58,6 @@
     </div>
 
     <form #skillSearchForm="ngForm" class="float-left mb-2 mr-5">
-      <!--width150 float-right">-->
       <div class="input-group">
         <label for="skillSearch"></label>
         <input type="search" class="form-control" id="skillSearch" (ngModelChange)="onKeySearch(skillSearchForm)"
@@ -94,7 +93,6 @@
           </thead>
           <tbody>
             <tr *ngFor="let user of usersWithSkills">
-              <!-- the 6 keys below that are included in the above end up being in the table -->
               <td class="pl-2 widthReduceNoWrap pr-3 freeze col1" [class.text-danger]="user.id == case.contactId"
                   [class.text-success]="assignedStaff.includes(user.id)"
                   [class.font-weight-bold]="assignedStaff.includes(user.id) && user.id == case.contactId">

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 namespace TrackIT.Models
 {
     // Table will have multiple UserIds and multiple SkillIds
-    // Need to be able to have Administrator (and Manager?) to be able to add skills to employees (see figure EA)
-    // This table will then be used in the assign employee area (see figures AE1 and AE2) 
+    // Need to be able to have Administrator (and Manager?) to be able to add skills to employees
+    // This table will then be used in the assign employee area
     public class EmployeeSkills
     {
         public int Id { get; set; }

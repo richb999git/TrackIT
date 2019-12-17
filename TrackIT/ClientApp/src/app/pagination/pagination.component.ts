@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Injectable } from '@angular/core';
 
 @Component({
   selector: 'app-pagination',
@@ -7,12 +7,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class PaginationComponent implements OnInit {
 
-    @Input() totalPages: number;
-    @Input() pageIndex: number;
-    @Input() pagesBefore: Array<number> = [];
-    @Input() pagesAfter: Array<number> = [];
+    @Input() totalPages: number; // used in HTML
+    @Input() pageIndex: number; // used in HTML
+    @Input() pagesBefore: Array<number> = []; // used in HTML
+    @Input() pagesAfter: Array<number> = []; // used in HTML
 
     @Output() pageChanged: EventEmitter<number> = new EventEmitter();
+
 
     constructor() { }
 
@@ -22,21 +23,30 @@ export class PaginationComponent implements OnInit {
     goToPage(page) {
         this.pageChanged.emit(page);
     }
+
 }
 // Just need to put the pagination method in the calling class so it can call it and set the variables and call setPagination() when required
-// May try to put it here and return the before and after arrays (in a new object?).
-// Using @ViewChild("appPagination") child: PaginationComponent;
-// this.child.setPagination();
-//  which will return the new object or through an Output event emitter(s)?
-//
-//setPagination() {
-//    this.pagesBefore = [];
-//    this.pagesAfter = [];
-//    for (var i = this.pageIndex - this.maxPagesEitherSide; i < this.pageIndex; i++) {
-//        if (i > 0) this.pagesBefore.push(i);
+// You can use ViewChild instead:
+//      @ViewChild(PaginationComponent, { static: false }) private myChild: PaginationComponent;
+// and then call the setPagination() method but myChild is not available until ngAfterViewInit life cycle hook so can't be used in ngOnInit
+// doesn't always get myChild though...also each pagination not updating correctly (only the first one on the page). Think I need to use a service
+// but it's getting too complicated for the small gain (which isn't that clever anyway)
+
+//setPagination(pageIndex: number, totalPages: number) {
+//    this.pagesBefore2 = [];
+//    this.pagesAfter2 = [];
+//    for (var i = pageIndex - this.maxPagesEitherSide; i < pageIndex; i++) {
+//        if (i > 0) this.pagesBefore2.push(i);
 //    }
-//    for (var i = (this.pageIndex + 1); i <= this.totalPages; i++) {
-//        this.pagesAfter.push(i);
-//        if (i >= this.pageIndex + this.maxPagesEitherSide) break;
+//    for (var i = (pageIndex + 1); i <= totalPages; i++) {
+//        this.pagesAfter2.push(i);
+//        if (i >= pageIndex + this.maxPagesEitherSide) break;
 //    }
 //}
+//
+// and also add in the variables:
+// pagination properties:
+//   private pageIndex: number = 1;
+//   private pagesBefore: Array < number > =[];
+//   private pagesAfter: Array < number > =[];
+//   private maxPagesEitherSide: number = 4;

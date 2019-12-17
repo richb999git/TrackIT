@@ -15,7 +15,8 @@ export class CasesService {
         "On Hold",
         "Awaiting Approval",
         "Fix Approved",
-        "Complete"
+        "Complete",
+        "Cancelled"
     ];   
 
     // duplicate of levels in c# class EnumStrings
@@ -331,5 +332,5 @@ export interface IUsersWithSkills {
 }
 
 export enum CaseType { Bug = 1, Question, Issue, FeatureRequest };
-export enum CaseStatus { Opened = 1, Assigned, AwaitingCustomer, OnHold, AwaitingApproval, FixApproved, Complete };
+export enum CaseStatus { Opened = 1, Assigned, AwaitingCustomer, OnHold, AwaitingApproval, FixApproved, Complete, Cancelled };
 export enum CaseUrgencyLevel { Critical = 1, High, Medium, Low };

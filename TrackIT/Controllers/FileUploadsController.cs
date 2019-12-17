@@ -55,8 +55,6 @@ namespace TrackIT.Controllers
             );
 
             _cloudinary = new Cloudinary(acc);
-
-            // maybe add "IMapper mapper" before IOptions ? Not sure what it is for yet (repsoitories?)
         }
 
         // Get upload details for a case. No need to return all upload details

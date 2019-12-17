@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 namespace TrackIT.Models
 {
+    // Not implemented. Was possibly going to have the ability to have customer accounts and users
+    // could be part of a company a/c 
     public class Customers
     {
         public int Id { get; set; }

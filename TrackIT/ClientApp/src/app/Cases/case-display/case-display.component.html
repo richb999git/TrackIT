@@ -46,6 +46,14 @@
       <div class="col"><b>{{ casesService.urgencyLevels[case.urgencyLevel-1] }}</b></div>
       <div class="col"><b>{{ case.contactInfo.firstName }} {{ case.contactInfo.lastName }} - {{ case.contactInfo.email }}</b></div>
     </div>
+    <br />
+    <div class="row">
+      <div class="col">Date Completed</div>
+    </div>
+    <div class="row">
+      <div class="col"><b>{{ (case.dateCompleted | date: 'dd-MMM-yyyy HH:mm') || "Not completed" }}</b></div>
+    </div>
+
   </div>
 
   <br />

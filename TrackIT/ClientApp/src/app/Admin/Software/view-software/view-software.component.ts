@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CasesService, ISoftwares } from '../../../Cases/_services/cases.service';
-declare var $: any;
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-view-software',
@@ -14,7 +14,9 @@ export class ViewSoftwareComponent implements OnInit {
     public softwares: Array<ISoftwares>;
     private deleteId: number;
 
-    constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef) { }
+    private modalRef: BsModalRef;
+
+    constructor(private casesService: CasesService, private router: Router, private elementRef: ElementRef, private modalService: BsModalService) { }
 
     ngAfterViewInit() {
         this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
@@ -31,12 +33,13 @@ export class ViewSoftwareComponent implements OnInit {
         this.router.navigate(['/edit-software/' + id]);  
     }
 
-    deleteSoftware(id) {
+    deleteSoftware(template: TemplateRef<any>,id) {
         this.deleteId = id;
-        $('#myModal').modal('show');
+        this.modalRef = this.modalService.show(template);
     }
 
     confirmDeleteSoftware(e) {
+        this.modalRef.hide();
         this.casesService.deleteSoftwareTitle(this.deleteId).subscribe(result => {
             this.softwares = this.softwares.filter(x => x.id != this.deleteId);
         }, errors => this.errorMsg = errors);       

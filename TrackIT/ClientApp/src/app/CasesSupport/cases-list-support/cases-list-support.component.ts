@@ -14,7 +14,7 @@ import { map } from 'rxjs/operators';
 export class CasesListSupportComponent implements OnInit {
 
     private errorMsg: any;
-    private cases: ICasesPagination; //any;
+    private cases: ICasesPagination; 
     private userRole: any;
     private softwares: ISoftwares[];
 
