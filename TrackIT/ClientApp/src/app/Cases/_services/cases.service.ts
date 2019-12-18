@@ -38,18 +38,29 @@ export class CasesService {
         "Excellent", "Good", "Beginner"
     ]
 
-    // pagination sort/filter/search properties:
+    // pagination sort/filter/search properties (Support):
     private caseFilter: number;
     private softwareFilter: number;
     private typeFilter: number;
     private sortProperty: string;
     private sortAsc: boolean;
     private searchString: string;
-    // pagination properties:
+    // pagination properties (Support):
     private pageIndex: number = 1;
+
+    // pagination sort/filter/search properties (Users):
+    private caseFilterUser: number;
+    private softwareFilterUser: number;
+    private typeFilterUser: number;
+    private sortPropertyUser: string;
+    private sortAscUser: boolean;
+    private searchStringUser: string;
+    // pagination properties (Users):
+    private pageIndexUser: number = 1;
 
     constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
+    //------------------ Support properties
     setFilters(caseFilter, softwareFilter, typeFilter, sortProperty, sortAsc, pageIndex, searchString) {
         this.caseFilter = caseFilter;
         this.softwareFilter = softwareFilter;
@@ -68,7 +79,29 @@ export class CasesService {
     getSortAsc() { return this.sortAsc == null ? true : this.sortAsc };
     getPageIndex() { return this.pageIndex || 0 };
     getSearchString() { return this.searchString || "" };
-    
+
+
+    //------------------ User properties
+    setFiltersUser(caseFilter, softwareFilter, typeFilter, sortProperty, sortAsc, pageIndex, searchString) {
+        this.caseFilterUser = caseFilter;
+        this.softwareFilterUser = softwareFilter;
+        this.typeFilterUser = typeFilter;
+        this.sortPropertyUser = sortProperty;
+        this.sortAscUser = sortAsc;
+        this.pageIndexUser = pageIndex;
+        this.searchStringUser = searchString;
+    }
+
+    // If null set to a default. Boolean has to be treated differently because of truthy/falsy
+    getCaseFilterUser() { return this.caseFilterUser || 1 };
+    getSoftwareFilterUser() { return this.softwareFilterUser || 0 };
+    getTypeFilterUser() { return this.typeFilterUser || 0 };
+    getSortPropertyUser() { return this.sortPropertyUser || "" };
+    getSortAscUser() { return this.sortAscUser == null ? true : this.sortAscUser };
+    getPageIndexUser() { return this.pageIndexUser || 0 };
+    getSearchStringUser() { return this.searchStringUser || "" };
+
+    //--------------- HTTP -------------------------------------------------------------------------------------------------------------------//
 
     // Return type is not an array. Pagination is an object that INCLUDES an array
     getCases(caseFilter, softwareFilter, sort, sortAsc, pageIndex, searchString) {
@@ -229,10 +262,6 @@ export class CasesService {
 
     //-----------------------------------------------------------------------------------------------------------------
 
-    setSubPageBackground() {
-        //this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = "none";
-        //this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#DDFFEF";
-    }
 }
 
 export interface ICases { // should add more if needed

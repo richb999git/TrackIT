@@ -35,12 +35,12 @@ export class CasesListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.caseFilter = this.casesService.getCaseFilter();
-        this.softwareFilter = this.casesService.getSoftwareFilter();
-        this.sortProperty = this.casesService.getSortProperty();
-        this.sortAsc = this.casesService.getSortAsc();
-        this.pageIndex = this.casesService.getPageIndex();
-        this.searchModel.searchString = this.casesService.getSearchString();
+        this.caseFilter = this.casesService.getCaseFilterUser();
+        this.softwareFilter = this.casesService.getSoftwareFilterUser();
+        this.sortProperty = this.casesService.getSortPropertyUser();
+        this.sortAsc = this.casesService.getSortAscUser();
+        this.pageIndex = this.casesService.getPageIndexUser();
+        this.searchModel.searchString = this.casesService.getSearchStringUser();
         this.casesService.getCases(this.caseFilter, this.softwareFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString).subscribe(result => {
             this.cases = result;
             this.setPagination();
@@ -54,7 +54,7 @@ export class CasesListComponent implements OnInit {
 
 
     editCase(id) {
-        this.casesService.setFilters(this.caseFilter, this.softwareFilter, 0, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
+        this.casesService.setFiltersUser(this.caseFilter, this.softwareFilter, 0, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         this.router.navigate(['/case-display/' + id]);
     }
 
@@ -64,6 +64,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
+            this.casesService.setFiltersUser(this.caseFilter, this.softwareFilter, 0, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 
@@ -75,6 +76,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
+            this.casesService.setFiltersUser(this.caseFilter, this.softwareFilter, 0, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 
@@ -84,6 +86,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
+            this.casesService.setFiltersUser(this.caseFilter, this.softwareFilter, 0, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 
@@ -104,6 +107,7 @@ export class CasesListComponent implements OnInit {
             this.cases = result;
             this.pageIndex = this.cases.pageIndex;
             this.setPagination();
+            this.casesService.setFiltersUser(this.caseFilter, this.softwareFilter, 0, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 

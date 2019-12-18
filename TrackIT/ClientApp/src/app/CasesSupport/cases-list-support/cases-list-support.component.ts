@@ -71,6 +71,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
+            this.casesService.setFilters(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 
@@ -81,6 +82,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
+            this.casesService.setFilters(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 
@@ -90,6 +92,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = 1;
             this.setPagination();
+            this.casesService.setFilters(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 
@@ -110,6 +113,7 @@ export class CasesListSupportComponent implements OnInit {
             this.cases = result;
             this.pageIndex = this.cases.pageIndex;
             this.setPagination();
+            this.casesService.setFilters(this.caseFilter, this.softwareFilter, this.typeFilter, this.sortProperty, this.sortAsc, this.pageIndex, this.searchModel.searchString);
         }, errors => this.errorMsg = errors);
     }
 
