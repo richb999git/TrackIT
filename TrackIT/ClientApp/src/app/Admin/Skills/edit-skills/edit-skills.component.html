@@ -8,10 +8,9 @@
     <label for="editName">Name</label>
     <input type="text" class="form-control" id="title"
            [ngClass]="(name.invalid && (name.dirty || name.touched))?'text-danger is-invalid':''"
-           placeholder="Enter Name" name="name" minlength="2" required
+           placeholder="Enter Name" name="name" required
            [(ngModel)]="skillsModel.name" #name="ngModel">
     <small *ngIf="name.errors?.required && (name.dirty || name.touched)" class="text-danger">Title is required</small>
-    <small *ngIf="name.errors?.minlength" class="text-danger">Name must be at least 2 characters long.</small>
   </div>
 
   <div class="container row">

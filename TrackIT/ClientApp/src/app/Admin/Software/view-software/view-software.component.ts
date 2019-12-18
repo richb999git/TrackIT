@@ -33,7 +33,8 @@ export class ViewSoftwareComponent implements OnInit {
         this.router.navigate(['/edit-software/' + id]);  
     }
 
-    deleteSoftware(template: TemplateRef<any>,id) {
+    deleteSoftware(template: TemplateRef<any>, id) {
+        this.errorMsg = null;
         this.deleteId = id;
         this.modalRef = this.modalService.show(template);
     }

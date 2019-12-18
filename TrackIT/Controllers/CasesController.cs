@@ -87,7 +87,7 @@ namespace TrackIT.Controllers
             // Filter just user's cases (or later maybe all their company's cases)
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
-            if (searchString?.Length == 0) searchString = null;
+            if (searchString?.Length == 0 || searchString == "null") searchString = null;
             
             var cases = await _context.Cases
                 .Include(c => c.Software)
@@ -148,7 +148,7 @@ namespace TrackIT.Controllers
 
             // if 1 then get uncompleted cases (status 7 = complete), otherwise get all cases (8 = cancelled)
             int statusFilter = caseFilter == 1 ? 7 : 9; 
-            if (searchString?.Length == 0) searchString = null;
+            if (searchString?.Length == 0 || searchString == "null") searchString = null;
 
             var cases = await _context.Cases
                 .AsNoTracking()
