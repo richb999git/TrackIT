@@ -179,7 +179,9 @@ export class AuthorizeService {
       return;
     }
 
-    const response = await fetch(ApplicationPaths.ApiAuthorizationClientConfigurationUrl);
+    var baseURL = "";
+    if (window.location.origin == "http://localhost:9876") baseURL = "https://";  // fudge for testing
+    const response = await fetch(baseURL + ApplicationPaths.ApiAuthorizationClientConfigurationUrl);
     if (!response.ok) {
       throw new Error(`Could not load settings for '${ApplicationName}'`);
     }

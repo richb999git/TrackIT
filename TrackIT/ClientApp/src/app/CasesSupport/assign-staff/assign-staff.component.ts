@@ -20,10 +20,10 @@ export class AssignStaffComponent implements OnInit {
     private errorMsg;
     private id: string;
     private userRole: any; // not sure if I can use a type for this
-    private users: IUser; // used to hold just the users (excluding pagination properties)
+    public users: any; // used to hold just the users (excluding pagination properties) - was IUser but is an array
     private usersP: IUsersPagination;
-    private assignedStaff: Array<string> = [];
-    private assignedStaffNames: Array<string> = [];
+    public assignedStaff: Array<string> = [];
+    public assignedStaffNames: Array<string> = [];
     private assignStaffFlag: boolean = false;
     private isUserContact: boolean = false;
     private isUserDeveloper: boolean = false;
@@ -68,16 +68,30 @@ export class AssignStaffComponent implements OnInit {
     }
 
     ngOnInit() {
+        // used to allow test suite to work. Will not affect normal working of app
+        if (!this.case) {
+          this.case = {
+            id: null, title: "", description: "", type: 1, dateCompleted: null, staffAssigned: null,
+            status: 1, estimatedTimeHours: null, timeSpentHours: null, deadline: null, dateAssigned: null,
+            dateAwaitApproval: null, dateApproved: null, dateApplied: null, userId: null, user: null,
+            contactId: null, contactInfo: {
+              contactId: null, firstName: null, lastName: null, email: null, userName: null,
+              isManager: null, id: null, find: null
+            }
+          };
+        }
+
         this.assignedStaff = this.case.staffAssigned ? this.case.staffAssigned.split(', ') : [];
         this.assignedStaffOld = this.assignedStaff.slice();
         this.saveOldContact();
-        this.populateAssignedStaffNames(); 
-        this.authorize.getUser().pipe(map(u => u && u.userId)).subscribe( 
-            userId => {
-                this.userId = userId;
-                this.isUserDeveloper = this.assignedStaff.includes(this.userId) ? true : false;
-                this.isUserContact = this.case.contactId == this.userId ? true : false;
-        });
+        this.populateAssignedStaffNames();
+        this.authorize.getUser().pipe(map(u => u && u.userId)).subscribe(
+          userId => {
+            this.userId = userId;
+            this.isUserDeveloper = this.assignedStaff.includes(this.userId) ? true : false;
+            this.isUserContact = this.case.contactId == this.userId ? true : false;
+          });
+        
 
         this.casesService.getSkills("id", true).subscribe(result => {
             this.skills = result;
@@ -106,7 +120,8 @@ export class AssignStaffComponent implements OnInit {
     }
 
     assignEmployee(id: string) {
-        // add or subtract employee to/from staff assigned to case list unless already on the list
+        // should add employee to staff assigned to case list or remove if already on the list
+        // id array and full name array
         if (this.assignedStaff.includes(id)) {
             this.assignedStaff = this.assignedStaff.filter(e => e !== id);
 
@@ -115,7 +130,6 @@ export class AssignStaffComponent implements OnInit {
             this.assignedStaffNames = this.assignedStaffNames.filter(e => e !== fullName);
         } else {
             this.assignedStaff.push(id);
-
             var name = this.users.find(i => i.id === id); //
             var fullName = name.firstName + " " + name.lastName;
             this.assignedStaffNames.push(fullName);
