@@ -107,7 +107,7 @@ export class AssignStaffComponent implements OnInit {
     }
 
 
-    // Used only in OnInit (and Cancel Assignment)
+    // Used only in OnInit (and Cancel Assignment) because it is too slow for screen updates
     populateAssignedStaffNames() {
         this.assignedStaffNames = [];
         var fullName = "";
@@ -119,6 +119,7 @@ export class AssignStaffComponent implements OnInit {
         }
     }
 
+    // (tests done)
     assignEmployee(id: string) {
         // should add employee to staff assigned to case list or remove if already on the list
         // id array and full name array
@@ -136,6 +137,7 @@ export class AssignStaffComponent implements OnInit {
         }
     }
 
+    // (tests done)
     saveOldContact() {
         this.caseContactIdOld = this.case.contactId;
         // need to also set the contactInfo object properties
@@ -146,6 +148,7 @@ export class AssignStaffComponent implements OnInit {
         this.caseContactInfoUserNameOld = this.case.contactInfo.userName;
     }
 
+    // (tests done)
     getOldContact() {
         this.case.contactId = this.caseContactIdOld;
         // need to also set the contactInfo object properties
@@ -156,6 +159,7 @@ export class AssignStaffComponent implements OnInit {
         this.case.contactInfo.userName = this.caseContactInfoUserNameOld;
     }
 
+    // (tests done)
     assignContact(id: string, firstName, lastName, email, userName) {
         this.case.contactId = id;
         // need to also set the contactInfo object properties
@@ -197,6 +201,7 @@ export class AssignStaffComponent implements OnInit {
         this.passCase.emit(this.case); // case.status, case.staffAssigned case.contactId
     }
 
+    // (tests done for section before API call via service)
     showAssignEmployeeSection(caseId) {
         // need to restrict to managers only
         if (this.case.deadline == null) {
@@ -215,8 +220,6 @@ export class AssignStaffComponent implements OnInit {
             this.pageIndex = this.usersP.pageIndex;
             this.setPagination();
         }, errors => this.errorMsg = errors);
-
-
     }
 
     populateUsersListWithSkills() {
@@ -227,6 +230,7 @@ export class AssignStaffComponent implements OnInit {
         }, errors => this.errorMsg = errors);
     }
 
+    // (tests done)
     populateUsersListWithSkillsAfterGettingEmployeeSkills() {
         //this.usersWithSkills = this.users.slice(); // this only shallow copies to one level so no good if skills:{} used
         this.usersWithSkills = JSON.parse(JSON.stringify(this.users)); // this is a deep copy so ok for skills (and it's a simple object)
@@ -302,6 +306,7 @@ export class AssignStaffComponent implements OnInit {
         }, errors => this.errorMsg = errors);
     }
 
+    // (tests done)
     setPagination() {
         this.pagesBefore = [];
         this.pagesAfter = [];
