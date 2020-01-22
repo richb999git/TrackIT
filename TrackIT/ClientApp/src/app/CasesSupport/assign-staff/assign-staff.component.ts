@@ -223,43 +223,45 @@ export class AssignStaffComponent implements OnInit {
         var skill = 0; // 0 = all skills. This is not the same as "this.skillFilter"
         this.casesService.getAllSkillsOfAllEmployees(this.users, skill).subscribe(result => {
             this.employeesSkills = result;
-            //this.usersWithSkills = this.users.slice(); // this only shallow copies to one level so no good if skills:{} used
-            this.usersWithSkills = JSON.parse(JSON.stringify(this.users)); // this is a deep copy so ok for skills (and it's a simple object)
-
-            // loop through employeesSkills and get an array of distinct skills for the headings
-            this.allSkillsHeadings = [];
-            for (var i = 0; i < this.employeesSkills.length; i++) {
-                if (!this.allSkillsHeadings.includes(this.employeesSkills[i].skills.name)) {
-                    // if a skills type filter is being used only add it as a heading if it is that type
-                    if (this.skillTypeFilter == 0 || this.skillTypeFilter == this.employeesSkills[i].skills.type) {
-                        this.allSkillsHeadings.push(this.employeesSkills[i].skills.name);
-                    }
-                }
-            }
-
-            // initialize each skill in each user as null so it is used/displayed in the html
-            for (var u = 0; u < this.usersWithSkills.length; u++) {
-                for (var i = 0; i < this.allSkillsHeadings.length; i++) {
-                    //this.usersWithSkills[u][this.allSkillsHeadings[i]] = null; // if Object for skills not used
-                    var pair = { [this.allSkillsHeadings[i]]: null };
-                    // merge new skill object into usersWithSkills object (using spread operator)
-                    this.usersWithSkills[u].skills = { ...this.usersWithSkills[u].skills, ...pair }; 
-                }
-            }
-
-            // add a new property in each user for each level of experience in a skill so user array is still flat
-            for (var i = 0; i < this.employeesSkills.length; i++) {
-                // if a skills type filter is being used only add the data if it is that type
-                if (this.skillTypeFilter == 0 || this.skillTypeFilter == this.employeesSkills[i].skills.type) {
-                    var userIndex = this.users.findIndex(a => a.id == this.employeesSkills[i].userId);
-                    //this.usersWithSkills[userIndex][this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience; // if Object for skills not used
-                    this.usersWithSkills[userIndex].skills[this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience;
-                }
-            }
-            
+            this.populateUsersListWithSkillsAfterGettingEmployeeSkills();           
         }, errors => this.errorMsg = errors);
     }
 
+    populateUsersListWithSkillsAfterGettingEmployeeSkills() {
+        //this.usersWithSkills = this.users.slice(); // this only shallow copies to one level so no good if skills:{} used
+        this.usersWithSkills = JSON.parse(JSON.stringify(this.users)); // this is a deep copy so ok for skills (and it's a simple object)
+      
+        // loop through employeesSkills and get an array of distinct skills for the headings
+        this.allSkillsHeadings = [];
+        for (var i = 0; i < this.employeesSkills.length; i++) {
+          if (!this.allSkillsHeadings.includes(this.employeesSkills[i].skills.name)) {
+            // if a skills type filter is being used only add it as a heading if it is that type
+            if (this.skillTypeFilter == 0 || this.skillTypeFilter == this.employeesSkills[i].skills.type) {
+              this.allSkillsHeadings.push(this.employeesSkills[i].skills.name);
+            }
+          }
+        }
+
+        // initialize each skill in each user as null so it is used/displayed in the html
+        for (var u = 0; u < this.usersWithSkills.length; u++) {
+          for (var i = 0; i < this.allSkillsHeadings.length; i++) {
+            //this.usersWithSkills[u][this.allSkillsHeadings[i]] = null; // if Object for skills not used
+            var pair = { [this.allSkillsHeadings[i]]: null };
+            // merge new skill object into usersWithSkills object (using spread operator)
+            this.usersWithSkills[u].skills = { ...this.usersWithSkills[u].skills, ...pair };
+          }
+        }
+
+        // add a new property in each user for each level of experience in a skill so user array is still flat
+        for (var i = 0; i < this.employeesSkills.length; i++) {
+          // if a skills type filter is being used only add the data if it is that type
+          if (this.skillTypeFilter == 0 || this.skillTypeFilter == this.employeesSkills[i].skills.type) {
+            var userIndex = this.users.findIndex(a => a.id == this.employeesSkills[i].userId);
+            //this.usersWithSkills[userIndex][this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience; // if Object for skills not used
+            this.usersWithSkills[userIndex].skills[this.employeesSkills[i].skills.name] = this.employeesSkills[i].experience;
+          }
+        }
+    }
 
     showHideType(type) {
         this.skillTypeFilter = type;

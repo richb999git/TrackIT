@@ -33,16 +33,7 @@ describe('AssignStaffComponent', () => {
     fixture = TestBed.createComponent(AssignStaffComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should add employee to staff assigned to case list or remove if already on the list', () => {
-    // user would be in the list of users (not possible to add/remove a user from assigned list who is not in the user list)
-
-    // ARRANGE
     var user1 = {
       contactId: null, firstName: "John", lastName: "Doe", email: null, userName: null,
       isManager: null, id: "a1", find: null
@@ -55,6 +46,20 @@ describe('AssignStaffComponent', () => {
     component.users = [];
     component.users.push(user1);
     component.users.push(user2);
+
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should add employee to staff assigned to case list or remove if already on the list', () => {
+    // user would be in the list of users (not possible to add/remove a user from assigned list who is not in the user list)
+
+    // ARRANGE
+
+    // create a users array - done in BeforeEach()
+
     component.assignedStaff = [];
     component.assignedStaffNames = [];
 
@@ -104,10 +109,124 @@ describe('AssignStaffComponent', () => {
     expect(component.assignedStaffNames.length).toBe(1);
     expect(component.assignedStaff[0]).not.toContain("a1");
     expect(component.assignedStaffNames[0]).not.toContain("John Doe");
+    expect(component.assignedStaff[0]).toEqual("a2");
+    expect(component.assignedStaffNames[0]).toEqual("Jane Potter");
 
   });
 
 
+  describe('Skills added to users', () => {
+
+    beforeEach(() => {
+      // create a employeesSkills array
+      var employeeSkills1 = {
+        id: 1, skillsId: 1, experience: 1, userId: "a1", user: null, skills: { id: 1, name: "C#", type: 1 }
+      };
+      var employeeSkills2 = {
+        id: 2, skillsId: 2, experience: 2, userId: "a1", user: null, skills: { id: 2, name: "Javascript", type: 1 }
+      };
+      var employeeSkills3 = {
+        id: 3, skillsId: 3, experience: 3, userId: "a1", user: null, skills: { id: 3, name: "Python", type: 1 }
+      };
+      var employeeSkills4 = {
+        id: 4, skillsId: 4, experience: 2, userId: "a2", user: null, skills: { id: 4, name: "C", type: 1 }
+      };
+      var employeeSkills5 = {
+        id: 5, skillsId: 2, experience: 2, userId: "a2", user: null, skills: { id: 2, name: "Javascript", type: 1 }
+      };
+      var employeeSkills6 = {
+        id: 6, skillsId: 5, experience: 1, userId: "a2", user: null, skills: { id: 5, name: "PHP", type: 1 }
+      };
+      var employeeSkills7 = {
+        id: 7, skillsId: 6, experience: 1, userId: "a2", user: null, skills: { id: 6, name: "Laravel", type: 2 }
+      };
+      var employeeSkills8 = {
+        id: 8, skillsId: 7, experience: 2, userId: "a1", user: null, skills: { id: 7, name: "ASP.Net Core", type: 2 }
+      };
+
+      component['employeesSkills'] = [];
+      component['employeesSkills'].push(employeeSkills1);
+      component['employeesSkills'].push(employeeSkills2);
+      component['employeesSkills'].push(employeeSkills3);
+      component['employeesSkills'].push(employeeSkills4);
+      component['employeesSkills'].push(employeeSkills5);
+      component['employeesSkills'].push(employeeSkills6);
+      component['employeesSkills'].push(employeeSkills7);
+      component['employeesSkills'].push(employeeSkills8);
+
+    });
+
+
+    it('should create a new user array of objects that contains a new skills object for each user that contains all of their skills - All', () => {    
+      // Properties of the Skills object are dynamic and created as needed
+
+      // ARRANGE   
+      // create a users array - done in BeforeEach() in above describe
+      // create a employeesSkills array - done in BeforeEach() in this describe     
+
+      // ACT
+      component.populateUsersListWithSkillsAfterGettingEmployeeSkills();
+
+      // ASSERT
+      expect(component['allSkillsHeadings'].length).toBe(7);
+      expect(component['allSkillsHeadings']).toEqual(["C#", "Javascript", "Python", "C", "PHP", "Laravel", "ASP.Net Core"]);
+
+      expect(component.users.length).toBe(2);
+      expect(component['usersWithSkills'].length).toBe(2);
+
+      expect(component['usersWithSkills'][0].id).toBe("a1");
+      expect(component['usersWithSkills'][0].firstName).toBe("John");
+      expect(component['usersWithSkills'][0].lastName).toBe("Doe");
+      expect(component['usersWithSkills'][0].skills['C#']).toBe(1);
+      expect(component['usersWithSkills'][0].skills['Javascript']).toBe(2);
+      expect(component['usersWithSkills'][0].skills['Python']).toBe(3);
+      expect(component['usersWithSkills'][0].skills['C']).toBe(null);
+      expect(component['usersWithSkills'][0].skills['PHP']).toBe(null);
+      expect(component['usersWithSkills'][0].skills['Laravel']).toBe(null);
+      expect(component['usersWithSkills'][0].skills['ASP.Net Core']).toBe(2);
+
+      expect(component['usersWithSkills'][1].id).toBe("a2");
+      expect(component['usersWithSkills'][1].firstName).toBe("Jane");
+      expect(component['usersWithSkills'][1].lastName).toBe("Potter");
+      expect(component['usersWithSkills'][1].skills['C#']).toBe(null);
+      expect(component['usersWithSkills'][1].skills['Javascript']).toBe(2);
+      expect(component['usersWithSkills'][1].skills['Python']).toBe(null);
+      expect(component['usersWithSkills'][1].skills['C']).toBe(2);
+      expect(component['usersWithSkills'][1].skills['PHP']).toBe(1);
+      expect(component['usersWithSkills'][1].skills['Laravel']).toBe(1);
+      expect(component['usersWithSkills'][1].skills['ASP.Net Core']).toBe(null);
+    });
+
+
+    it('should create a new user array of objects that contains a new skills object for each user that contains all of their skills - Just Framworks', () => {
+      // Properties of the Skills object are dynamic and created as needed
+
+      // ARRANGE   
+      // create a users array - done in BeforeEach() in above describe
+      // create a employeesSkills array - done in BeforeEach() in this describe
+      component['skillTypeFilter'] = 2;
+
+      // ACT
+      component.populateUsersListWithSkillsAfterGettingEmployeeSkills();
+
+      // ASSERT
+      expect(component['allSkillsHeadings'].length).toBe(2);
+      expect(component['allSkillsHeadings']).toEqual(["Laravel", "ASP.Net Core"]);
+      expect(component['usersWithSkills'].length).toBe(2);
+      expect(component['usersWithSkills'][1].id).toBe("a2");
+      expect(component['usersWithSkills'][1].firstName).toBe("Jane");
+      expect(component['usersWithSkills'][1].lastName).toBe("Potter");
+      expect(component['usersWithSkills'][1].skills['Laravel']).toBe(1);
+      expect(component['usersWithSkills'][1].skills['ASP.Net Core']).toBe(null);
+      expect(Object.keys(component['usersWithSkills'][1].skills).length).toEqual(2);
+      expect(component['usersWithSkills'][0].id).toBe("a1");
+      expect(component['usersWithSkills'][0].firstName).toBe("John");
+      expect(component['usersWithSkills'][0].lastName).toBe("Doe");
+      expect(component['usersWithSkills'][0].skills['Laravel']).toBe(null);
+      expect(component['usersWithSkills'][0].skills['ASP.Net Core']).toBe(2);
+    });
+
+  })
 
 });
 
