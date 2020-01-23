@@ -19,7 +19,7 @@
 </div>
 
 <br />
-<div *ngIf="(userRole | async)?.includes('manager') && !assignStaffFlag">
+<div id="assignStaffQuery" *ngIf="(userRole | async)?.includes('manager') && !assignStaffFlag">
   <p *ngIf="deadlineToSetMessage" class="text-danger">Please enter a deadline before assigning staff</p>
   <button *ngIf="!case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-success">Assign staff</button>
   <button *ngIf="case.dateAssigned" (click)="showAssignEmployeeSection(case.id)" class="btn btn-success">Adjust assigned staff</button>
