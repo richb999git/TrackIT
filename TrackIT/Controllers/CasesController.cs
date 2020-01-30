@@ -83,9 +83,11 @@ namespace TrackIT.Controllers
         public async Task<ActionResult<PaginatedListCases>> GetCasesUser(int caseFilter, int softwareFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
             // if 1 then get uncompleted cases (status 7 = complete), otherwise get all cases (8 = cancelled)
-            int statusFilter = caseFilter == 1 ? 7 : 9; 
+            int statusFilter = caseFilter == 1 ? 7 : 9;
+
             // Filter just user's cases (or later maybe all their company's cases)
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "a2"; // for testing, will be overriden in production
+            if (User != null) userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
             if (searchString?.Length == 0 || searchString == "null") searchString = null;
             
@@ -142,9 +144,15 @@ namespace TrackIT.Controllers
         [HttpGet]
         public async Task<ActionResult<PaginatedListCases>> GetCasesSupport(int caseFilter, int softwareFilter, int typeFilter, string sort, bool sortAsc, int pageIndex, string searchString)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var IsManager = User.HasClaim(ClaimTypes.Role, "manager");
-            var IsAdmin = User.HasClaim(ClaimTypes.Role, "admin");
+            string userId = "a2"; // for testing, will be overriden in production
+            bool IsManager = false;
+            bool IsAdmin = false;
+            if (User != null) 
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                IsManager = User.HasClaim(ClaimTypes.Role, "manager");
+                IsAdmin = User.HasClaim(ClaimTypes.Role, "admin");
+            }
 
             // if 1 then get uncompleted cases (status 7 = complete), otherwise get all cases (8 = cancelled)
             int statusFilter = caseFilter == 1 ? 7 : 9; 
@@ -357,7 +365,7 @@ namespace TrackIT.Controllers
         public async Task<ActionResult<Cases>> PostCases(
             [Bind("UserId", "SoftwareId", "Type", nameof(Cases.Title), "Description", "Status", "UrgencyLevel", "DateOpened")] Cases cases)
         {
-            cases.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (cases.UserId == null) cases.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             cases.Status = 1;
             cases.DateOpened = DateTime.Now;
             _context.Cases.Add(cases);

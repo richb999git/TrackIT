@@ -45,16 +45,20 @@ namespace TrackIT.Controllers
 
         public FileUploadsController(ApplicationDbContext context, IOptions<CloudinarySettings> cloudinaryConfig)
         {
-            _context = context;
-            _cloudinaryConfig = cloudinaryConfig;
+            _context = context;          
 
-            Account acc = new Account(
-                _cloudinaryConfig.Value.CloudName,
-                _cloudinaryConfig.Value.ApiKey,
-                _cloudinaryConfig.Value.ApiSecret
-            );
+            if (cloudinaryConfig != null)
+            {
+                _cloudinaryConfig = cloudinaryConfig;
 
-            _cloudinary = new Cloudinary(acc);
+                Account acc = new Account(
+                    _cloudinaryConfig.Value.CloudName,
+                    _cloudinaryConfig.Value.ApiKey,
+                    _cloudinaryConfig.Value.ApiSecret
+                );
+
+                _cloudinary = new Cloudinary(acc);
+            }
         }
 
         // Get upload details for a case. No need to return all upload details
